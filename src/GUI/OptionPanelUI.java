@@ -13,7 +13,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.BoxLayout;
 
-public class OptionPanel extends JPanel {
+public class OptionPanelUI extends JPanel {
 
 	private String[] listAlgorithms = { "DES", "AA" };
 	private String[] listKeySize = { "512", "111" };
@@ -24,8 +24,8 @@ public class OptionPanel extends JPanel {
 	private Dimension dimlbl, dimChoice, dimContainer;
 	private JPanel pnAlgorithms, pnKeySize, pnMode, pnPadding;
 
-	public OptionPanel() {
-		dimContainer = new Dimension(740, 65);
+	public OptionPanelUI() {
+		dimContainer = new Dimension(740, 68);
 		dimlbl = new Dimension(67, 30);
 		dimChoice = new Dimension(80, 30);
 

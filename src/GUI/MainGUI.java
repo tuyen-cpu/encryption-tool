@@ -1,26 +1,29 @@
 package GUI;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
-
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
 import java.awt.Font;
 
 import javax.swing.JPanel;
 
 public class MainGUI {
-	private JPanel pnSymmetric, pnAsymmetric, pnPBE, pnHash;
+	private JPanel pnMain,pnSymmetric,pnBtnStart, pnAsymmetric, pnPBE, pnHash,pnOption,pnKey,pnEncrypt,pnSelectEnOrDe;
 	private JTabbedPane tabbedPane;
-	private OptionPanel pnOption;
-	private OptionKey pnKey;
+	JButton btnStart;
 
 	public MainGUI() {
+		pnBtnStart = new JPanel();
+		btnStart = new JButton("Start");
+		btnStart.setPreferredSize(new Dimension(200,50));
+		btnStart.setFont(new Font("Dialog", Font.PLAIN, 20));
+		btnStart.setFocusPainted(false);
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Dialog", Font.PLAIN,13));
 		pnSymmetric = new JPanel();
@@ -35,14 +38,20 @@ public class MainGUI {
 		pnHash = new JPanel();
 		tabbedPane.addTab("Hash", null, pnHash, null);
 		//Create pnOption
-		pnOption = new OptionPanel();
+		pnOption = new OptionPanelUI();
 		pnSymmetric.add(pnOption);
 		//Create pnKey
-		pnKey = new OptionKey();
+		pnKey = new OptionKeyUI();
 		pnSymmetric.add(pnKey);
 		
+		//create pnEncrypt
+		pnEncrypt = new OptionEncryptUI();
+		pnSymmetric.add(pnEncrypt);
 		
+		pnSelectEnOrDe = new OptionSelectEncryptOrDecrypt();
+		pnSymmetric.add(pnSelectEnOrDe);
 		
+		pnBtnStart.add(btnStart);
 
 	}
 
@@ -51,12 +60,13 @@ public class MainGUI {
 		JFrame frame = new JFrame("Main Frame");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JLabel pnMain = new JLabel();
+		 pnMain = new JPanel();
 
 		pnMain.setPreferredSize(new Dimension(750, 600));
 		pnMain.setLayout(new BorderLayout());
 		frame.getContentPane().add(pnMain, BorderLayout.CENTER);
 		pnMain.add(tabbedPane, BorderLayout.CENTER);
+		pnMain.add(pnBtnStart,BorderLayout.SOUTH);
 		// Display the window.
 		frame.pack();
 		frame.setResizable(false);
