@@ -27,23 +27,27 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import java.awt.GridLayout;
+import java.io.File;
 
 public class OptionEncryptUI extends JPanel implements ActionListener {
 	JButton btnChooseInput, btnChooseOutput;
 	JRadioButton rdField, rdFile;
 	JPanel pnRadio, pnContainer, pnKeyField, pnKeyFile, pnFileInput,
 			pnFileOutput;
+	OptionSelectEncryptOrDecrypt pnSelectEnOrDe;
 	Dimension dimContainer, dimPlainText, dimRadioButton, dimBtnChoose;
 	JFileChooser fileKey;
 	JLabel lblFileInput, lblFileOutput;
 	JTextArea txtPlain, txtCipher;
 	JScrollPane scrollPlain, scrollCipher;
-	private JLabel label;
+	File fileInput, fileOutput;
 
 	public OptionEncryptUI() {
-		dimContainer = new Dimension(740, 250);
+		dimContainer = new Dimension(740, 255);
 		dimRadioButton = new Dimension(60, 20);
 		dimBtnChoose = new Dimension(100, 30);
+
+		pnSelectEnOrDe = new OptionSelectEncryptOrDecrypt();
 
 		rdField = new JRadioButton("String");
 		rdFile = new JRadioButton("File");
@@ -67,6 +71,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		// remove focus painted button
 		btnChooseInput.setFocusPainted(false);
 		btnChooseOutput.setFocusPainted(false);
+		rdField.setFocusPainted(false);
+		rdFile.setFocusPainted(false);
 		scrollPlain = new JScrollPane(txtPlain);
 		scrollCipher = new JScrollPane(txtCipher);
 		// default select radio
@@ -111,7 +117,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				openFile(lblFileInput);
+				fileInput=openFile();
+				lblFileInput.setText(fileInput.getName());;
 
 			}
 		});
@@ -119,7 +126,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				openFile(lblFileOutput);
+				fileOutput=openFile();
+				lblFileOutput.setText(fileOutput.getName());;
 
 			}
 		});
@@ -140,8 +148,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		pnKeyField.add(scrollCipher);
 		pnContainer.setLayout(new BorderLayout());
 
-		 pnContainer.add(pnKeyField);
-//		pnContainer.add(pnKeyFile);
+		pnContainer.add(pnKeyField);
+		// pnContainer.add(pnKeyFile);
 
 		pnFileOutput.add(lblFileOutput);
 		pnFileOutput.add(btnChooseOutput);
@@ -152,7 +160,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 		pnKeyFile.add(pnFileInput, BorderLayout.NORTH);
 		pnKeyFile.add(pnFileOutput, BorderLayout.CENTER);
-
+		add(pnSelectEnOrDe, BorderLayout.SOUTH);
 		// set border title
 		Border blackline = BorderFactory
 				.createTitledBorder("Encrypt or Decrypt");
@@ -167,15 +175,15 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		clipboard.setContents(stringSelection, null);
 	}
 
-	public void openFile(JLabel c) {
+	// get File from computer to App
+	public File openFile() {
 		int select = fileKey.showOpenDialog(null);
 		if (select == JFileChooser.APPROVE_OPTION) {
-			System.out.println("file: " + fileKey.getSelectedFile().getName());
-			c.setText("" + fileKey.getSelectedFile().getName());
+			return fileKey.getSelectedFile();
 		} else {
 			System.out.println("Cancel");
+			return null;
 		}
-
 	}
 
 	@Override
@@ -189,9 +197,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 		} else {
 			// fileKey.showSaveDialog(null);
-
 			pnContainer.removeAll();
-			lblFileInput.setText("");
 			pnContainer.add(pnKeyFile);
 			pnContainer.revalidate();
 			pnContainer.repaint();
@@ -199,4 +205,195 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		}
 
 	}
+
+	public JButton getBtnChooseInput() {
+		return btnChooseInput;
+	}
+
+	public void setBtnChooseInput(JButton btnChooseInput) {
+		this.btnChooseInput = btnChooseInput;
+	}
+
+	public JButton getBtnChooseOutput() {
+		return btnChooseOutput;
+	}
+
+	public void setBtnChooseOutput(JButton btnChooseOutput) {
+		this.btnChooseOutput = btnChooseOutput;
+	}
+
+	public JRadioButton getRdField() {
+		return rdField;
+	}
+
+	public void setRdField(JRadioButton rdField) {
+		this.rdField = rdField;
+	}
+
+	public JRadioButton getRdFile() {
+		return rdFile;
+	}
+
+	public void setRdFile(JRadioButton rdFile) {
+		this.rdFile = rdFile;
+	}
+
+	public JPanel getPnRadio() {
+		return pnRadio;
+	}
+
+	public void setPnRadio(JPanel pnRadio) {
+		this.pnRadio = pnRadio;
+	}
+
+	public JPanel getPnContainer() {
+		return pnContainer;
+	}
+
+	public void setPnContainer(JPanel pnContainer) {
+		this.pnContainer = pnContainer;
+	}
+
+	public JPanel getPnKeyField() {
+		return pnKeyField;
+	}
+
+	public void setPnKeyField(JPanel pnKeyField) {
+		this.pnKeyField = pnKeyField;
+	}
+
+	public JPanel getPnKeyFile() {
+		return pnKeyFile;
+	}
+
+	public void setPnKeyFile(JPanel pnKeyFile) {
+		this.pnKeyFile = pnKeyFile;
+	}
+
+	public JPanel getPnFileInput() {
+		return pnFileInput;
+	}
+
+	public void setPnFileInput(JPanel pnFileInput) {
+		this.pnFileInput = pnFileInput;
+	}
+
+	public JPanel getPnFileOutput() {
+		return pnFileOutput;
+	}
+
+	public void setPnFileOutput(JPanel pnFileOutput) {
+		this.pnFileOutput = pnFileOutput;
+	}
+
+	public OptionSelectEncryptOrDecrypt getPnSelectEnOrDe() {
+		return pnSelectEnOrDe;
+	}
+
+	
+
+	public Dimension getDimContainer() {
+		return dimContainer;
+	}
+
+	public void setDimContainer(Dimension dimContainer) {
+		this.dimContainer = dimContainer;
+	}
+
+	public Dimension getDimPlainText() {
+		return dimPlainText;
+	}
+
+	public void setDimPlainText(Dimension dimPlainText) {
+		this.dimPlainText = dimPlainText;
+	}
+
+	public Dimension getDimRadioButton() {
+		return dimRadioButton;
+	}
+
+	public void setDimRadioButton(Dimension dimRadioButton) {
+		this.dimRadioButton = dimRadioButton;
+	}
+
+	public Dimension getDimBtnChoose() {
+		return dimBtnChoose;
+	}
+
+	public void setDimBtnChoose(Dimension dimBtnChoose) {
+		this.dimBtnChoose = dimBtnChoose;
+	}
+
+	public JFileChooser getFileKey() {
+		return fileKey;
+	}
+
+	public void setFileKey(JFileChooser fileKey) {
+		this.fileKey = fileKey;
+	}
+
+	public JLabel getLblFileInput() {
+		return lblFileInput;
+	}
+
+	public void setLblFileInput(JLabel lblFileInput) {
+		this.lblFileInput = lblFileInput;
+	}
+
+	public JLabel getLblFileOutput() {
+		return lblFileOutput;
+	}
+
+	public void setLblFileOutput(JLabel lblFileOutput) {
+		this.lblFileOutput = lblFileOutput;
+	}
+
+	public String getTxtPlain() {
+		return txtPlain.getText();
+	}
+
+	public void setTxtPlain(String txtPlain) {
+		this.txtPlain.setText(txtPlain);
+	}
+
+	public String getTxtCipher() {
+		return this.txtCipher.getText();
+	}
+
+	public void setTxtCipher(String txtCipher) {
+		this.txtCipher.setText(txtCipher);
+	}
+
+	public JScrollPane getScrollPlain() {
+		return scrollPlain;
+	}
+
+	public void setScrollPlain(JScrollPane scrollPlain) {
+		this.scrollPlain = scrollPlain;
+	}
+
+	public JScrollPane getScrollCipher() {
+		return scrollCipher;
+	}
+
+	public void setScrollCipher(JScrollPane scrollCipher) {
+		this.scrollCipher = scrollCipher;
+	}
+
+	public File getFileInput() {
+		return fileInput;
+	}
+
+	public void setFileInput(File fileInput) {
+		this.fileInput = fileInput;
+	}
+
+	public File getFileOutput() {
+		return fileOutput;
+	}
+
+	public void setFileOutput(File fileOutput) {
+		this.fileOutput = fileOutput;
+	}
+	
 }

@@ -26,6 +26,7 @@ import javax.swing.BoxLayout;
 
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
+import java.io.File;
 
 public class OptionKeyUI extends JPanel implements ActionListener {
 	JButton btnCreateKey, btnCopy, btnChooseFile;
@@ -36,11 +37,14 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 			dimRadioButton;
 	JFileChooser fileKey;
 	JLabel lblKeyFile;
+	File fileInputKey;
 
 	public OptionKeyUI() {
 		// Create component
 		rdField = new JRadioButton("Key");
 		rdFile = new JRadioButton("Import key");
+		rdField.setFocusPainted(false);
+		rdFile.setFocusPainted(false);
 		btnCreateKey = new JButton("Create Key");
 		btnCopy = new JButton("Copy key");
 		btnChooseFile = new JButton("Choose file");
@@ -84,7 +88,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		btnCopy.setPreferredSize(dimBtnCopyKey);
 		btnChooseFile.setPreferredSize(dimBtnCreateKey);
 		rdField.setPreferredSize(dimRadioButton);
-		rdFile.setPreferredSize(new Dimension(100,20));
+		rdFile.setPreferredSize(new Dimension(100, 20));
 		setPreferredSize(dimContainer);
 		// add event radio button
 		rdField.addActionListener(this);
@@ -94,14 +98,16 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				openFile();
-
 			}
 		});
 		btnCopy.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				copyIntoClipBoard(txtKey.getText());
+				String txt = txtKey.getText();
+				if (!txt.equals(""))
+					copyIntoClipBoard(txt);
+
 			}
 		});
 		// lblKeyFile.setBorder(BorderFactory.createEtchedBorder());
@@ -140,6 +146,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		if (select == JFileChooser.APPROVE_OPTION) {
 			System.out.println("file: " + fileKey.getSelectedFile().getName());
 			lblKeyFile.setText("" + fileKey.getSelectedFile().getName());
+			fileInputKey = fileKey.getSelectedFile();
 		} else {
 			System.out.println("Cancel");
 		}
@@ -156,7 +163,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		} else {
 			// fileKey.showSaveDialog(null);
 			pnContainer.removeAll();
-			lblKeyFile.setText("");
+
 			pnContainer.add(pnKeyFile);
 			pnContainer.revalidate();
 			pnContainer.repaint();
@@ -164,4 +171,149 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		}
 
 	}
+
+	public JButton getBtnCreateKey() {
+		return btnCreateKey;
+	}
+
+	public void setBtnCreateKey(JButton btnCreateKey) {
+		this.btnCreateKey = btnCreateKey;
+	}
+
+	public JButton getBtnCopy() {
+		return btnCopy;
+	}
+
+	public void setBtnCopy(JButton btnCopy) {
+		this.btnCopy = btnCopy;
+	}
+
+	public JButton getBtnChooseFile() {
+		return btnChooseFile;
+	}
+
+	public void setBtnChooseFile(JButton btnChooseFile) {
+		this.btnChooseFile = btnChooseFile;
+	}
+
+	public String getTxtKey() {
+		return txtKey.getText();
+	}
+
+	public void setTxtKey(String txtKey) {
+		this.txtKey.setText(txtKey);
+	}
+
+	public JRadioButton getRdField() {
+		return rdField;
+	}
+
+	public void setRdField(JRadioButton rdField) {
+		this.rdField = rdField;
+	}
+
+	public JRadioButton getRdFile() {
+		return rdFile;
+	}
+
+	public void setRdFile(JRadioButton rdFile) {
+		this.rdFile = rdFile;
+	}
+
+	public JPanel getPnRadio() {
+		return pnRadio;
+	}
+
+	public void setPnRadio(JPanel pnRadio) {
+		this.pnRadio = pnRadio;
+	}
+
+	public JPanel getPnContainer() {
+		return pnContainer;
+	}
+
+	public void setPnContainer(JPanel pnContainer) {
+		this.pnContainer = pnContainer;
+	}
+
+	public JPanel getPnKeyField() {
+		return pnKeyField;
+	}
+
+	public void setPnKeyField(JPanel pnKeyField) {
+		this.pnKeyField = pnKeyField;
+	}
+
+	public JPanel getPnKeyFile() {
+		return pnKeyFile;
+	}
+
+	public void setPnKeyFile(JPanel pnKeyFile) {
+		this.pnKeyFile = pnKeyFile;
+	}
+
+	public Dimension getDimContainer() {
+		return dimContainer;
+	}
+
+	public void setDimContainer(Dimension dimContainer) {
+		this.dimContainer = dimContainer;
+	}
+
+	public Dimension getDimKeyField() {
+		return dimKeyField;
+	}
+
+	public void setDimKeyField(Dimension dimKeyField) {
+		this.dimKeyField = dimKeyField;
+	}
+
+	public Dimension getDimBtnCreateKey() {
+		return dimBtnCreateKey;
+	}
+
+	public void setDimBtnCreateKey(Dimension dimBtnCreateKey) {
+		this.dimBtnCreateKey = dimBtnCreateKey;
+	}
+
+	public Dimension getDimBtnCopyKey() {
+		return dimBtnCopyKey;
+	}
+
+	public void setDimBtnCopyKey(Dimension dimBtnCopyKey) {
+		this.dimBtnCopyKey = dimBtnCopyKey;
+	}
+
+	public Dimension getDimRadioButton() {
+		return dimRadioButton;
+	}
+
+	public void setDimRadioButton(Dimension dimRadioButton) {
+		this.dimRadioButton = dimRadioButton;
+	}
+
+	public JFileChooser getFileKey() {
+		return fileKey;
+	}
+
+	public void setFileKey(JFileChooser fileKey) {
+		this.fileKey = fileKey;
+	}
+
+	public JLabel getLblKeyFile() {
+		return lblKeyFile;
+	}
+
+	public void setLblKeyFile(JLabel lblKeyFile) {
+		this.lblKeyFile = lblKeyFile;
+	}
+
+	public File getFileInputKey() {
+		return fileInputKey;
+	}
+
+	public void setFileInputKey(File fileInputKey) {
+		this.fileInputKey = fileInputKey;
+	}
+	
 }

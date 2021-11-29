@@ -1,28 +1,51 @@
 package GUI;
 
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 
 import javax.swing.JPanel;
+import javax.swing.ImageIcon;
+
+import algorithms.Symmetric;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 public class MainGUI {
-	private JPanel pnMain,pnSymmetric,pnBtnStart, pnAsymmetric, pnPBE, pnHash,pnOption,pnKey,pnEncrypt,pnSelectEnOrDe;
+	private JPanel pnMain,pnSymmetric,pnBtnStart, pnAsymmetric, pnPBE, pnHash;
+	OptionGeneralUI pnOption;
+	OptionKeyUI pnKey;
+	OptionEncryptUI pnEncrypt;
 	private JTabbedPane tabbedPane;
 	JButton btnStart;
 
 	public MainGUI() {
 		pnBtnStart = new JPanel();
 		btnStart = new JButton("Start");
-		btnStart.setPreferredSize(new Dimension(200,50));
-		btnStart.setFont(new Font("Dialog", Font.PLAIN, 20));
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		
+		btnStart.setPreferredSize(new Dimension(150,50));
+		btnStart.setIcon(new ImageIcon(this.getClass().getResource("/img/start.png")));
+		btnStart.setHorizontalAlignment(SwingConstants.LEFT);
+		btnStart.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnStart.setFocusPainted(false);
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Dialog", Font.PLAIN,13));
@@ -38,7 +61,7 @@ public class MainGUI {
 		pnHash = new JPanel();
 		tabbedPane.addTab("Hash", null, pnHash, null);
 		//Create pnOption
-		pnOption = new OptionPanelUI();
+		pnOption = new OptionGeneralUI();
 		pnSymmetric.add(pnOption);
 		//Create pnKey
 		pnKey = new OptionKeyUI();
@@ -47,10 +70,6 @@ public class MainGUI {
 		//create pnEncrypt
 		pnEncrypt = new OptionEncryptUI();
 		pnSymmetric.add(pnEncrypt);
-		
-		pnSelectEnOrDe = new OptionSelectEncryptOrDecrypt();
-		pnSymmetric.add(pnSelectEnOrDe);
-		
 		pnBtnStart.add(btnStart);
 
 	}
@@ -72,6 +91,56 @@ public class MainGUI {
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
+		
+		pnKey.getBtnCreateKey().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String algorithm =pnOption.getChoiceAlgorithms().getSelectedItem();
+				int keysie = Integer.parseInt(pnOption.getChoiceKeySize().getSelectedItem());
+				Symmetric s;
+				try {
+					s = new Symmetric(algorithm, keysie);
+					s.createKey();
+					String key =s.getKeyWithString();
+					pnKey.setTxtKey(key);
+				} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		btnStart.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String input;
+				String outText="";
+				
+				String algorithm =pnOption.getChoiceAlgorithms().getSelectedItem();
+				int keysie = Integer.parseInt(pnOption.getChoiceKeySize().getSelectedItem());
+				try {
+					Symmetric s = new Symmetric(algorithm, keysie);
+					byte[] decodedKey = Base64.getDecoder().decode(pnKey.getTxtKey());
+					SecretKey key = new SecretKeySpec(decodedKey, 0, decodedKey.length, algorithm); 
+					s.setKey(key);
+					System.out.println(s.getKeyWithString());
+					input =pnEncrypt.getTxtPlain();
+					if(pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()){
+						 outText=s.encrypt(input);	
+					}else{
+						 outText=s.decrypt(input);
+					}
+					pnEncrypt.setTxtCipher(outText);;
+				} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 
 	}
 

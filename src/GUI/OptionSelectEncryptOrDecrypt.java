@@ -13,6 +13,8 @@ public class OptionSelectEncryptOrDecrypt extends JPanel {
 	public OptionSelectEncryptOrDecrypt() {
 		rdEncrypt = new JRadioButton("Encrypt");
 		rdDecrypt = new JRadioButton("Decrypt");
+		rdEncrypt.setFocusPainted(false);
+		rdDecrypt.setFocusPainted(false);
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdEncrypt);
 		bg.add(rdDecrypt);
@@ -24,4 +26,21 @@ public class OptionSelectEncryptOrDecrypt extends JPanel {
 		add(rdEncrypt);
 		add(rdDecrypt);
 	}
+
+	public JRadioButton getRdEncrypt() {
+		return rdEncrypt;
+	}
+
+	public void setRdEncrypt(JRadioButton rdEncrypt) {
+		this.rdEncrypt = rdEncrypt;
+	}
+
+	public JRadioButton getRdDecrypt() {
+		return rdDecrypt;
+	}
+
+	public void setRdDecrypt(JRadioButton rdDecrypt) {
+		this.rdDecrypt = rdDecrypt;
+	}
+	
 }
