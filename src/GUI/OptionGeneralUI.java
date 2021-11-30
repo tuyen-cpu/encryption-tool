@@ -18,7 +18,7 @@ import algorithms.ColorPublic;
 public class OptionGeneralUI extends JPanel {
 
 	private String[] listAlgorithms = { "AES", "DES", "DESede" };
-	private String[] listKeySize = { "128", "192 ", "256" };
+	private String[] listKeySize = { "128", "192", "256" };
 	private String[] listMode = { "CBC", "ECB" };
 	private String[] listPadding = { "NoPadding", "PKCS5Padding" };
 	private String[] listKeySizeAES = { "128", "192", "256" };
@@ -71,13 +71,7 @@ public class OptionGeneralUI extends JPanel {
 		choicePadding.setFocusable(false);
 		/* Set dimension */
 		setPreferredSize(dimContainer);	
-//		set color
 
-		setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
-		pnAlgorithms.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
-		pnKeySize.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
-		pnMode.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
-		pnPadding.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
 		/* Add label & choice into Panel */
 		pnAlgorithms.add(lblAlgorithms);
 		pnAlgorithms.add(choiceAlgorithms);

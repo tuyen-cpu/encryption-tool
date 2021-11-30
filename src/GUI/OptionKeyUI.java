@@ -113,11 +113,8 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 			}
 		});
 		
-		//set color
-		pnContainer.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
-		pnKeyField.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
-		pnKeyFile.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
-		pnRadio.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
+	
+
 		// lblKeyFile.setBorder(BorderFactory.createEtchedBorder());
 		lblKeyFile.setBorder(new EmptyBorder(0, 0, 0, 10));
 		// set layout panel

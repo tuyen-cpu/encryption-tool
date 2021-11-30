@@ -1,11 +1,8 @@
 package GUI;
 
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
@@ -13,13 +10,19 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
+
+
+
+
 
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
+
+
+
+import com.formdev.flatlaf.FlatIntelliJLaf;
 
 import algorithms.Symmetric;
 
@@ -28,7 +31,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.text.ParseException;
+
 
 public class MainGUI {
 	private JPanel pnMain, pnSymmetric, pnBtnStart, pnAsymmetric, pnPBE,
@@ -185,10 +189,13 @@ public class MainGUI {
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
+		
+
 
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.setLookAndFeel(new FlatIntelliJLaf());
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
