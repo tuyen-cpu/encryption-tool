@@ -13,6 +13,7 @@ public class OptionSelectEncryptOrDecrypt extends JPanel {
 	public OptionSelectEncryptOrDecrypt() {
 		rdEncrypt = new JRadioButton("Encrypt");
 		rdDecrypt = new JRadioButton("Decrypt");
+		rdEncrypt.setSelected(true);
 		rdEncrypt.setFocusPainted(false);
 		rdDecrypt.setFocusPainted(false);
 		ButtonGroup bg = new ButtonGroup();

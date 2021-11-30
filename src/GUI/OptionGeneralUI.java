@@ -1,54 +1,50 @@
 package GUI;
 
+import java.awt.BorderLayout;
 import java.awt.Choice;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.BoxLayout;
-
+import algorithms.ColorPublic;
 public class OptionGeneralUI extends JPanel {
 
-	private String[] listAlgorithms = { "DES", "AA" };
-	private String[] listKeySize = { "512", "56" };
-	private String[] listMode = { "11", "222" };
-	private String[] listPadding = { "11", "222" };
+	private String[] listAlgorithms = { "AES", "DES", "DESede" };
+	private String[] listKeySize = { "128", "192 ", "256" };
+	private String[] listMode = { "CBC", "ECB" };
+	private String[] listPadding = { "NoPadding", "PKCS5Padding" };
+	private String[] listKeySizeAES = { "128", "192", "256" };
+	private String[] listKeySizeDES = { "56" };
+	private String[] listKeySizeDESede = { "168" };
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblpadding;
 	Choice choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
-	private Dimension dimlbl, dimChoice, dimContainer;
+
+	private Dimension dimlbl, dimContainer;
 	private JPanel pnAlgorithms, pnKeySize, pnMode, pnPadding;
 
 	public OptionGeneralUI() {
-		dimContainer = new Dimension(740, 68);
+		dimContainer = new Dimension(740, 65);
 		dimlbl = new Dimension(67, 30);
-		dimChoice = new Dimension(80, 30);
+		
 
 		choiceAlgorithms = new Choice();
 		// choice.setBounds(100, 100, 150, 150);
-		for (String algo : listAlgorithms) {
-			choiceAlgorithms.add(algo);
-		}
-
+		
+		setChoice(listAlgorithms, choiceAlgorithms);
 		choiceKeySize = new Choice();
-		for (String algo : listKeySize) {
-			choiceKeySize.add(algo);
-		}
+		setChoice(listKeySize, choiceKeySize);
 		choiceMode = new Choice();
-		for (String algo : listMode) {
-			choiceMode.add(algo);
-		}
+		setChoice(listMode, choiceMode);
 		choicePadding = new Choice();
-
-		for (String algo : listPadding) {
-			choicePadding.add(algo);
-		}
-
+		setChoice(listPadding, choicePadding);
 		pnAlgorithms = new JPanel();
 		pnKeySize = new JPanel();
 		pnMode = new JPanel();
@@ -74,25 +70,20 @@ public class OptionGeneralUI extends JPanel {
 		choiceMode.setFocusable(false);
 		choicePadding.setFocusable(false);
 		/* Set dimension */
-		lblAlgorithms.setPreferredSize(dimlbl);
-		lblKeySize.setPreferredSize(dimlbl);
-		lblMode.setPreferredSize(dimlbl);
-		lblpadding.setPreferredSize(dimlbl);
+		setPreferredSize(dimContainer);	
+//		set color
 
-		choiceAlgorithms.setPreferredSize(dimChoice);
-		choiceKeySize.setPreferredSize(dimChoice);
-		choiceMode.setPreferredSize(dimChoice);
-		choicePadding.setPreferredSize(dimChoice);
-
-		setPreferredSize(dimContainer);
+		setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
+		pnAlgorithms.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
+		pnKeySize.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
+		pnMode.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
+		pnPadding.setBackground( Color.decode(ColorPublic.BACKGROUND_COLOR));
 		/* Add label & choice into Panel */
 		pnAlgorithms.add(lblAlgorithms);
 		pnAlgorithms.add(choiceAlgorithms);
 		pnAlgorithms.setSize(100, 100);
 
-		pnKeySize.add(lblKeySize);
-		pnKeySize.add(choiceKeySize);
-
+		addComponentIntoPanelKeySize();
 		pnMode.add(lblMode);
 		pnMode.add(choiceMode);
 
@@ -103,12 +94,51 @@ public class OptionGeneralUI extends JPanel {
 		add(pnKeySize);
 		add(pnMode);
 		add(pnPadding);
-		
+
 		Border blackline = BorderFactory.createTitledBorder("Option");
 		setBorder(blackline);
 		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
 				Font.PLAIN, 13));
 
+	}
+
+	public void setChoice(String[] listValue, Choice choice) {
+		choice.removeAll();
+		for (String algo : listValue) {
+			choice.add(algo);
+		}
+	}
+
+	public void addComponentIntoPanelKeySize() {
+		pnKeySize.add(lblKeySize);
+		
+		pnKeySize.add(choiceKeySize);
+		pnKeySize.setAlignmentY(JPanel.CENTER_ALIGNMENT);
+		
+	}
+
+	public void changeContentChoice() {
+
+		switch (choiceAlgorithms.getSelectedItem()) {
+		case "AES":
+			listKeySize = listKeySizeAES;
+			setChoice(listKeySize, choiceKeySize);
+			System.out.println("AES");
+			break;
+		case "DES":
+			listKeySize = listKeySizeDES;
+			setChoice(listKeySize, choiceKeySize);
+			System.out.println("DES");
+			break;
+		case "DESede":
+			listKeySize = listKeySizeDESede;
+			setChoice(listKeySize, choiceKeySize);
+			System.out.println("DESede");
+			break;
+		default:
+			break;
+		}
+		
 	}
 
 	public String[] getListAlgorithms() {
@@ -215,13 +245,7 @@ public class OptionGeneralUI extends JPanel {
 		this.dimlbl = dimlbl;
 	}
 
-	public Dimension getDimChoice() {
-		return dimChoice;
-	}
-
-	public void setDimChoice(Dimension dimChoice) {
-		this.dimChoice = dimChoice;
-	}
+	
 
 	public Dimension getDimContainer() {
 		return dimContainer;
@@ -262,7 +286,8 @@ public class OptionGeneralUI extends JPanel {
 	public void setPnPadding(JPanel pnPadding) {
 		this.pnPadding = pnPadding;
 	}
+
 	public static void main(String[] args) {
-		
+
 	}
 }

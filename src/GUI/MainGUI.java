@@ -6,12 +6,14 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -23,11 +25,14 @@ import algorithms.Symmetric;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class MainGUI {
-	private JPanel pnMain,pnSymmetric,pnBtnStart, pnAsymmetric, pnPBE, pnHash;
+	private JPanel pnMain, pnSymmetric, pnBtnStart, pnAsymmetric, pnPBE,
+			pnHash;
 	OptionGeneralUI pnOption;
 	OptionKeyUI pnKey;
 	OptionEncryptUI pnEncrypt;
@@ -41,33 +46,37 @@ public class MainGUI {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		
-		btnStart.setPreferredSize(new Dimension(150,50));
-		btnStart.setIcon(new ImageIcon(this.getClass().getResource("/img/start.png")));
+
+		btnStart.setPreferredSize(new Dimension(150, 50));
+		btnStart.setIcon(new ImageIcon(this.getClass().getResource(
+				"/img/start.png")));
 		btnStart.setHorizontalAlignment(SwingConstants.LEFT);
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnStart.setFocusPainted(false);
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setFont(new Font("Dialog", Font.PLAIN,13));
+
+		tabbedPane.setFont(new Font("Dialog", Font.PLAIN, 13));
 		pnSymmetric = new JPanel();
-		tabbedPane.addTab("Symmetric", null, pnSymmetric, "Symmetric encryption");
+		tabbedPane.addTab("Symmetric", null, pnSymmetric,
+				"Symmetric encryption");
 
 		pnAsymmetric = new JPanel();
-		tabbedPane.addTab("Asymmetric", null, pnAsymmetric, "Asymmetric encryption");
+		tabbedPane.addTab("Asymmetric", null, pnAsymmetric,
+				"Asymmetric encryption");
 
 		pnPBE = new JPanel();
 		tabbedPane.addTab("PBE", null, pnPBE, null);
 
 		pnHash = new JPanel();
 		tabbedPane.addTab("Hash", null, pnHash, null);
-		//Create pnOption
+		// Create pnOption
 		pnOption = new OptionGeneralUI();
 		pnSymmetric.add(pnOption);
-		//Create pnKey
+		// Create pnKey
 		pnKey = new OptionKeyUI();
 		pnSymmetric.add(pnKey);
-		
-		//create pnEncrypt
+
+		// create pnEncrypt
 		pnEncrypt = new OptionEncryptUI();
 		pnSymmetric.add(pnEncrypt);
 		pnBtnStart.add(btnStart);
@@ -79,30 +88,41 @@ public class MainGUI {
 		JFrame frame = new JFrame("Main Frame");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		 pnMain = new JPanel();
+		pnMain = new JPanel();
 
 		pnMain.setPreferredSize(new Dimension(750, 600));
 		pnMain.setLayout(new BorderLayout());
 		frame.getContentPane().add(pnMain, BorderLayout.CENTER);
 		pnMain.add(tabbedPane, BorderLayout.CENTER);
-		pnMain.add(pnBtnStart,BorderLayout.SOUTH);
+		pnMain.add(pnBtnStart, BorderLayout.SOUTH);
 		// Display the window.
 		frame.pack();
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
-		
+		pnOption.getChoiceAlgorithms().addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				pnOption.changeContentChoice();
+
+			}
+		});
 		pnKey.getBtnCreateKey().addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String algorithm =pnOption.getChoiceAlgorithms().getSelectedItem();
-				int keysie = Integer.parseInt(pnOption.getChoiceKeySize().getSelectedItem());
+				String algorithm = pnOption.getChoiceAlgorithms()
+						.getSelectedItem();
+				String mode = pnOption.getChoiceMode().getSelectedItem();
+				String padding = pnOption.getChoicePadding().getSelectedItem();
+				int keysie = Integer.parseInt(pnOption.getChoiceKeySize()
+						.getSelectedItem());
 				Symmetric s;
 				try {
-					s = new Symmetric(algorithm, keysie);
+					s = new Symmetric(algorithm, mode, padding, keysie);
 					s.createKey();
-					String key =s.getKeyWithString();
+					String key = s.getKeyWithString();
 					pnKey.setTxtKey(key);
 				} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
 					// TODO Auto-generated catch block
@@ -111,27 +131,48 @@ public class MainGUI {
 			}
 		});
 		btnStart.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String input;
-				String outText="";
-				
-				String algorithm =pnOption.getChoiceAlgorithms().getSelectedItem();
-				int keysie = Integer.parseInt(pnOption.getChoiceKeySize().getSelectedItem());
+				String input = pnEncrypt.getTxtPlain();
+				if (input.equals("")) {
+					JOptionPane.showMessageDialog(null, "Empty input", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				String algorithm = pnOption.getChoiceAlgorithms()
+						.getSelectedItem();
+				String mode = pnOption.getChoiceMode().getSelectedItem();
+				String padding = pnOption.getChoicePadding().getSelectedItem();
+				String outText = "";
+				int keysie = Integer.parseInt(pnOption.getChoiceKeySize()
+						.getSelectedItem());
+				String txtkey = pnKey.getTxtKey();
 				try {
-					Symmetric s = new Symmetric(algorithm, keysie);
-					byte[] decodedKey = Base64.getDecoder().decode(pnKey.getTxtKey());
-					SecretKey key = new SecretKeySpec(decodedKey, 0, decodedKey.length, algorithm); 
-					s.setKey(key);
-					System.out.println(s.getKeyWithString());
-					input =pnEncrypt.getTxtPlain();
-					if(pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()){
-						 outText=s.encrypt(input);	
-					}else{
-						 outText=s.decrypt(input);
+					Symmetric s = new Symmetric(algorithm, mode, padding,
+							keysie);
+					if (!txtkey.equals(""))
+						try {
+							s.setKey(txtkey);
+						} catch (Exception e2) {
+							JOptionPane.showMessageDialog(null, "Invalid key",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					if (s.getKey() == null) {
+						JOptionPane.showMessageDialog(null, "Empty key",
+								"Error", JOptionPane.ERROR_MESSAGE);
+						return;
 					}
-					pnEncrypt.setTxtCipher(outText);;
+
+					if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt()
+							.isSelected()) {
+							outText = s.encrypt(input);
+					} else {
+						outText = s.decrypt(input);
+					}
+					pnEncrypt.setTxtCipher(outText);
+					;
 				} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

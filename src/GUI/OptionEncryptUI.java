@@ -19,6 +19,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -30,7 +31,7 @@ import java.awt.GridLayout;
 import java.io.File;
 
 public class OptionEncryptUI extends JPanel implements ActionListener {
-	JButton btnChooseInput, btnChooseOutput;
+	JButton btnChooseInput, btnChooseOutput,btnCopy;
 	JRadioButton rdField, rdFile;
 	JPanel pnRadio, pnContainer, pnKeyField, pnKeyFile, pnFileInput,
 			pnFileOutput;
@@ -66,8 +67,9 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		pnKeyField = new JPanel();
 		pnKeyFile = new JPanel();
 		fileKey = new JFileChooser();
-		txtPlain = new JTextArea(7, 33);
-		txtCipher = new JTextArea(7, 33);
+		txtPlain = new JTextArea(5, 60);
+		txtCipher = new JTextArea(1, 60);
+	
 		// remove focus painted button
 		btnChooseInput.setFocusPainted(false);
 		btnChooseOutput.setFocusPainted(false);
@@ -75,6 +77,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		rdFile.setFocusPainted(false);
 		scrollPlain = new JScrollPane(txtPlain);
 		scrollCipher = new JScrollPane(txtCipher);
+		scrollPlain.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollCipher.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		// default select radio
 		rdField.setSelected(true);
 		// set Font
@@ -103,7 +107,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		setPreferredSize(dimContainer);
 		btnChooseInput.setPreferredSize(dimBtnChoose);
 		btnChooseOutput.setPreferredSize(dimBtnChoose);
-		pnKeyField.setPreferredSize(new Dimension(700, 200));
+		pnKeyField.setPreferredSize(new Dimension(700, 100));
 
 		// add event radio button
 		rdField.addActionListener(this);
