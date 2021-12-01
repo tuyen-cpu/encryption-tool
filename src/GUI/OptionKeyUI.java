@@ -29,6 +29,7 @@ import algorithms.ColorPublic;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.io.File;
+import javax.swing.ImageIcon;
 
 public class OptionKeyUI extends JPanel implements ActionListener {
 	JButton btnCreateKey, btnCopy, btnChooseFile;
@@ -48,7 +49,9 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		rdField.setFocusPainted(false);
 		rdFile.setFocusPainted(false);
 		btnCreateKey = new JButton("Create Key");
-		btnCopy = new JButton("Copy key");
+		
+		btnCopy = new JButton();
+		btnCopy.setIcon(new ImageIcon(this.getClass().getResource("/img/copy.png")));
 		btnChooseFile = new JButton("Choose file");
 		lblKeyFile = new JLabel();
 		txtKey = new JTextField();
@@ -65,7 +68,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		dimContainer = new Dimension(740, 108);
 		dimKeyField = new Dimension(500, 30);
 		dimBtnCreateKey = new Dimension(100, 30);
-		dimBtnCopyKey = new Dimension(80, 30);
+		dimBtnCopyKey = new Dimension(50, 30);
 		dimRadioButton = new Dimension(60, 20);
 
 		// default select radio

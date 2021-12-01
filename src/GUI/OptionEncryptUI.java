@@ -122,7 +122,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				fileInput=openFile();
-				lblFileInput.setText(fileInput.getName());;
+				lblFileInput.setText(fileInput.getAbsolutePath());;
 
 			}
 		});
@@ -131,7 +131,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				fileOutput=openFile();
-				lblFileOutput.setText(fileOutput.getName());;
+				lblFileOutput.setText(fileOutput.getAbsolutePath());;
 
 			}
 		});

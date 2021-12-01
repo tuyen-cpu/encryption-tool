@@ -19,11 +19,11 @@ public class OptionGeneralUI extends JPanel {
 
 	private String[] listAlgorithms = { "AES", "DES", "DESede" };
 	private String[] listKeySize = { "128", "192", "256" };
-	private String[] listMode = { "CBC", "ECB" };
+	private String[] listMode = { "CBC", "ECB","CFB","PCBC","OFB","CTR"};
 	private String[] listPadding = { "NoPadding", "PKCS5Padding" };
 	private String[] listKeySizeAES = { "128", "192", "256" };
 	private String[] listKeySizeDES = { "56" };
-	private String[] listKeySizeDESede = { "168" };
+	private String[] listKeySizeDESede = { "168","112" };
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblpadding;
 	Choice choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
 

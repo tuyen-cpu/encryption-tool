@@ -1,5 +1,11 @@
 package algorithms;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -18,7 +24,6 @@ public class Symmetric {
 	private SecretKey key;
 	private Cipher cipher;
 	private String algorithm, padding, mode;
-
 	int keySize;
 
 	public Symmetric(String algorithm, String mode, String padding, int keySize)
@@ -86,8 +91,8 @@ public class Symmetric {
 			return Base64.getEncoder().encodeToString(cipherText);
 		} catch (Exception e) {
 			System.out.println("encrypt lỗi");
-			JOptionPane.showMessageDialog(null, "Invalid key",
-					"Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Invalid key", "Error",
+					JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 
@@ -104,8 +109,8 @@ public class Symmetric {
 			return out.trim();
 		} catch (Exception e) {
 			System.out.println("decrypt lôi");
-			JOptionPane.showMessageDialog(null, "Invalid key",
-					"Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Invalid key", "Error",
+					JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 
@@ -123,11 +128,11 @@ public class Symmetric {
 				iv = new byte[8];
 			}
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
-			try{
+			try {
 				cipher.init(n, key, ivspec);
-				
-			}catch(Exception e){
-			
+
+			} catch (Exception e) {
+
 				System.out.println("checkSpeckey lỗi");
 			}
 		}
@@ -142,15 +147,88 @@ public class Symmetric {
 		this.keySize = keySize;
 	}
 
+	public void encrypt(String sourceFile, String destFile) throws Exception {
+		if (key == null)
+			throw new FileNotFoundException("Key not found");
+		File file = new File(sourceFile);
+		if (file.isFile()) {
+			checkSpeckey(Cipher.ENCRYPT_MODE);
+			FileInputStream fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			FileOutputStream fos = new FileOutputStream(destFile);
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			byte[] input = new byte[64];
+			int bytesRead;
+			while ((bytesRead = bis.read(input)) != -1) {
+				byte[] output = cipher.update(input, 0, bytesRead);
+				if (output != null) {
+					bos.write(output);
+				}
+			}
+			byte[] output = cipher.doFinal();
+			if (output != null)
+				bos.write(output);
+			bos.flush();
+			bos.close();
+			fis.close();
+			bis.close();
+			fos.close();
+			System.out.println("Encrypted file");
+
+		} else {
+			System.out.println("This is not a file");
+
+		}
+	}
+
+	public void decrypt(String sourceFile, String destFile) throws Exception {
+
+		if (key == null)
+			throw new FileNotFoundException("Key not found");
+		File file = new File(sourceFile);
+		if (file.isFile()) {
+			checkSpeckey(Cipher.DECRYPT_MODE);
+			FileInputStream fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			FileOutputStream fos = new FileOutputStream(destFile);
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			byte[] input = new byte[64];
+			int bytesRead = 0;
+			while ((bytesRead = bis.read(input)) != -1) {
+				byte[] output = cipher.update(input, 0, bytesRead);
+				if (output != null) {
+					bos.write(output);
+				}
+			}
+			byte[] output = cipher.doFinal();
+			if (output != null)
+				bos.write(output);
+			bos.flush();
+			bos.close();
+			fis.close();
+			bis.close();
+			fos.close();
+			System.out.println("Decrypted file");
+
+		} else {
+			System.out.println("This is not a file");
+
+		}
+	}
+
 	public static void main(String[] args) throws Exception {
 		/*
-		 * AES (128,192,256) DES (56) DESede (168)
+		 * AES (128,192,256) DES (56) DESede (168) GCM
 		 */
 
-		Symmetric s = new Symmetric("AES", "GCM", "NoPadding", 128);
+		Symmetric s = new Symmetric("DES", "ECB", "X923PADDING", 56);
 		s.createKey();
-		String ss = s.encrypt("c");
-		System.out.println(s.decrypt(ss));
+		String sourceFile = new String("F:\\test\\s\\ff.docx");
+		String destFile = new String("F:\\test\\d\\ff.docx");
+		s.encrypt(sourceFile, destFile);
+		String sourceFile1 = new String("F:\\test\\d\\ff.docx");
+		String destFile1 = new String("F:\\test\\s\\f.docx");
+		s.decrypt(sourceFile1, destFile1);
 
 		// Symmetric s1 = new Symmetric("AES", 128);
 		// s1.createKey();

@@ -6,23 +6,15 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 
-
-
-
-
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
-
-
-
-import com.formdev.flatlaf.FlatIntelliJLaf;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import algorithms.Symmetric;
 
@@ -31,10 +23,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
-
 
 public class MainGUI {
+
+	public static String TAB_SYMMETRIC = "Symmetric";
+	public static String TAB_ASYMMETRIC = "Asymmetric";
+	public static String TAB_PBE = "PBE";
+	public static String TAB_HASH = "HASH";
 	private JPanel pnMain, pnSymmetric, pnBtnStart, pnAsymmetric, pnPBE,
 			pnHash;
 	OptionGeneralUI pnOption;
@@ -42,8 +37,13 @@ public class MainGUI {
 	OptionEncryptUI pnEncrypt;
 	private JTabbedPane tabbedPane;
 	JButton btnStart;
+	String algorithm, mode, padding;
+	int keysize;
+	Symmetric symmetric;
+	String tabbedPaneCurrent;
+	String outText, textInput, inputFile, outputFile;
 
-	public MainGUI() {
+	public MainGUI() throws NoSuchAlgorithmException, NoSuchPaddingException {
 		pnBtnStart = new JPanel();
 		btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
@@ -84,10 +84,29 @@ public class MainGUI {
 		pnEncrypt = new OptionEncryptUI();
 		pnSymmetric.add(pnEncrypt);
 		pnBtnStart.add(btnStart);
-
+		tabbedPaneCurrent = tabbedPane
+				.getTitleAt(tabbedPane.getSelectedIndex());
+		tabbedPane.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				tabbedPaneCurrent = tabbedPane.getTitleAt(tabbedPane
+						.getSelectedIndex());
+				System.out.println("Current tab: " + tabbedPaneCurrent);
+			}
+		});
+		symmetric = new Symmetric("AES", "CBC", "NoPadding", 128);
+		symmetric.createKey();
 	}
 
-	private void createAndShowGUI() {
+	// if true then handle with string
+	public void handleWithStringOrFile(Boolean option) {
+		if (option) {
+			System.out.println("Doing with String");
+		} else {
+			System.out.println("Doing with File");
+		}
+	}
+
+	public void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("Main Frame");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -116,17 +135,11 @@ public class MainGUI {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String algorithm = pnOption.getChoiceAlgorithms()
-						.getSelectedItem();
-				String mode = pnOption.getChoiceMode().getSelectedItem();
-				String padding = pnOption.getChoicePadding().getSelectedItem();
-				int keysie = Integer.parseInt(pnOption.getChoiceKeySize()
-						.getSelectedItem());
-				Symmetric s;
+				addControllOptionSymmetricTab();
 				try {
-					s = new Symmetric(algorithm, mode, padding, keysie);
-					s.createKey();
-					String key = s.getKeyWithString();
+					symmetric = new Symmetric(algorithm, mode, padding, keysize);
+					symmetric.createKey();
+					String key = symmetric.getKeyWithString();
 					pnKey.setTxtKey(key);
 				} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
 					// TODO Auto-generated catch block
@@ -138,91 +151,122 @@ public class MainGUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String input = pnEncrypt.getTxtPlain();
-				if (input.equals("")) {
-					JOptionPane.showMessageDialog(null, "Empty input", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				String algorithm = pnOption.getChoiceAlgorithms()
-						.getSelectedItem();
-				String mode = pnOption.getChoiceMode().getSelectedItem();
-				String padding = pnOption.getChoicePadding().getSelectedItem();
-				String outText = "";
-				int keysie = Integer.parseInt(pnOption.getChoiceKeySize()
-						.getSelectedItem());
-				String txtkey = pnKey.getTxtKey();
-				try {
-					Symmetric s = new Symmetric(algorithm, mode, padding,
-							keysie);
-					if (!txtkey.equals(""))
-						try {
-							s.setKey(txtkey);
-						} catch (Exception e2) {
-							JOptionPane.showMessageDialog(null, "Invalid key",
-									"Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-					if (s.getKey() == null) {
-						JOptionPane.showMessageDialog(null, "Empty key",
-								"Error", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-
-					if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt()
-							.isSelected()) {
-							outText = s.encrypt(input);
-					} else {
-						outText = s.decrypt(input);
-					}
-					pnEncrypt.setTxtCipher(outText);
-					;
-				} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				switch (tabbedPaneCurrent) {
+				case "Symmetric":
+					System.out.println("Handle tab Symmetric");
+					handleTabSymmetric();
+					break;
+				case "Asymmetric":
+					System.out.println("Handle tab Asymmetric");
+					handleTabAsymmetric();
+					break;
+				case "PBE":
+					System.out.println("Handle tab PBE");
+					handleTabPBE();
+					break;
+				case "Hash":
+					System.out.println("Handle tab Hash");
+					handleTabHash();
+					break;
+				default:
+					System.out.println("Handle tab Symmetric");
+					handleTabSymmetric();
+					break;
 				}
 			}
 		});
 
 	}
 
-	public static void main(String[] args) throws ParseException {
-		
+	public void handleTabPBE() {
 
+	}
 
-		try {
-			UIManager.setLookAndFeel(new FlatIntelliJLaf());
-		
-		} catch (Exception e) {
-			e.printStackTrace();
+	public void handleTabHash() {
+
+	}
+
+	public void handleTabAsymmetric() {
+
+	}
+
+	public void handleTabSymmetric() {
+		textInput = pnEncrypt.getTxtPlain();
+		if (textInput.equals("")&&pnEncrypt.getRdField().isSelected()) {
+			JOptionPane.showMessageDialog(null, "Empty text input", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
 		}
-		// try{
-		// for(LookAndFeelInfo info:UIManager.getInstalledLookAndFeels()){
-		// /* - Nimbus
-		// * - Metal
-		// * - Window
-		// * - CDE/Motif
-		// * */
-		//
-		// if("Windows".equals(info.getName())){
-		// UIManager.setLookAndFeel(info.getClassName());
-		// break;
-		// }
-		// }
-		// }
-		// catch(Exception e){
-		// e.printStackTrace();
-		// }
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				MainGUI gui = new MainGUI();
-				gui.createAndShowGUI();
+		String txtkey = pnKey.getTxtKey();
+		if (txtkey.equalsIgnoreCase("") || txtkey == null) {
+			JOptionPane.showMessageDialog(null, "Empty key", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if (algorithm == null)
+			addControllOptionSymmetricTab();
+		outText = "";
+		keysize = Integer.parseInt(pnOption.getChoiceKeySize()
+				.getSelectedItem());
+		try {
+			symmetric = new Symmetric(algorithm, mode, padding, keysize);
+			if (!txtkey.equals(""))
+				try {
+					symmetric.setKey(txtkey);
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(null, "Invalid key", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			if (symmetric.getKey() == null) {
+				JOptionPane.showMessageDialog(null, "Empty key", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
 			}
-		});
 
+			if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()) {
+				if (pnEncrypt.getRdFile().isSelected()) {
+					System.out.println("Encrypt with string");
+					inputFile = pnEncrypt.getLblFileInput().getText();
+					outputFile = pnEncrypt.getLblFileOutput().getText();
+					symmetric.encrypt(inputFile,outputFile);
+					JOptionPane.showMessageDialog(null, "Mã hóa thành công", "Success",
+							JOptionPane.OK_OPTION);
+				} else {
+					System.out.println("Encrypt with file");
+					outText = symmetric.encrypt(textInput);
+				}
+			} else {
+				if (pnEncrypt.getRdFile().isSelected()){
+					inputFile = pnEncrypt.getLblFileInput().getText();
+					outputFile = pnEncrypt.getLblFileOutput().getText();
+					symmetric.decrypt(inputFile,outputFile);
+					System.out.println("Decrypt with string");
+					JOptionPane.showMessageDialog(null, "Giải mã thành công", "Success",
+							JOptionPane.OK_OPTION);
+				}else{
+					System.out.println("Decrypt with string");
+					outText = symmetric.decrypt(textInput);
+				}
+			}
+			pnEncrypt.setTxtCipher(outText);
+			;
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	/* add option control for handle */
+	public void addControllOptionSymmetricTab() {
+		algorithm = pnOption.getChoiceAlgorithms().getSelectedItem();
+		mode = pnOption.getChoiceMode().getSelectedItem();
+		padding = pnOption.getChoicePadding().getSelectedItem();
+		keysize = Integer.parseInt(pnOption.getChoiceKeySize()
+				.getSelectedItem());
 	}
 
 }
