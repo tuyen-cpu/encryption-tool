@@ -17,12 +17,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import algorithms.Hash;
 import algorithms.Symmetric;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class MainGUI {
@@ -54,7 +56,7 @@ public class MainGUI {
 		btnStart.setHorizontalAlignment(SwingConstants.LEFT);
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnStart.setFocusPainted(false);
-		
+
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Dialog", Font.PLAIN, 13));
 		pnSymmetric = new JPanel();
@@ -164,15 +166,43 @@ public class MainGUI {
 		});
 	}
 
-	public void handleTabPBE() {
-
-	}
-
 	public void handleTabHash() {
-
-	}
-
-	public void handleTabAsymmetric() {
+		if (tabHash.getRdString().isSelected()) {
+			System.out.println("Hash with string");
+			textInput = tabHash.getTxtString().getText();
+			if (textInput.equalsIgnoreCase("")) {
+				JOptionPane.showMessageDialog(null, "Empty text input",
+						"Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			algorithm = tabHash.getChoiceAlgorithms().getSelectedItem();
+			try {
+				Hash hash = new Hash(algorithm);
+				tabHash.getTxtResult().setText(hash.hash(textInput));
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("Hash with file");
+			textInput= tabHash.getLblFileInput().getText();
+			if(textInput.equalsIgnoreCase("")){
+				JOptionPane.showMessageDialog(null, "Empty file input",
+						"Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			algorithm = tabHash.getChoiceAlgorithms().getSelectedItem();
+			try {
+				Hash hash = new Hash(algorithm);
+				tabHash.getTxtResult().setText(hash.hashFile(textInput));
+				System.out.println("Hash success!");
+			} catch (NoSuchAlgorithmException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+		}
 
 	}
 
@@ -209,7 +239,7 @@ public class MainGUI {
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-
+			// if radio is encrypt then into if, else is decrypt
 			if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()) {
 				if (pnEncrypt.getRdFile().isSelected()) {
 					System.out.println("Encrypt with string");
@@ -244,6 +274,14 @@ public class MainGUI {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+
+	public void handleTabPBE() {
+
+	}
+
+	public void handleTabAsymmetric() {
+
 	}
 
 	/* add option control for handle */

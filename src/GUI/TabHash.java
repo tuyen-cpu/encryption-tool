@@ -116,7 +116,7 @@ public class TabHash extends JPanel implements ActionListener {
 		lblResult.setPreferredSize(new Dimension(85, 40));
 		lblCompare.setPreferredSize(new Dimension(85, 40));
 		
-		choiceAlgorithms.setFont(new Font("Monospaced", Font.PLAIN, 15));
+		choiceAlgorithms.setFont(new Font("Dialog", Font.PLAIN, 15));
 		txtString.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		txtResult.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		txtCompare.setFont(new Font("Monospaced", Font.PLAIN, 16));
@@ -223,4 +223,197 @@ public class TabHash extends JPanel implements ActionListener {
 		}
 
 	}
+
+	public JTextArea getTxtString() {
+		return txtString;
+	}
+
+	public void setTxtString(JTextArea txtString) {
+		this.txtString = txtString;
+	}
+
+	public JTextField getTxtResult() {
+		return txtResult;
+	}
+
+	public void setTxtResult(JTextField txtResult) {
+		this.txtResult = txtResult;
+	}
+
+	public JTextField getTxtCompare() {
+		return txtCompare;
+	}
+
+	public void setTxtCompare(JTextField txtCompare) {
+		this.txtCompare = txtCompare;
+	}
+
+	public JRadioButton getRdString() {
+		return rdString;
+	}
+
+	public void setRdString(JRadioButton rdString) {
+		this.rdString = rdString;
+	}
+
+	public JRadioButton getRdFile() {
+		return rdFile;
+	}
+
+	public void setRdFile(JRadioButton rdFile) {
+		this.rdFile = rdFile;
+	}
+
+	public JPanel getPnRd() {
+		return pnRd;
+	}
+
+	public void setPnRd(JPanel pnRd) {
+		this.pnRd = pnRd;
+	}
+
+	public JPanel getPnContainer() {
+		return pnContainer;
+	}
+
+	public void setPnContainer(JPanel pnContainer) {
+		this.pnContainer = pnContainer;
+	}
+
+	public JPanel getPnInput() {
+		return pnInput;
+	}
+
+	public void setPnInput(JPanel pnInput) {
+		this.pnInput = pnInput;
+	}
+
+	public JPanel getPnCompareContainer() {
+		return pnCompareContainer;
+	}
+
+	public void setPnCompareContainer(JPanel pnCompareContainer) {
+		this.pnCompareContainer = pnCompareContainer;
+	}
+
+	public JPanel getPnCompare() {
+		return pnCompare;
+	}
+
+	public void setPnCompare(JPanel pnCompare) {
+		this.pnCompare = pnCompare;
+	}
+
+	public JPanel getPnFileInput() {
+		return pnFileInput;
+	}
+
+	public void setPnFileInput(JPanel pnFileInput) {
+		this.pnFileInput = pnFileInput;
+	}
+
+	public JPanel getPnOutput() {
+		return pnOutput;
+	}
+
+	public void setPnOutput(JPanel pnOutput) {
+		this.pnOutput = pnOutput;
+	}
+
+	public JPanel getPnAlgorithms() {
+		return pnAlgorithms;
+	}
+
+	public void setPnAlgorithms(JPanel pnAlgorithms) {
+		this.pnAlgorithms = pnAlgorithms;
+	}
+
+	public JLabel getLblFileInput() {
+		return lblFileInput;
+	}
+
+	public void setLblFileInput(JLabel lblFileInput) {
+		this.lblFileInput = lblFileInput;
+	}
+
+	public JLabel getLblCompare() {
+		return lblCompare;
+	}
+
+	public void setLblCompare(JLabel lblCompare) {
+		this.lblCompare = lblCompare;
+	}
+
+	public JLabel getLblResult() {
+		return lblResult;
+	}
+
+	public void setLblResult(JLabel lblResult) {
+		this.lblResult = lblResult;
+	}
+
+	public JButton getBtnFileInput() {
+		return btnFileInput;
+	}
+
+	public void setBtnFileInput(JButton btnFileInput) {
+		this.btnFileInput = btnFileInput;
+	}
+
+	public JButton getBtnCopy() {
+		return btnCopy;
+	}
+
+	public void setBtnCopy(JButton btnCopy) {
+		this.btnCopy = btnCopy;
+	}
+
+	public JButton getBtnCheckCompare() {
+		return btnCheckCompare;
+	}
+
+	public void setBtnCheckCompare(JButton btnCheckCompare) {
+		this.btnCheckCompare = btnCheckCompare;
+	}
+
+	public JScrollPane getScrollTxtInput() {
+		return scrollTxtInput;
+	}
+
+	public void setScrollTxtInput(JScrollPane scrollTxtInput) {
+		this.scrollTxtInput = scrollTxtInput;
+	}
+
+	public JFileChooser getjFileChoose() {
+		return jFileChoose;
+	}
+
+	public void setjFileChoose(JFileChooser jFileChoose) {
+		this.jFileChoose = jFileChoose;
+	}
+
+	public File getFileInput() {
+		return fileInput;
+	}
+
+	public void setFileInput(File fileInput) {
+		this.fileInput = fileInput;
+	}
+
+	public Choice getChoiceAlgorithms() {
+		return choiceAlgorithms;
+	}
+
+	public void setChoiceAlgorithms(Choice choiceAlgorithms) {
+		this.choiceAlgorithms = choiceAlgorithms;
+	}
+
+	public String[] getListAlgorithms() {
+		return listAlgorithms;
+	}
+
+	public void setListAlgorithms(String[] listAlgorithms) {
+		this.listAlgorithms = listAlgorithms;
+	}
+	
 }
