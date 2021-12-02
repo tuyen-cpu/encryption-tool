@@ -1,10 +1,12 @@
 package GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Choice;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
+
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +17,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -27,17 +30,22 @@ import java.io.File;
 
 import javax.swing.border.EmptyBorder;
 
+import algorithms.Hash;
+
 public class TabHash extends JPanel implements ActionListener {
 	private JTextArea txtString;
 	private JTextField txtResult, txtCompare;
 	private JRadioButton rdString, rdFile;
 	private JPanel pnRd, pnContainer, pnInput, pnCompareContainer, pnCompare,
-			pnFileInput, pnOutput;
+			pnFileInput, pnOutput, pnAlgorithms;
 	private JLabel lblFileInput, lblCompare, lblResult;
 	private JButton btnFileInput, btnCopy, btnCheckCompare;
 	private JScrollPane scrollTxtInput;
 	private JFileChooser jFileChoose;
 	private File fileInput;
+	private Choice choiceAlgorithms;
+	private String[] listAlgorithms = { Hash.MD5, Hash.SHA_1, Hash.SHA_224,
+			Hash.SHA_256, Hash.SHA_384, Hash.SHA_512_224, Hash.SHA_512_256 };
 
 	public TabHash() {
 
@@ -64,6 +72,11 @@ public class TabHash extends JPanel implements ActionListener {
 		pnCompare = new JPanel(new BorderLayout());
 		lblResult = new JLabel("Hash code:");
 		jFileChoose = new JFileChooser();
+		pnAlgorithms = new JPanel();
+		choiceAlgorithms = new Choice();
+		for (String algo : listAlgorithms) {
+			choiceAlgorithms.add(algo);
+		}
 		// group radio button
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdString);
@@ -76,7 +89,7 @@ public class TabHash extends JPanel implements ActionListener {
 		pnFileInput.add(lblFileInput);
 		pnFileInput.add(btnFileInput);
 		btnFileInput.setPreferredSize(new Dimension(150, 40));
-//		txtString.setPreferredSize(new Dimension(600,400));
+		// txtString.setPreferredSize(new Dimension(600,400));
 		// pnInput.add(pnFileInput, BorderLayout.CENTER);
 		pnInput.add(scrollTxtInput);
 		pnOutput.add(lblResult, BorderLayout.WEST);
@@ -91,13 +104,19 @@ public class TabHash extends JPanel implements ActionListener {
 		pnCompare.add(txtCompare);
 		pnCompare.add(btnCheckCompare, BorderLayout.EAST);
 		pnCompareContainer.add(pnCompare, BorderLayout.NORTH);
-
-		lblFileInput.setMaximumSize(new Dimension(10,40));
+		pnAlgorithms.add(choiceAlgorithms);
+		pnCompareContainer.add(pnAlgorithms);
+	choiceAlgorithms.setFocusable(false);
+		
+		choiceAlgorithms.setPreferredSize(new Dimension(150,50));
+		lblFileInput.setMaximumSize(new Dimension(10, 40));
 		pnCompareContainer.setPreferredSize(new Dimension(650, 100));
 		btnCopy.setPreferredSize(new Dimension(60, 40));
 		btnCheckCompare.setPreferredSize(new Dimension(80, 40));
 		lblResult.setPreferredSize(new Dimension(85, 40));
 		lblCompare.setPreferredSize(new Dimension(85, 40));
+		
+		choiceAlgorithms.setFont(new Font("Monospaced", Font.PLAIN, 15));
 		txtString.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		txtResult.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		txtCompare.setFont(new Font("Monospaced", Font.PLAIN, 16));
@@ -106,7 +125,7 @@ public class TabHash extends JPanel implements ActionListener {
 		lblResult.setFont(new Font("Dialog", Font.PLAIN, 13));
 		lblCompare.setFont(new Font("Dialog", Font.PLAIN, 13));
 		lblFileInput.setFont(new Font("Dialog", Font.PLAIN, 13));
-		
+
 		lblFileInput.setBorder(new EmptyBorder(0, 0, 0, 10));
 		pnRd.setBorder(new EmptyBorder(0, 0, 10, 0));
 		setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -162,10 +181,10 @@ public class TabHash extends JPanel implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try{
+				try {
 					fileInput = openFile();
 					lblFileInput.setText(fileInput.getAbsolutePath());
-				}catch(Exception ex){
+				} catch (Exception ex) {
 					System.out.println("Cancel choose file!");
 				}
 

@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Hash {
+	public static String MD5 = "MD5";
 	public static String SHA_1 = "SHA-1";
 	public static String SHA_224 = "SHA-224";
 	public static String SHA_256 = "SHA-256";
