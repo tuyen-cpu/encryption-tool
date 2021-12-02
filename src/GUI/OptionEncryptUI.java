@@ -77,7 +77,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		rdFile.setFocusPainted(false);
 		scrollPlain = new JScrollPane(txtPlain);
 		scrollCipher = new JScrollPane(txtCipher);
-		scrollPlain.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//		scrollPlain.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollCipher.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		// default select radio
 		rdField.setSelected(true);
@@ -121,17 +121,25 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				fileInput=openFile();
-				lblFileInput.setText(fileInput.getAbsolutePath());;
-
+				try{
+					fileInput=openFile();
+					lblFileInput.setText(fileInput.getAbsolutePath());;
+				}catch(Exception e){
+					System.out.println("Cancel choose file");
+				}
 			}
 		});
 		btnChooseOutput.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				fileOutput=openFile();
-				lblFileOutput.setText(fileOutput.getAbsolutePath());;
+				try{
+					fileOutput=openFile();
+					lblFileOutput.setText(fileOutput.getAbsolutePath());
+				}catch(Exception e){
+					System.out.println("Cancel choose file");
+				}
+			
 
 			}
 		});

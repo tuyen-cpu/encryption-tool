@@ -13,6 +13,7 @@ import java.awt.Font;
 
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -35,6 +36,7 @@ public class MainGUI {
 	OptionGeneralUI pnOption;
 	OptionKeyUI pnKey;
 	OptionEncryptUI pnEncrypt;
+	TabHash tabHash;
 	private JTabbedPane tabbedPane;
 	JButton btnStart;
 	String algorithm, mode, padding;
@@ -46,41 +48,31 @@ public class MainGUI {
 	public MainGUI() throws NoSuchAlgorithmException, NoSuchPaddingException {
 		pnBtnStart = new JPanel();
 		btnStart = new JButton("Start");
-		btnStart.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-
 		btnStart.setPreferredSize(new Dimension(150, 50));
 		btnStart.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/start.png")));
 		btnStart.setHorizontalAlignment(SwingConstants.LEFT);
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnStart.setFocusPainted(false);
+		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-
 		tabbedPane.setFont(new Font("Dialog", Font.PLAIN, 13));
 		pnSymmetric = new JPanel();
 		tabbedPane.addTab("Symmetric", null, pnSymmetric,
 				"Symmetric encryption");
-
 		pnAsymmetric = new JPanel();
 		tabbedPane.addTab("Asymmetric", null, pnAsymmetric,
 				"Asymmetric encryption");
-
 		pnPBE = new JPanel();
 		tabbedPane.addTab("PBE", null, pnPBE, null);
-
-		pnHash = new JPanel();
+		pnHash = new JPanel(new BorderLayout());
 		tabbedPane.addTab("Hash", null, pnHash, null);
-		// Create pnOption
+		tabHash = new TabHash();
+		pnHash.add(tabHash, BorderLayout.CENTER);
 		pnOption = new OptionGeneralUI();
 		pnSymmetric.add(pnOption);
-		// Create pnKey
 		pnKey = new OptionKeyUI();
 		pnSymmetric.add(pnKey);
-
-		// create pnEncrypt
 		pnEncrypt = new OptionEncryptUI();
 		pnSymmetric.add(pnEncrypt);
 		pnBtnStart.add(btnStart);
@@ -95,25 +87,16 @@ public class MainGUI {
 		});
 		symmetric = new Symmetric("AES", "CBC", "NoPadding", 128);
 		symmetric.createKey();
-	}
-
-	// if true then handle with string
-	public void handleWithStringOrFile(Boolean option) {
-		if (option) {
-			System.out.println("Doing with String");
-		} else {
-			System.out.println("Doing with File");
-		}
+		addHandle();
 	}
 
 	public void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("Main Frame");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		pnBtnStart.setBorder(new EmptyBorder(0, 0, 10, 0));
 		pnMain = new JPanel();
-
-		pnMain.setPreferredSize(new Dimension(750, 600));
+		pnMain.setPreferredSize(new Dimension(750, 550));
 		pnMain.setLayout(new BorderLayout());
 		frame.getContentPane().add(pnMain, BorderLayout.CENTER);
 		pnMain.add(tabbedPane, BorderLayout.CENTER);
@@ -123,6 +106,10 @@ public class MainGUI {
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
+
+	}
+
+	public void addHandle() {
 		pnOption.getChoiceAlgorithms().addItemListener(new ItemListener() {
 
 			@Override
@@ -175,7 +162,6 @@ public class MainGUI {
 				}
 			}
 		});
-
 	}
 
 	public void handleTabPBE() {
@@ -192,7 +178,7 @@ public class MainGUI {
 
 	public void handleTabSymmetric() {
 		textInput = pnEncrypt.getTxtPlain();
-		if (textInput.equals("")&&pnEncrypt.getRdField().isSelected()) {
+		if (textInput.equals("") && pnEncrypt.getRdField().isSelected()) {
 			JOptionPane.showMessageDialog(null, "Empty text input", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
@@ -229,22 +215,22 @@ public class MainGUI {
 					System.out.println("Encrypt with string");
 					inputFile = pnEncrypt.getLblFileInput().getText();
 					outputFile = pnEncrypt.getLblFileOutput().getText();
-					symmetric.encrypt(inputFile,outputFile);
-					JOptionPane.showMessageDialog(null, "Mã hóa thành công", "Success",
-							JOptionPane.OK_OPTION);
+					symmetric.encrypt(inputFile, outputFile);
+					JOptionPane.showMessageDialog(null, "Mã hóa thành công",
+							"Success", JOptionPane.OK_OPTION);
 				} else {
 					System.out.println("Encrypt with file");
 					outText = symmetric.encrypt(textInput);
 				}
 			} else {
-				if (pnEncrypt.getRdFile().isSelected()){
+				if (pnEncrypt.getRdFile().isSelected()) {
 					inputFile = pnEncrypt.getLblFileInput().getText();
 					outputFile = pnEncrypt.getLblFileOutput().getText();
-					symmetric.decrypt(inputFile,outputFile);
+					symmetric.decrypt(inputFile, outputFile);
 					System.out.println("Decrypt with string");
-					JOptionPane.showMessageDialog(null, "Giải mã thành công", "Success",
-							JOptionPane.OK_OPTION);
-				}else{
+					JOptionPane.showMessageDialog(null, "Giải mã thành công",
+							"Success", JOptionPane.OK_OPTION);
+				} else {
 					System.out.println("Decrypt with string");
 					outText = symmetric.decrypt(textInput);
 				}

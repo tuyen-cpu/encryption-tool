@@ -66,9 +66,9 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		btnChooseFile.setFocusPainted(false);
 
 		dimContainer = new Dimension(740, 108);
-		dimKeyField = new Dimension(500, 30);
-		dimBtnCreateKey = new Dimension(100, 30);
-		dimBtnCopyKey = new Dimension(50, 30);
+		dimKeyField = new Dimension(500, 40);
+		dimBtnCreateKey = new Dimension(100, 40);
+		dimBtnCopyKey = new Dimension(60, 40);
 		dimRadioButton = new Dimension(60, 20);
 
 		// default select radio
