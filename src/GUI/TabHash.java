@@ -111,7 +111,7 @@ public class TabHash extends JPanel implements ActionListener {
 		
 		choiceAlgorithms.setPreferredSize(new Dimension(150,50));
 		lblFileInput.setMaximumSize(new Dimension(10, 40));
-		pnCompareContainer.setPreferredSize(new Dimension(650, 100));
+		pnCompareContainer.setPreferredSize(new Dimension(650, 150));
 		btnCopy.setPreferredSize(new Dimension(60, 40));
 		btnCheckCompare.setPreferredSize(new Dimension(80, 40));
 		lblResult.setPreferredSize(new Dimension(85, 40));

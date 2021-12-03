@@ -46,66 +46,75 @@ public class MainGUI {
 	Symmetric symmetric;
 	String tabbedPaneCurrent;
 	String outText, textInput, inputFile, outputFile;
-
+TabAsymmetric tabAsymmetric;
 	public MainGUI() throws NoSuchAlgorithmException, NoSuchPaddingException {
-		pnBtnStart = new JPanel();
-		btnStart = new JButton("Start");
+		createComponent();
+		setFontComponent();
+		btnStart.setFocusPainted(false);
+		addComponent();
+		tabbedPaneCurrent = tabbedPane
+				.getTitleAt(tabbedPane.getSelectedIndex());
+
+		if (tabbedPaneCurrent.equalsIgnoreCase("Symmetric")) {
+			symmetric = new Symmetric("AES", "CBC", "NoPadding", 128);
+			symmetric.createKey();
+		}
+		addHandle();
+	}
+
+	public void setFontComponent() {
+		btnStart.setFont(new Font("Dialog", Font.PLAIN, 18));
+		tabbedPane.setFont(new Font("Dialog", Font.PLAIN, 13));
 		btnStart.setPreferredSize(new Dimension(150, 50));
 		btnStart.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/start.png")));
 		btnStart.setHorizontalAlignment(SwingConstants.LEFT);
-		btnStart.setFont(new Font("Dialog", Font.PLAIN, 18));
-		btnStart.setFocusPainted(false);
+		pnBtnStart.setBorder(new EmptyBorder(0, 0, 10, 0));
+		pnMain.setPreferredSize(new Dimension(750, 600));
+	}
 
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setFont(new Font("Dialog", Font.PLAIN, 13));
-		pnSymmetric = new JPanel();
+	public void addComponent() {
 		tabbedPane.addTab("Symmetric", null, pnSymmetric,
 				"Symmetric encryption");
-		pnAsymmetric = new JPanel();
 		tabbedPane.addTab("Asymmetric", null, pnAsymmetric,
 				"Asymmetric encryption");
-		pnPBE = new JPanel();
 		tabbedPane.addTab("PBE", null, pnPBE, null);
-		pnHash = new JPanel(new BorderLayout());
 		tabbedPane.addTab("Hash", null, pnHash, null);
-		tabHash = new TabHash();
 		pnHash.add(tabHash, BorderLayout.CENTER);
-		pnOption = new OptionGeneralUI();
+		pnAsymmetric.add(tabAsymmetric,BorderLayout.CENTER);
 		pnSymmetric.add(pnOption);
-		pnKey = new OptionKeyUI();
 		pnSymmetric.add(pnKey);
-		pnEncrypt = new OptionEncryptUI();
 		pnSymmetric.add(pnEncrypt);
 		pnBtnStart.add(btnStart);
-		tabbedPaneCurrent = tabbedPane
-				.getTitleAt(tabbedPane.getSelectedIndex());
-		tabbedPane.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				tabbedPaneCurrent = tabbedPane.getTitleAt(tabbedPane
-						.getSelectedIndex());
-				System.out.println("Current tab: " + tabbedPaneCurrent);
-			}
-		});
-		if(tabbedPaneCurrent.equalsIgnoreCase("Symmetric")){
-			symmetric = new Symmetric("AES", "CBC", "NoPadding", 128);
-			symmetric.createKey();
-			addHandle();
-		}
+		pnMain.add(tabbedPane, BorderLayout.CENTER);
+		pnMain.add(pnBtnStart, BorderLayout.SOUTH);
 		
+	}
+
+	public void createComponent() {
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		
+		pnBtnStart = new JPanel();
+		btnStart = new JButton("Start");
+		pnSymmetric = new JPanel();
+		pnAsymmetric = new JPanel(new BorderLayout());
+		pnPBE = new JPanel();
+		pnHash = new JPanel(new BorderLayout());
+		pnOption = new OptionGeneralUI();
+		pnKey = new OptionKeyUI();
+		pnEncrypt = new OptionEncryptUI();
+		
+		tabAsymmetric = new TabAsymmetric();
+		tabHash = new TabHash();
+		pnMain = new JPanel();
+		pnMain.setLayout(new BorderLayout());
 	}
 
 	public void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("Main Frame");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		pnBtnStart.setBorder(new EmptyBorder(0, 0, 10, 0));
-		pnMain = new JPanel();
-		pnMain.setPreferredSize(new Dimension(750, 550));
-		pnMain.setLayout(new BorderLayout());
 		frame.getContentPane().add(pnMain, BorderLayout.CENTER);
-		pnMain.add(tabbedPane, BorderLayout.CENTER);
-		pnMain.add(pnBtnStart, BorderLayout.SOUTH);
 		// Display the window.
 		frame.pack();
 		frame.setResizable(false);
@@ -115,6 +124,13 @@ public class MainGUI {
 	}
 
 	public void addHandle() {
+		tabbedPane.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				tabbedPaneCurrent = tabbedPane.getTitleAt(tabbedPane
+						.getSelectedIndex());
+				System.out.println("Current tab: " + tabbedPaneCurrent);
+			}
+		});
 		pnOption.getChoiceAlgorithms().addItemListener(new ItemListener() {
 
 			@Override
@@ -166,8 +182,7 @@ public class MainGUI {
 				}
 			}
 		});
-		
-		
+
 	}
 
 	public void handleTabHash() {
@@ -182,15 +197,15 @@ public class MainGUI {
 			algorithm = tabHash.getChoiceAlgorithms().getSelectedItem();
 			try {
 				Hash hash = new Hash(algorithm);
-				outText=hash.hash(textInput);
+				outText = hash.hash(textInput);
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}else{
+		} else {
 			System.out.println("Hash with file");
-			textInput= tabHash.getLblFileInput().getText();
-			if(textInput.equalsIgnoreCase("")){
+			textInput = tabHash.getLblFileInput().getText();
+			if (textInput.equalsIgnoreCase("")) {
 				JOptionPane.showMessageDialog(null, "Empty file input",
 						"Error", JOptionPane.ERROR_MESSAGE);
 				return;
@@ -198,20 +213,19 @@ public class MainGUI {
 			algorithm = tabHash.getChoiceAlgorithms().getSelectedItem();
 			try {
 				Hash hash = new Hash(algorithm);
-				outText=hash.hash(textInput);
+				outText = hash.hash(textInput);
 				System.out.println("Hash success!");
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
+
 		}
 		tabHash.getTxtResult().setText(outText);
 	}
 
 	public void handleTabSymmetric() {
-		textInput = pnEncrypt.getTxtPlain();
+		textInput = pnEncrypt.getTxtPlain().getText();
 		if (textInput.equals("") && pnEncrypt.getRdField().isSelected()) {
 			JOptionPane.showMessageDialog(null, "Empty text input", "Error",
 					JOptionPane.ERROR_MESSAGE);

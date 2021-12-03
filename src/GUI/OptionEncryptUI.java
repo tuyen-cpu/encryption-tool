@@ -114,8 +114,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		rdFile.addActionListener(this);
 
 		// lblKeyFile.setBorder(BorderFactory.createEtchedBorder());
-		lblFileInput.setBorder(new EmptyBorder(0, 0, 0, 10));
-		lblFileOutput.setBorder(new EmptyBorder(0, 0, 0, 10));
+//		lblFileInput.setBorder(new EmptyBorder(0, 0, 0, 10));
+//		lblFileOutput.setBorder(new EmptyBorder(0, 0, 0, 10));
 
 		btnChooseInput.addActionListener(new ActionListener() {
 
@@ -360,12 +360,14 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		this.lblFileOutput = lblFileOutput;
 	}
 
-	public String getTxtPlain() {
-		return txtPlain.getText();
+	
+
+	public JTextArea getTxtPlain() {
+		return txtPlain;
 	}
 
-	public void setTxtPlain(String txtPlain) {
-		this.txtPlain.setText(txtPlain);
+	public void setTxtPlain(JTextArea txtPlain) {
+		this.txtPlain = txtPlain;
 	}
 
 	public String getTxtCipher() {

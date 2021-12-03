@@ -1,20 +1,14 @@
 package GUI;
 
-import java.awt.BorderLayout;
 import java.awt.Choice;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.BoxLayout;
-import algorithms.ColorPublic;
 public class OptionGeneralUI extends JPanel {
 
 	private String[] listAlgorithms = { "AES", "DES", "DESede" };
