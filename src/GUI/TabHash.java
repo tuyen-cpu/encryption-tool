@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -188,6 +189,26 @@ public class TabHash extends JPanel implements ActionListener {
 					System.out.println("Cancel choose file!");
 				}
 
+			}
+		});
+		btnCheckCompare.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			if(txtResult.getText().equals(txtCompare.getText())){
+				ImageIcon icon = new ImageIcon(this.getClass().getResource("/img/success.png"));
+               
+				JOptionPane.showMessageDialog(
+                        null,
+                        "Matched",
+                        "Success", JOptionPane.INFORMATION_MESSAGE,
+                        icon);
+				
+			}else{
+				JOptionPane.showMessageDialog(null, "Mismatched",
+						"Dialog", JOptionPane.ERROR_MESSAGE);
+			}
+				
 			}
 		});
 	}

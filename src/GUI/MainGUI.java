@@ -87,9 +87,12 @@ public class MainGUI {
 				System.out.println("Current tab: " + tabbedPaneCurrent);
 			}
 		});
-		symmetric = new Symmetric("AES", "CBC", "NoPadding", 128);
-		symmetric.createKey();
-		addHandle();
+		if(tabbedPaneCurrent.equalsIgnoreCase("Symmetric")){
+			symmetric = new Symmetric("AES", "CBC", "NoPadding", 128);
+			symmetric.createKey();
+			addHandle();
+		}
+		
 	}
 
 	public void createAndShowGUI() {
@@ -137,7 +140,6 @@ public class MainGUI {
 			}
 		});
 		btnStart.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				switch (tabbedPaneCurrent) {
@@ -164,6 +166,8 @@ public class MainGUI {
 				}
 			}
 		});
+		
+		
 	}
 
 	public void handleTabHash() {
@@ -178,7 +182,7 @@ public class MainGUI {
 			algorithm = tabHash.getChoiceAlgorithms().getSelectedItem();
 			try {
 				Hash hash = new Hash(algorithm);
-				tabHash.getTxtResult().setText(hash.hash(textInput));
+				outText=hash.hash(textInput);
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -194,16 +198,16 @@ public class MainGUI {
 			algorithm = tabHash.getChoiceAlgorithms().getSelectedItem();
 			try {
 				Hash hash = new Hash(algorithm);
-				tabHash.getTxtResult().setText(hash.hashFile(textInput));
+				outText=hash.hash(textInput);
 				System.out.println("Hash success!");
-			} catch (NoSuchAlgorithmException | IOException e) {
+			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 			
 		}
-
+		tabHash.getTxtResult().setText(outText);
 	}
 
 	public void handleTabSymmetric() {
