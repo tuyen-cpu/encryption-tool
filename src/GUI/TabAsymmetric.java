@@ -147,7 +147,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		add(pnOption, BorderLayout.NORTH);
 		add(pnKey, BorderLayout.CENTER);
 		add(optionEncryptUI, BorderLayout.SOUTH);
-		optionEncryptUI.getTxtPlain().setSize(5, 50);
+		optionEncryptUI.getTxtPlain().setSize(7, 50);
 		optionEncryptUI.setPreferredSize(new Dimension(750, 265));
 		Border optionLine = BorderFactory.createTitledBorder("Option");
 		pnOption.setBorder(optionLine);

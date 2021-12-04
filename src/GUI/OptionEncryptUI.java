@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -10,10 +11,13 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -31,10 +35,10 @@ import java.awt.GridLayout;
 import java.io.File;
 
 public class OptionEncryptUI extends JPanel implements ActionListener {
-	JButton btnChooseInput, btnChooseOutput,btnCopy;
+	JButton btnChooseInput, btnChooseOutput, btnCopy;
 	JRadioButton rdField, rdFile;
 	JPanel pnRadio, pnContainer, pnKeyField, pnKeyFile, pnFileInput,
-			pnFileOutput;
+			pnFileOutput,pnCipher;
 	OptionSelectEncryptOrDecrypt pnSelectEnOrDe;
 	Dimension dimContainer, dimPlainText, dimRadioButton, dimBtnChoose;
 	JFileChooser fileKey;
@@ -42,6 +46,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 	JTextArea txtPlain, txtCipher;
 	JScrollPane scrollPlain, scrollCipher;
 	File fileInput, fileOutput;
+	
 
 	public OptionEncryptUI() {
 		dimContainer = new Dimension(740, 255);
@@ -58,10 +63,12 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 		pnFileOutput = new JPanel();
 		pnFileInput = new JPanel();
-
+		pnCipher = new JPanel(new BorderLayout());
 		btnChooseInput = new JButton("File Input");
 		btnChooseOutput = new JButton("File Output");
-
+		btnCopy = new JButton();
+		btnCopy.setIcon(new ImageIcon(this.getClass().getResource("/img/copy.png")));
+		btnCopy.setPreferredSize(new Dimension(60,40));
 		pnRadio = new JPanel();
 		pnContainer = new JPanel();
 		pnKeyField = new JPanel();
@@ -69,7 +76,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		fileKey = new JFileChooser();
 		txtPlain = new JTextArea(5, 60);
 		txtCipher = new JTextArea(1, 60);
-	
+
 		// remove focus painted button
 		btnChooseInput.setFocusPainted(false);
 		btnChooseOutput.setFocusPainted(false);
@@ -77,8 +84,9 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		rdFile.setFocusPainted(false);
 		scrollPlain = new JScrollPane(txtPlain);
 		scrollCipher = new JScrollPane(txtCipher);
-//		scrollPlain.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollCipher.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		// scrollPlain.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollCipher
+				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		// default select radio
 		rdField.setSelected(true);
 		// set Font
@@ -114,35 +122,9 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		rdFile.addActionListener(this);
 
 		// lblKeyFile.setBorder(BorderFactory.createEtchedBorder());
-//		lblFileInput.setBorder(new EmptyBorder(0, 0, 0, 10));
-//		lblFileOutput.setBorder(new EmptyBorder(0, 0, 0, 10));
+		// lblFileInput.setBorder(new EmptyBorder(0, 0, 0, 10));
+		// lblFileOutput.setBorder(new EmptyBorder(0, 0, 0, 10));
 
-		btnChooseInput.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try{
-					fileInput=openFile();
-					lblFileInput.setText(fileInput.getAbsolutePath());;
-				}catch(Exception e){
-					System.out.println("Cancel choose file");
-				}
-			}
-		});
-		btnChooseOutput.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try{
-					fileOutput=openFile();
-					lblFileOutput.setText(fileOutput.getAbsolutePath());
-				}catch(Exception e){
-					System.out.println("Cancel choose file");
-				}
-			
-
-			}
-		});
 		// set Margin top
 		pnFileInput.setBorder(new EmptyBorder(30, 0, 0, 0));
 		pnFileOutput.setBorder(new EmptyBorder(30, 0, 0, 0));
@@ -154,10 +136,11 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		pnRadio.add(rdFile);
 		add(pnRadio, BorderLayout.NORTH);
 		add(pnContainer, BorderLayout.CENTER);
-		pnKeyField.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
+		pnKeyField.setLayout(new BorderLayout());
+pnCipher.add(scrollCipher);
+pnCipher.add(btnCopy,BorderLayout.EAST);
 		pnKeyField.add(scrollPlain);
-		pnKeyField.add(scrollCipher);
+		pnKeyField.add(pnCipher, BorderLayout.SOUTH);
 		pnContainer.setLayout(new BorderLayout());
 
 		pnContainer.add(pnKeyField);
@@ -179,6 +162,44 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		setBorder(blackline);
 		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
 				Font.PLAIN, 13));
+		addHandle();
+	}
+
+	public void addHandle() {
+		btnChooseInput.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					fileInput = openFile();
+					lblFileInput.setText(fileInput.getAbsolutePath());
+					;
+				} catch (Exception e) {
+					System.out.println("Cancel choose file");
+				}
+			}
+		});
+		btnChooseOutput.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					fileOutput = openFile();
+					lblFileOutput.setText(fileOutput.getAbsolutePath());
+				} catch (Exception e) {
+					System.out.println("Cancel choose file");
+				}
+
+			}
+		});
+btnCopy.addActionListener(new ActionListener() {
+	
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		copyIntoClipBoard(txtCipher.getText());
+		
+	}
+});
 	}
 
 	public void copyIntoClipBoard(String txt) {
@@ -302,8 +323,6 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		return pnSelectEnOrDe;
 	}
 
-	
-
 	public Dimension getDimContainer() {
 		return dimContainer;
 	}
@@ -360,8 +379,6 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		this.lblFileOutput = lblFileOutput;
 	}
 
-	
-
 	public JTextArea getTxtPlain() {
 		return txtPlain;
 	}
@@ -409,5 +426,5 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 	public void setFileOutput(File fileOutput) {
 		this.fileOutput = fileOutput;
 	}
-	
+
 }
