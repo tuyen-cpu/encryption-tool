@@ -198,26 +198,42 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		btnImportPrivatekey.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try{
+				try {
 					fileChoose = openFile();
 					lblInputKeyPrivate.setText(fileChoose.getAbsolutePath());
-				}catch(Exception ex){
+				} catch (Exception ex) {
 					System.out.println("Cancel choose file");
 				}
 
 			}
 		});
 		btnImportPublicKey.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try{
+				try {
 					fileChoose = openFile();
 					lblInputKeyPublic.setText(fileChoose.getAbsolutePath());
-				}catch(Exception ex){
+				} catch (Exception ex) {
 					System.out.println("Cancel choose file");
 				}
-				
+
+			}
+		});
+		btnCopyPrivateKey.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				optionEncryptUI.copyIntoClipBoard(txtPrivateKey.getText());
+
+			}
+		});
+		btnCopyPublicKey.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				optionEncryptUI.copyIntoClipBoard(txtPublicKey.getText());
+
 			}
 		});
 	}

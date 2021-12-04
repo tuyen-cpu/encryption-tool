@@ -1,6 +1,7 @@
 package GUI;
 
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -25,7 +26,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class MainGUI {
 
@@ -231,8 +234,21 @@ TabAsymmetric tabAsymmetric;
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		String txtkey = pnKey.getTxtKey();
-		if (txtkey.equalsIgnoreCase("") || txtkey == null) {
+		Key txtkey = null;
+		if(pnKey.getRdField().isSelected()){
+			System.out.println("Input Key");
+		 txtkey = symmetric.convertStringKeyToSecretKey(pnKey.getTxtKey());
+		}else{
+			System.out.println("File Key");
+			try {
+				txtkey=symmetric.readKey(pnKey.getFileInputKey().getAbsolutePath());
+			} catch (InvalidKeySpecException | NoSuchAlgorithmException
+					| IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (txtkey == null) {
 			JOptionPane.showMessageDialog(null, "Empty key", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
@@ -244,9 +260,9 @@ TabAsymmetric tabAsymmetric;
 				.getSelectedItem());
 		try {
 			symmetric = new Symmetric(algorithm, mode, padding, keysize);
-			if (!txtkey.equals(""))
+			if (txtkey!=null)
 				try {
-					symmetric.setKey(txtkey);
+					symmetric.setKey((SecretKey) txtkey);
 				} catch (Exception e2) {
 					JOptionPane.showMessageDialog(null, "Invalid key", "Error",
 							JOptionPane.ERROR_MESSAGE);
@@ -260,14 +276,14 @@ TabAsymmetric tabAsymmetric;
 			// if radio is encrypt then into if, else is decrypt
 			if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()) {
 				if (pnEncrypt.getRdFile().isSelected()) {
-					System.out.println("Encrypt with string");
+					System.out.println("Encrypt with file");
 					inputFile = pnEncrypt.getLblFileInput().getText();
 					outputFile = pnEncrypt.getLblFileOutput().getText();
 					symmetric.encrypt(inputFile, outputFile);
 					JOptionPane.showMessageDialog(null, "Mã hóa thành công",
 							"Success", JOptionPane.OK_OPTION);
 				} else {
-					System.out.println("Encrypt with file");
+					System.out.println("Encrypt with string");
 					outText = symmetric.encrypt(textInput);
 				}
 			} else {

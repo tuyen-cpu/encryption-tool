@@ -6,9 +6,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Scanner;
 
@@ -25,6 +31,8 @@ public class Symmetric {
 	private Cipher cipher;
 	private String algorithm, padding, mode;
 	int keySize;
+	private static Base64.Encoder encoder = Base64.getEncoder();
+	private static Base64.Decoder decoder = Base64.getDecoder();
 
 	public Symmetric(String algorithm, String mode, String padding, int keySize)
 			throws NoSuchAlgorithmException, NoSuchPaddingException {
@@ -45,7 +53,7 @@ public class Symmetric {
 	}
 
 	public void setKey(String txtKey) {
-		byte[] decodedKey = Base64.getDecoder().decode(txtKey);
+		byte[] decodedKey = decoder.decode(txtKey);
 		SecretKey key = new SecretKeySpec(decodedKey, 0, decodedKey.length,
 				algorithm);
 		this.key = key;
@@ -53,6 +61,16 @@ public class Symmetric {
 
 	public String getKeyWithString() {
 		return convertSecretKeyToStringKey(key);
+	}
+
+	public Key readKey(String path) throws IOException,
+			InvalidKeySpecException, NoSuchAlgorithmException {
+		byte[] bytes = Files.readAllBytes(Paths.get(path));
+		String prikeyString = new String(bytes, StandardCharsets.UTF_8);
+		byte[] decodKey = decoder.decode(prikeyString);
+		Key originalKey = new SecretKeySpec(decodKey, 0, decodKey.length,
+				algorithm);
+		return originalKey;
 	}
 
 	public SecretKey createKey() throws NoSuchAlgorithmException {
@@ -65,12 +83,12 @@ public class Symmetric {
 
 	public String convertSecretKeyToStringKey(SecretKey secretKey) {
 		byte[] arrKey = secretKey.getEncoded();
-		String encodedKey = Base64.getEncoder().encodeToString(arrKey);
+		String encodedKey = encoder.encodeToString(arrKey);
 		return encodedKey;
 	}
 
 	public SecretKey convertStringKeyToSecretKey(String keyStr) {
-		byte[] decodKey = Base64.getDecoder().decode(keyStr);
+		byte[] decodKey = decoder.decode(keyStr);
 		SecretKey originalKey = new SecretKeySpec(decodKey, 0, decodKey.length,
 				algorithm);
 		return originalKey;
@@ -80,17 +98,20 @@ public class Symmetric {
 		if (key == null)
 			return "";
 		try {
+			
 			if (padding.trim().equalsIgnoreCase("NoPadding")) {
-				while (text.getBytes().length % 16 != 0) {
+				
+				while (text.getBytes("UTF-8").length % 16 != 0) {
 					text += '\u0020';
 				}
 			}
 			checkSpeckey(Cipher.ENCRYPT_MODE);
 			byte[] plaintext = text.getBytes("UTF-8");
 			byte[] cipherText = cipher.doFinal(plaintext);
-			return Base64.getEncoder().encodeToString(cipherText);
+			return encoder.encodeToString(cipherText);
 		} catch (Exception e) {
 			System.out.println("encrypt lỗi");
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Invalid key", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return null;
@@ -103,12 +124,13 @@ public class Symmetric {
 			return null;
 		try {
 			checkSpeckey(Cipher.DECRYPT_MODE);
-			byte[] cipherText = Base64.getDecoder().decode(text);
+			byte[] cipherText = decoder.decode(text);
 			byte[] plaintext = cipher.doFinal(cipherText);
 			String out = new String(plaintext, "UTF-8");
 			return out.trim();
 		} catch (Exception e) {
 			System.out.println("decrypt lôi");
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Invalid key", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return null;
@@ -221,14 +243,16 @@ public class Symmetric {
 		 * AES (128,192,256) DES (56) DESede (168) GCM
 		 */
 
-		Symmetric s = new Symmetric("DES", "ECB", "X923PADDING", 56);
-		s.createKey();
-		String sourceFile = new String("F:\\test\\s\\ff.docx");
-		String destFile = new String("F:\\test\\d\\ff.docx");
-		s.encrypt(sourceFile, destFile);
-		String sourceFile1 = new String("F:\\test\\d\\ff.docx");
-		String destFile1 = new String("F:\\test\\s\\f.docx");
-		s.decrypt(sourceFile1, destFile1);
+		Symmetric s = new Symmetric("DES", "ECB", "NoPadding", 56);
+	s.setKey((SecretKey) s.readKey("F:\\test\\key.txt"));;
+	System.out.println(s.getKeyWithString());
+//		String sourceFile = new String("F:\\test\\s\\ff.docx");
+//		String destFile = new String("F:\\test\\d\\ff.docx");
+//		s.encrypt(sourceFile, destFile);
+//		String sourceFile1 = new String("F:\\test\\d\\ff.docx");
+//		String destFile1 = new String("F:\\test\\s\\f.docx");
+//		s.decrypt(sourceFile1, destFile1);
+	System.out.println(s.decrypt("VGN/nDvhvoeWManL20NF3w=="));
 
 		// Symmetric s1 = new Symmetric("AES", 128);
 		// s1.createKey();

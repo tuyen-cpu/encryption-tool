@@ -7,12 +7,20 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.Key;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
@@ -29,7 +37,8 @@ public class Asymmetric {
 	private String padding;
 	private int keySize;
 	private Cipher cipher;
-
+	private static Base64.Encoder encoder = Base64.getEncoder();
+	private static Base64.Decoder decoder = Base64.getDecoder();
 	public Asymmetric(String algorithms, String mode, String padding,
 			int keySize) throws NoSuchAlgorithmException,
 			NoSuchPaddingException {
@@ -47,12 +56,12 @@ public class Asymmetric {
 		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 		byte[] plaintext = text.getBytes("UTF-8");
 		byte[] cipherText = cipher.doFinal(plaintext);
-		return Base64.getEncoder().encodeToString(cipherText);
+		return encoder.encodeToString(cipherText);
 	}
 
 	public String decrypt(String text) throws Exception {
 		cipher.init(Cipher.DECRYPT_MODE, privateKey);
-		byte[] cipherText = Base64.getDecoder().decode(text);
+		byte[] cipherText = decoder.decode(text);
 		byte[] plaintext = cipher.doFinal(cipherText);
 		String result = new String(plaintext, "UTF-8");
 		return result;
@@ -90,6 +99,8 @@ public class Asymmetric {
 		}
 	}
 
+	
+	
 	public void genkey() {
 		KeyPairGenerator keyGenerator = null;
 		try {
@@ -126,12 +137,12 @@ public class Asymmetric {
 
 	public String convertKeytoString(Key key) {
 		byte[] arrKey = key.getEncoded();
-		String encodedKey = Base64.getEncoder().encodeToString(arrKey);
+		String encodedKey = encoder.encodeToString(arrKey);
 		return encodedKey;
 	}
 
 	public Key convertStringKeyToSecretKey(String keyStr) {
-		byte[] decodKey = Base64.getDecoder().decode(keyStr);
+		byte[] decodKey = decoder.decode(keyStr);
 		Key originalKey = new SecretKeySpec(decodKey, 0, decodKey.length,
 				algorithms);
 		return originalKey;
@@ -140,18 +151,21 @@ public class Asymmetric {
 	public void setPublicKey(PublicKey publicKey) {
 		this.publicKey = publicKey;
 	}
+
 	public void setPublicKey(String publicKey) {
 		this.publicKey = (PublicKey) convertStringKeyToSecretKey(publicKey);
 	}
+
 	public PrivateKey getPrivateKey() {
 		return privateKey;
 	}
+
 	public void setPrivateKey(String privateKey) {
 		this.privateKey = (PrivateKey) convertStringKeyToSecretKey(privateKey);
 	}
+
 	public void setPrivateKey(PrivateKey privateKey) {
 		this.privateKey = privateKey;
 	}
-
 
 }
