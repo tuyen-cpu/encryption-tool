@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,19 +23,22 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.BoxLayout;
 
 public class TabAsymmetric extends JPanel implements ActionListener {
 	private String[] listAlgorithms = { "RSA" };
 	private String[] listMode = { "ECB" };
-	private String[] listPadding = { "PKCS1Padding",
-			"OAEPWithSHA-1AndMGF1Padding", "OAEPWithSHA-256AndMGF1Padding" };
+	private String[] listPadding = {"OAEPWithSHA-1AndMGF1Padding","OAEPWithSHA-256AndMGF1Padding","PKCS1Padding"
+			 };
+
+			
 	private String[] listKeySize = { "1024", "2048", "3072", "4069" };
 	private JPanel pnOption, pnKey, pnEncypt, pnAlgorithms, pnKeySize, pnMode,
-			pnPadding, pnOptionKey, pnContainerKey, pnFieldPublic,
+			pnPadding, pnOptionKey, pnContainerKey, pnFieldPublic,pnPrivateKey,
 			pnFieldPrivate, pnFilePublic, pnFilePrivte, pnFileKey;
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblPadding,
-			lblInputKeyPublic, lblInputKeyPrivate;
-	private Choice choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
+			lblInputKeyPublic, lblInputKeyPrivate,lblPrivatekey;
+	private JComboBox choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
 	private JButton btnCreateKey, btnImportPublicKey, btnImportPrivatekey,
 			btnCopyPrivateKey, btnCopyPublicKey;
 	private JRadioButton rdString, rdFile;
@@ -48,11 +52,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		setLayout(new BorderLayout());
 		createComponent();
 		addComponent();
-
-		setChoice(listAlgorithms, choiceAlgorithms);
-		setChoice(listKeySize, choiceKeySize);
-		setChoice(listMode, choiceMode);
-		setChoice(listPadding, choicePadding);
+		
 		addHandle();
 	}
 
@@ -72,10 +72,10 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		lblKeySize = new JLabel("Key size:");
 		lblMode = new JLabel("Mode");
 		lblPadding = new JLabel("Padding");
-		choiceAlgorithms = new Choice();
-		choiceKeySize = new Choice();
-		choiceMode = new Choice();
-		choicePadding = new Choice();
+		choiceAlgorithms = new JComboBox(listAlgorithms);
+		choiceKeySize = new JComboBox(listKeySize);
+		choiceMode = new JComboBox(listMode);
+		choicePadding = new JComboBox(listPadding);
 		btnCreateKey = new JButton("Create key");
 		pnOptionKey = new JPanel();
 		pnContainerKey = new JPanel(new BorderLayout());
@@ -103,7 +103,10 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		btnImportPublicKey = new JButton("Choose key public");
 		btnImportPrivatekey = new JButton("Choose key private");
 		optionEncryptUI = new OptionEncryptUI();
+		optionEncryptUI.remove(optionEncryptUI.pnRadio);
 		jFileChoose = new JFileChooser();
+		pnPrivateKey = new JPanel(new BorderLayout());
+		lblPrivatekey = new JLabel("Private key:");
 	}
 
 	public void addComponent() {
@@ -116,6 +119,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnMode.add(choiceMode);
 		pnPadding.add(lblPadding);
 		pnPadding.add(choicePadding);
+		pnOption.setLayout(new BoxLayout(pnOption, BoxLayout.X_AXIS));
 		pnOption.add(pnAlgorithms);
 		pnOption.add(pnAlgorithms);
 		pnOption.add(pnKeySize);
@@ -130,7 +134,9 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnFieldPublic.add(txtPublicKey);
 		pnFieldPublic.add(btnCopyPublicKey);
 
-		pnFieldPrivate.add(txtPrivateKey);
+		pnFieldPrivate.add(pnPrivateKey);
+		pnPrivateKey.add(lblPrivatekey,BorderLayout.WEST);
+		pnPrivateKey.add(txtPrivateKey);
 		pnFieldPrivate.add(btnCopyPrivateKey);
 
 		pnContainerKey.add(pnFieldPublic, BorderLayout.NORTH);
@@ -149,15 +155,15 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		add(optionEncryptUI, BorderLayout.SOUTH);
 		optionEncryptUI.getTxtPlain().setSize(7, 50);
 		optionEncryptUI.setPreferredSize(new Dimension(750, 265));
-		Border optionLine = BorderFactory.createTitledBorder("Option");
-		pnOption.setBorder(optionLine);
+//		Border optionLine = BorderFactory.createTitledBorder("Option");
+//		pnOption.setBorder(optionLine);
 		setBorder(new EmptyBorder(5, 10, 10, 10));
-		((TitledBorder) pnOption.getBorder()).setTitleFont(new Font("Dialog",
-				Font.PLAIN, 13));
-		Border keyLine = BorderFactory.createTitledBorder("Key");
-		pnKey.setBorder(keyLine);
-		((TitledBorder) pnKey.getBorder()).setTitleFont(new Font("Dialog",
-				Font.PLAIN, 13));
+//		((TitledBorder) pnOption.getBorder()).setTitleFont(new Font("Dialog",
+//				Font.PLAIN, 13));
+//		Border keyLine = BorderFactory.createTitledBorder("Key");
+//		pnKey.setBorder(keyLine);
+//		((TitledBorder) pnKey.getBorder()).setTitleFont(new Font("Dialog",
+//				Font.PLAIN, 13));
 		lblAlgorithms.setFont(new Font("Dialog", Font.PLAIN, 13));
 		lblKeySize.setFont(new Font("Dialog", Font.PLAIN, 13));
 		lblMode.setFont(new Font("Dialog", Font.PLAIN, 13));
@@ -169,6 +175,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		lblInputKeyPrivate.setFont(new Font("Dialog", Font.PLAIN, 14));
 		lblInputKeyPublic.setFont(new Font("Dialog", Font.PLAIN, 14));
 		btnCreateKey.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblPrivatekey.setFont(new Font("Dialog", Font.PLAIN, 14));
 		pnAlgorithms.setBorder(new EmptyBorder(0, 5, 0, 5));
 		pnKeySize.setBorder(new EmptyBorder(0, 5, 0, 5));
 		pnMode.setBorder(new EmptyBorder(0, 5, 0, 5));
@@ -178,7 +185,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		choiceMode.setFocusable(false);
 		choicePadding.setFocusable(false);
 
-		pnFieldPrivate.setBorder(new EmptyBorder(-5, 130, 0, 5));
+		pnFieldPrivate.setBorder(new EmptyBorder(-5, 45, 0, 0));
+		lblPrivatekey.setPreferredSize(new Dimension(80,40));
 		txtPublicKey.setPreferredSize(dmTxtKey);
 		txtPrivateKey.setPreferredSize(dmTxtKey);
 		btnCreateKey.setPreferredSize(dmBtnCreate);
@@ -186,8 +194,10 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		btnCopyPrivateKey.setPreferredSize(dmBtnCopy);
 		btnImportPublicKey.setPreferredSize(dmChoose);
 		btnImportPrivatekey.setPreferredSize(dmChoose);
+		choicePadding.setPreferredSize(new Dimension(190,30));
 		optionEncryptUI.getBtnChooseInput().setPreferredSize(dmChoose);
 		optionEncryptUI.getBtnChooseOutput().setPreferredSize(dmChoose);
+		pnOption.setBorder(new EmptyBorder(20, 0, 20, 0));
 	}
 
 	public void addHandle() {
@@ -273,4 +283,374 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		}
 
 	}
+	public OptionEncryptUI getOptionEncryptUI(){
+		return optionEncryptUI;
+	}
+
+	public String[] getListAlgorithms() {
+		return listAlgorithms;
+	}
+
+	public void setListAlgorithms(String[] listAlgorithms) {
+		this.listAlgorithms = listAlgorithms;
+	}
+
+	public String[] getListMode() {
+		return listMode;
+	}
+
+	public void setListMode(String[] listMode) {
+		this.listMode = listMode;
+	}
+
+	public String[] getListPadding() {
+		return listPadding;
+	}
+
+	public void setListPadding(String[] listPadding) {
+		this.listPadding = listPadding;
+	}
+
+	public String[] getListKeySize() {
+		return listKeySize;
+	}
+
+	public void setListKeySize(String[] listKeySize) {
+		this.listKeySize = listKeySize;
+	}
+
+	public JPanel getPnOption() {
+		return pnOption;
+	}
+
+	public void setPnOption(JPanel pnOption) {
+		this.pnOption = pnOption;
+	}
+
+	public JPanel getPnKey() {
+		return pnKey;
+	}
+
+	public void setPnKey(JPanel pnKey) {
+		this.pnKey = pnKey;
+	}
+
+	public JPanel getPnEncypt() {
+		return pnEncypt;
+	}
+
+	public void setPnEncypt(JPanel pnEncypt) {
+		this.pnEncypt = pnEncypt;
+	}
+
+	public JPanel getPnAlgorithms() {
+		return pnAlgorithms;
+	}
+
+	public void setPnAlgorithms(JPanel pnAlgorithms) {
+		this.pnAlgorithms = pnAlgorithms;
+	}
+
+	public JPanel getPnKeySize() {
+		return pnKeySize;
+	}
+
+	public void setPnKeySize(JPanel pnKeySize) {
+		this.pnKeySize = pnKeySize;
+	}
+
+	public JPanel getPnMode() {
+		return pnMode;
+	}
+
+	public void setPnMode(JPanel pnMode) {
+		this.pnMode = pnMode;
+	}
+
+	public JPanel getPnPadding() {
+		return pnPadding;
+	}
+
+	public void setPnPadding(JPanel pnPadding) {
+		this.pnPadding = pnPadding;
+	}
+
+	public JPanel getPnOptionKey() {
+		return pnOptionKey;
+	}
+
+	public void setPnOptionKey(JPanel pnOptionKey) {
+		this.pnOptionKey = pnOptionKey;
+	}
+
+	public JPanel getPnContainerKey() {
+		return pnContainerKey;
+	}
+
+	public void setPnContainerKey(JPanel pnContainerKey) {
+		this.pnContainerKey = pnContainerKey;
+	}
+
+	public JPanel getPnFieldPublic() {
+		return pnFieldPublic;
+	}
+
+	public void setPnFieldPublic(JPanel pnFieldPublic) {
+		this.pnFieldPublic = pnFieldPublic;
+	}
+
+	public JPanel getPnFieldPrivate() {
+		return pnFieldPrivate;
+	}
+
+	public void setPnFieldPrivate(JPanel pnFieldPrivate) {
+		this.pnFieldPrivate = pnFieldPrivate;
+	}
+
+	public JPanel getPnFilePublic() {
+		return pnFilePublic;
+	}
+
+	public void setPnFilePublic(JPanel pnFilePublic) {
+		this.pnFilePublic = pnFilePublic;
+	}
+
+	public JPanel getPnFilePrivte() {
+		return pnFilePrivte;
+	}
+
+	public void setPnFilePrivte(JPanel pnFilePrivte) {
+		this.pnFilePrivte = pnFilePrivte;
+	}
+
+	public JPanel getPnFileKey() {
+		return pnFileKey;
+	}
+
+	public void setPnFileKey(JPanel pnFileKey) {
+		this.pnFileKey = pnFileKey;
+	}
+
+	public JLabel getLblAlgorithms() {
+		return lblAlgorithms;
+	}
+
+	public void setLblAlgorithms(JLabel lblAlgorithms) {
+		this.lblAlgorithms = lblAlgorithms;
+	}
+
+	public JLabel getLblKeySize() {
+		return lblKeySize;
+	}
+
+	public void setLblKeySize(JLabel lblKeySize) {
+		this.lblKeySize = lblKeySize;
+	}
+
+	public JLabel getLblMode() {
+		return lblMode;
+	}
+
+	public void setLblMode(JLabel lblMode) {
+		this.lblMode = lblMode;
+	}
+
+	public JLabel getLblPadding() {
+		return lblPadding;
+	}
+
+	public void setLblPadding(JLabel lblPadding) {
+		this.lblPadding = lblPadding;
+	}
+
+	public JLabel getLblInputKeyPublic() {
+		return lblInputKeyPublic;
+	}
+
+	public void setLblInputKeyPublic(JLabel lblInputKeyPublic) {
+		this.lblInputKeyPublic = lblInputKeyPublic;
+	}
+
+	public JLabel getLblInputKeyPrivate() {
+		return lblInputKeyPrivate;
+	}
+
+	public void setLblInputKeyPrivate(JLabel lblInputKeyPrivate) {
+		this.lblInputKeyPrivate = lblInputKeyPrivate;
+	}
+
+	
+
+	public JPanel getPnPrivateKey() {
+		return pnPrivateKey;
+	}
+
+	public void setPnPrivateKey(JPanel pnPrivateKey) {
+		this.pnPrivateKey = pnPrivateKey;
+	}
+
+	public JLabel getLblPrivatekey() {
+		return lblPrivatekey;
+	}
+
+	public void setLblPrivatekey(JLabel lblPrivatekey) {
+		this.lblPrivatekey = lblPrivatekey;
+	}
+
+	public JComboBox getChoiceAlgorithms() {
+		return choiceAlgorithms;
+	}
+
+	public void setChoiceAlgorithms(JComboBox choiceAlgorithms) {
+		this.choiceAlgorithms = choiceAlgorithms;
+	}
+
+	public JComboBox getChoiceKeySize() {
+		return choiceKeySize;
+	}
+
+	public void setChoiceKeySize(JComboBox choiceKeySize) {
+		this.choiceKeySize = choiceKeySize;
+	}
+
+	public JComboBox getChoiceMode() {
+		return choiceMode;
+	}
+
+	public void setChoiceMode(JComboBox choiceMode) {
+		this.choiceMode = choiceMode;
+	}
+
+	public JComboBox getChoicePadding() {
+		return choicePadding;
+	}
+
+	public void setChoicePadding(JComboBox choicePadding) {
+		this.choicePadding = choicePadding;
+	}
+
+	public JButton getBtnCreateKey() {
+		return btnCreateKey;
+	}
+
+	public void setBtnCreateKey(JButton btnCreateKey) {
+		this.btnCreateKey = btnCreateKey;
+	}
+
+	public JButton getBtnImportPublicKey() {
+		return btnImportPublicKey;
+	}
+
+	public void setBtnImportPublicKey(JButton btnImportPublicKey) {
+		this.btnImportPublicKey = btnImportPublicKey;
+	}
+
+	public JButton getBtnImportPrivatekey() {
+		return btnImportPrivatekey;
+	}
+
+	public void setBtnImportPrivatekey(JButton btnImportPrivatekey) {
+		this.btnImportPrivatekey = btnImportPrivatekey;
+	}
+
+	public JButton getBtnCopyPrivateKey() {
+		return btnCopyPrivateKey;
+	}
+
+	public void setBtnCopyPrivateKey(JButton btnCopyPrivateKey) {
+		this.btnCopyPrivateKey = btnCopyPrivateKey;
+	}
+
+	public JButton getBtnCopyPublicKey() {
+		return btnCopyPublicKey;
+	}
+
+	public void setBtnCopyPublicKey(JButton btnCopyPublicKey) {
+		this.btnCopyPublicKey = btnCopyPublicKey;
+	}
+
+	public JRadioButton getRdString() {
+		return rdString;
+	}
+
+	public void setRdString(JRadioButton rdString) {
+		this.rdString = rdString;
+	}
+
+	public JRadioButton getRdFile() {
+		return rdFile;
+	}
+
+	public void setRdFile(JRadioButton rdFile) {
+		this.rdFile = rdFile;
+	}
+
+	public JTextField getTxtPublicKey() {
+		return txtPublicKey;
+	}
+
+	public void setTxtPublicKey(JTextField txtPublicKey) {
+		this.txtPublicKey = txtPublicKey;
+	}
+
+	public JTextField getTxtPrivateKey() {
+		return txtPrivateKey;
+	}
+
+	public void setTxtPrivateKey(JTextField txtPrivateKey) {
+		this.txtPrivateKey = txtPrivateKey;
+	}
+
+	public Dimension getDmTxtKey() {
+		return dmTxtKey;
+	}
+
+	public void setDmTxtKey(Dimension dmTxtKey) {
+		this.dmTxtKey = dmTxtKey;
+	}
+
+	public Dimension getDmBtnCopy() {
+		return dmBtnCopy;
+	}
+
+	public void setDmBtnCopy(Dimension dmBtnCopy) {
+		this.dmBtnCopy = dmBtnCopy;
+	}
+
+	public Dimension getDmBtnCreate() {
+		return dmBtnCreate;
+	}
+
+	public void setDmBtnCreate(Dimension dmBtnCreate) {
+		this.dmBtnCreate = dmBtnCreate;
+	}
+
+	public Dimension getDmChoose() {
+		return dmChoose;
+	}
+
+	public void setDmChoose(Dimension dmChoose) {
+		this.dmChoose = dmChoose;
+	}
+
+	public File getFileChoose() {
+		return fileChoose;
+	}
+
+	public void setFileChoose(File fileChoose) {
+		this.fileChoose = fileChoose;
+	}
+
+	public JFileChooser getjFileChoose() {
+		return jFileChoose;
+	}
+
+	public void setjFileChoose(JFileChooser jFileChoose) {
+		this.jFileChoose = jFileChoose;
+	}
+
+	public void setOptionEncryptUI(OptionEncryptUI optionEncryptUI) {
+		this.optionEncryptUI = optionEncryptUI;
+	}
+	
 }

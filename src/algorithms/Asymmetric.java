@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,7 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.swing.JOptionPane;
 
 public class Asymmetric {
 	private KeyPair keypair;
@@ -39,6 +41,7 @@ public class Asymmetric {
 	private Cipher cipher;
 	private static Base64.Encoder encoder = Base64.getEncoder();
 	private static Base64.Decoder decoder = Base64.getDecoder();
+
 	public Asymmetric(String algorithms, String mode, String padding,
 			int keySize) throws NoSuchAlgorithmException,
 			NoSuchPaddingException {
@@ -67,13 +70,11 @@ public class Asymmetric {
 		return result;
 	}
 
-	public void EncryptFile(String sourceFile, String destFile)
-			throws Exception {
+	public void encrypt(String sourceFile, String destFile) throws Exception {
 		File file = new File(sourceFile);
 		if (file.exists()) {
 			if (publicKey == null)
 				genkey();
-			Cipher cipher = Cipher.getInstance("RSA");
 			cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 			DataInputStream dis = new DataInputStream(new BufferedInputStream(
 					new FileInputStream(file)));
@@ -98,13 +99,11 @@ public class Asymmetric {
 			System.out.println("Source file is not existed");
 		}
 	}
-
-	
 	
 	public void genkey() {
 		KeyPairGenerator keyGenerator = null;
 		try {
-			keyGenerator = KeyPairGenerator.getInstance("RSA");
+			keyGenerator = KeyPairGenerator.getInstance(algorithms);
 			keyGenerator.initialize(2848);
 			keypair = keyGenerator.generateKeyPair();
 			publicKey = keypair.getPublic();
@@ -113,6 +112,61 @@ public class Asymmetric {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public PrivateKey readPrivateKey(String path) throws IOException,
+			InvalidKeySpecException, NoSuchAlgorithmException {
+		byte[] bytes = Files.readAllBytes(Paths.get(path));
+		String prikeyString = new String(bytes, StandardCharsets.UTF_8);
+		bytes = decoder.decode(prikeyString);
+		PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(bytes);
+		KeyFactory kf = KeyFactory.getInstance(algorithms);
+		System.out.println("Read Private key success!");
+		return kf.generatePrivate(ks);
+	}
+
+	public PrivateKey convertStringKeyToPrivateKey(String stored)
+			 {
+		try{
+			byte[] data = decoder.decode(stored);
+			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(data);
+			KeyFactory fact = KeyFactory.getInstance(algorithms);
+			return fact.generatePrivate(spec);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, "Private key valid", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			
+			return null;
+		}
+		
+	}
+
+	public PublicKey convertStringKeyToPublicKey(String stored)
+			 {
+		try{
+			byte[] data = decoder.decode(stored);
+			X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
+			KeyFactory fact = KeyFactory.getInstance(algorithms);
+			return fact.generatePublic(spec);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, "Public key valid", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return null;
+		}
+		
+	}
+
+	public PublicKey readPublicKey(String path) throws InvalidKeySpecException,
+			NoSuchAlgorithmException, IOException {
+		byte[] bytes = Files.readAllBytes(Paths.get(path));
+		String pubkeyString = new String(bytes, StandardCharsets.UTF_8);
+		bytes = decoder.decode(pubkeyString);
+		X509EncodedKeySpec ks = new X509EncodedKeySpec(bytes);
+		KeyFactory kf = KeyFactory.getInstance(algorithms);
+		System.out.println("Read Public key success!");
+
+		return kf.generatePublic(ks);
+
 	}
 
 	public KeyPair getKeypair() {
@@ -141,28 +195,15 @@ public class Asymmetric {
 		return encodedKey;
 	}
 
-	public Key convertStringKeyToSecretKey(String keyStr) {
-		byte[] decodKey = decoder.decode(keyStr);
-		Key originalKey = new SecretKeySpec(decodKey, 0, decodKey.length,
-				algorithms);
-		return originalKey;
-	}
-
 	public void setPublicKey(PublicKey publicKey) {
 		this.publicKey = publicKey;
-	}
-
-	public void setPublicKey(String publicKey) {
-		this.publicKey = (PublicKey) convertStringKeyToSecretKey(publicKey);
 	}
 
 	public PrivateKey getPrivateKey() {
 		return privateKey;
 	}
 
-	public void setPrivateKey(String privateKey) {
-		this.privateKey = (PrivateKey) convertStringKeyToSecretKey(privateKey);
-	}
+	
 
 	public void setPrivateKey(PrivateKey privateKey) {
 		this.privateKey = privateKey;

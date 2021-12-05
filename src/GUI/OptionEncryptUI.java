@@ -27,6 +27,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -38,21 +39,21 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 	JButton btnChooseInput, btnChooseOutput, btnCopy;
 	JRadioButton rdField, rdFile;
 	JPanel pnRadio, pnContainer, pnKeyField, pnKeyFile, pnFileInput,
-			pnFileOutput,pnCipher;
+			pnFileOutput,pnCipher,pnCipherContainer;
 	OptionSelectEncryptOrDecrypt pnSelectEnOrDe;
 	Dimension dimContainer, dimPlainText, dimRadioButton, dimBtnChoose;
 	JFileChooser fileKey;
-	JLabel lblFileInput, lblFileOutput;
+	JLabel lblFileInput, lblFileOutput,lblResult;
 	JTextArea txtPlain, txtCipher;
 	JScrollPane scrollPlain, scrollCipher;
 	File fileInput, fileOutput;
 	
 
 	public OptionEncryptUI() {
-		dimContainer = new Dimension(740, 255);
+		dimContainer = new Dimension(740, 330);
 		dimRadioButton = new Dimension(60, 20);
-		dimBtnChoose = new Dimension(100, 30);
-
+		dimBtnChoose = new Dimension(100, 40);
+		
 		pnSelectEnOrDe = new OptionSelectEncryptOrDecrypt();
 
 		rdField = new JRadioButton("String");
@@ -76,7 +77,9 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		fileKey = new JFileChooser();
 		txtPlain = new JTextArea(5, 60);
 		txtCipher = new JTextArea(1, 60);
-
+		pnCipherContainer = new JPanel(new BorderLayout());
+		lblResult = new JLabel("Result:",SwingConstants.CENTER);
+	
 		// remove focus painted button
 		btnChooseInput.setFocusPainted(false);
 		btnChooseOutput.setFocusPainted(false);
@@ -101,7 +104,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 		txtPlain.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		txtCipher.setFont(new Font("Monospaced", Font.PLAIN, 16));
-
+		lblResult.setFont(new Font("Dialog", Font.PLAIN, 14));
 		// action command
 		rdField.setActionCommand("rdField");
 		rdFile.setActionCommand("rdFile");
@@ -137,7 +140,10 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		add(pnRadio, BorderLayout.NORTH);
 		add(pnContainer, BorderLayout.CENTER);
 		pnKeyField.setLayout(new BorderLayout());
-pnCipher.add(scrollCipher);
+		pnCipherContainer.add(scrollCipher);
+		pnCipherContainer.add(lblResult,BorderLayout.WEST);
+		lblResult.setPreferredSize(new Dimension(60,40));
+pnCipher.add(pnCipherContainer);
 pnCipher.add(btnCopy,BorderLayout.EAST);
 		pnKeyField.add(scrollPlain);
 		pnKeyField.add(pnCipher, BorderLayout.SOUTH);
@@ -157,11 +163,13 @@ pnCipher.add(btnCopy,BorderLayout.EAST);
 		pnKeyFile.add(pnFileOutput, BorderLayout.CENTER);
 		add(pnSelectEnOrDe, BorderLayout.SOUTH);
 		// set border title
-		Border blackline = BorderFactory
-				.createTitledBorder("Encrypt or Decrypt");
-		setBorder(blackline);
-		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
-				Font.PLAIN, 13));
+		lblResult.setBounds(0, 50, 0, 0);
+		setBorder(new EmptyBorder(20, 20, 0, 20));
+//		Border blackline = BorderFactory
+//				.createTitledBorder("Encrypt or Decrypt");
+//		setBorder(blackline);
+//		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
+//				Font.PLAIN, 13));
 		addHandle();
 	}
 

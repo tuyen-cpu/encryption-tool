@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -44,7 +45,7 @@ public class TabHash extends JPanel implements ActionListener {
 	private JScrollPane scrollTxtInput;
 	private JFileChooser jFileChoose;
 	private File fileInput;
-	private Choice choiceAlgorithms;
+	private JComboBox choiceAlgorithms;
 	private String[] listAlgorithms = { Hash.MD5, Hash.SHA_1, Hash.SHA_224,
 			Hash.SHA_256, Hash.SHA_384, Hash.SHA_512_224, Hash.SHA_512_256 };
 
@@ -74,10 +75,7 @@ public class TabHash extends JPanel implements ActionListener {
 		lblResult = new JLabel("Hash code:");
 		jFileChoose = new JFileChooser();
 		pnAlgorithms = new JPanel();
-		choiceAlgorithms = new Choice();
-		for (String algo : listAlgorithms) {
-			choiceAlgorithms.add(algo);
-		}
+		choiceAlgorithms = new JComboBox(listAlgorithms);
 		// group radio button
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdString);
@@ -421,11 +419,13 @@ public class TabHash extends JPanel implements ActionListener {
 		this.fileInput = fileInput;
 	}
 
-	public Choice getChoiceAlgorithms() {
+
+
+	public JComboBox getChoiceAlgorithms() {
 		return choiceAlgorithms;
 	}
 
-	public void setChoiceAlgorithms(Choice choiceAlgorithms) {
+	public void setChoiceAlgorithms(JComboBox choiceAlgorithms) {
 		this.choiceAlgorithms = choiceAlgorithms;
 	}
 

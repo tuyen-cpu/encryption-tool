@@ -3,10 +3,15 @@ package GUI;
 import java.awt.Choice;
 import java.awt.Dimension;
 import java.awt.Font;
+
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.BoxLayout;
 public class OptionGeneralUI extends JPanel {
@@ -14,13 +19,13 @@ public class OptionGeneralUI extends JPanel {
 	private String[] listAlgorithms = { "AES", "DES", "DESede" };
 	private String[] listKeySize = { "128", "192", "256" };
 	private String[] listMode = { "CBC", "ECB","CFB","PCBC","OFB","CTR"};
-	private String[] listPadding = { "NoPadding", "PKCS5Padding" };
+	private String[] listPadding = { "PKCS5Padding","NoPadding" };
 	private String[] listKeySizeAES = { "128", "192", "256" };
 	private String[] listKeySizeDES = { "56" };
 	private String[] listKeySizeDESede = { "168","112" };
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblpadding;
-	Choice choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
-
+	JComboBox choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
+	DefaultComboBoxModel<String> model ;
 	private Dimension dimlbl, dimContainer;
 	private JPanel pnAlgorithms, pnKeySize, pnMode, pnPadding;
 
@@ -29,16 +34,11 @@ public class OptionGeneralUI extends JPanel {
 		dimlbl = new Dimension(67, 30);
 		
 
-		choiceAlgorithms = new Choice();
-		// choice.setBounds(100, 100, 150, 150);
+		choiceAlgorithms = new JComboBox(listAlgorithms);
+		choiceKeySize = new JComboBox(listKeySize);
+		choiceMode= new JComboBox(listMode);
+		choicePadding = new JComboBox(listPadding);
 		
-		setChoice(listAlgorithms, choiceAlgorithms);
-		choiceKeySize = new Choice();
-		setChoice(listKeySize, choiceKeySize);
-		choiceMode = new Choice();
-		setChoice(listMode, choiceMode);
-		choicePadding = new Choice();
-		setChoice(listPadding, choicePadding);
 		pnAlgorithms = new JPanel();
 		pnKeySize = new JPanel();
 		pnMode = new JPanel();
@@ -82,11 +82,11 @@ public class OptionGeneralUI extends JPanel {
 		add(pnKeySize);
 		add(pnMode);
 		add(pnPadding);
-
-		Border blackline = BorderFactory.createTitledBorder("Option");
-		setBorder(blackline);
-		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
-				Font.PLAIN, 13));
+		setBorder(new EmptyBorder(20, 0, 0, 0));
+//		Border blackline = BorderFactory.createTitledBorder("Option");
+//		setBorder(blackline);
+//		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
+//				Font.PLAIN, 13));
 
 	}
 
@@ -107,20 +107,23 @@ public class OptionGeneralUI extends JPanel {
 
 	public void changeContentChoice() {
 
-		switch (choiceAlgorithms.getSelectedItem()) {
+		switch ((String)choiceAlgorithms.getSelectedItem()) {
 		case "AES":
 			listKeySize = listKeySizeAES;
-			setChoice(listKeySize, choiceKeySize);
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
 			System.out.println("AES");
 			break;
 		case "DES":
 			listKeySize = listKeySizeDES;
-			setChoice(listKeySize, choiceKeySize);
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
 			System.out.println("DES");
 			break;
 		case "DESede":
 			listKeySize = listKeySizeDESede;
-			setChoice(listKeySize, choiceKeySize);
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
 			System.out.println("DESede");
 			break;
 		default:
@@ -193,35 +196,61 @@ public class OptionGeneralUI extends JPanel {
 		this.lblpadding = lblpadding;
 	}
 
-	public Choice getChoiceAlgorithms() {
+	
+
+	public String[] getListKeySizeAES() {
+		return listKeySizeAES;
+	}
+
+	public void setListKeySizeAES(String[] listKeySizeAES) {
+		this.listKeySizeAES = listKeySizeAES;
+	}
+
+	public String[] getListKeySizeDES() {
+		return listKeySizeDES;
+	}
+
+	public void setListKeySizeDES(String[] listKeySizeDES) {
+		this.listKeySizeDES = listKeySizeDES;
+	}
+
+	public String[] getListKeySizeDESede() {
+		return listKeySizeDESede;
+	}
+
+	public void setListKeySizeDESede(String[] listKeySizeDESede) {
+		this.listKeySizeDESede = listKeySizeDESede;
+	}
+
+	public JComboBox getChoiceAlgorithms() {
 		return choiceAlgorithms;
 	}
 
-	public void setChoiceAlgorithms(Choice choiceAlgorithms) {
+	public void setChoiceAlgorithms(JComboBox choiceAlgorithms) {
 		this.choiceAlgorithms = choiceAlgorithms;
 	}
 
-	public Choice getChoiceKeySize() {
+	public JComboBox getChoiceKeySize() {
 		return choiceKeySize;
 	}
 
-	public void setChoiceKeySize(Choice choiceKeySize) {
+	public void setChoiceKeySize(JComboBox choiceKeySize) {
 		this.choiceKeySize = choiceKeySize;
 	}
 
-	public Choice getChoiceMode() {
+	public JComboBox getChoiceMode() {
 		return choiceMode;
 	}
 
-	public void setChoiceMode(Choice choiceMode) {
+	public void setChoiceMode(JComboBox choiceMode) {
 		this.choiceMode = choiceMode;
 	}
 
-	public Choice getChoicePadding() {
+	public JComboBox getChoicePadding() {
 		return choicePadding;
 	}
 
-	public void setChoicePadding(Choice choicePadding) {
+	public void setChoicePadding(JComboBox choicePadding) {
 		this.choicePadding = choicePadding;
 	}
 

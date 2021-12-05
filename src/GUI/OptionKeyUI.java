@@ -8,6 +8,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -16,11 +17,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+
 import java.awt.FlowLayout;
 import java.io.File;
+
 import javax.swing.ImageIcon;
 
 public class OptionKeyUI extends JPanel implements ActionListener {
@@ -45,7 +49,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		btnCopy = new JButton();
 		btnCopy.setIcon(new ImageIcon(this.getClass().getResource("/img/copy.png")));
 		btnChooseFile = new JButton("Choose file");
-		lblKeyFile = new JLabel();
+		lblKeyFile = new JLabel("___",SwingConstants.CENTER);
 		txtKey = new JTextField();
 		pnRadio = new JPanel();
 		pnContainer = new JPanel();
@@ -57,8 +61,8 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		btnCopy.setFocusPainted(false);
 		btnChooseFile.setFocusPainted(false);
 
-		dimContainer = new Dimension(740, 108);
-		dimKeyField = new Dimension(500, 40);
+//		dimContainer = new Dimension(740, 108);
+		dimKeyField = new Dimension(550, 40);
 		dimBtnCreateKey = new Dimension(100, 40);
 		dimBtnCopyKey = new Dimension(60, 40);
 		dimRadioButton = new Dimension(60, 20);
@@ -111,7 +115,8 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 	
 
 		// lblKeyFile.setBorder(BorderFactory.createEtchedBorder());
-		lblKeyFile.setBorder(new EmptyBorder(0, 0, 0, 10));
+		lblKeyFile.setBounds(0, 0,0, 0);
+		pnKeyFile.setBorder(new EmptyBorder(0, 20, 0, 20));
 		// set layout panel
 		setLayout(new BorderLayout());
 		// add component
@@ -119,20 +124,21 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		pnRadio.add(rdFile);
 		add(pnRadio, BorderLayout.NORTH);
 		add(pnContainer, BorderLayout.CENTER);
+		pnContainer.setLayout(new BorderLayout(0, 0));
 		pnKeyField.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		pnKeyField.add(btnCreateKey);
 		pnKeyField.add(txtKey);
 		pnKeyField.add(btnCopy);
 		pnContainer.add(pnKeyField);
-		// pnContainer.add(pnKeyFile);
+//		 pnContainer.add(pnKeyFile);
 		pnKeyFile.setLayout(new BorderLayout());
-		pnKeyFile.add(lblKeyFile, BorderLayout.WEST);
-		pnKeyFile.add(btnChooseFile, BorderLayout.CENTER);
+		pnKeyFile.add(lblKeyFile, BorderLayout.CENTER);
+		pnKeyFile.add(btnChooseFile, BorderLayout.NORTH);
 		// set border title
-		Border blackline = BorderFactory.createTitledBorder("Key");
-		setBorder(blackline);
-		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
-				Font.PLAIN, 13));
+//		Border blackline = BorderFactory.createTitledBorder("Key");
+//		setBorder(blackline);
+//		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
+//				Font.PLAIN, 13));
 	}
 
 	public void copyIntoClipBoard(String txt) {
