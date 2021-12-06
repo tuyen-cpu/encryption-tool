@@ -50,7 +50,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 	
 
 	public OptionEncryptUI() {
-		dimContainer = new Dimension(740, 330);
+		dimContainer = new Dimension(740, 360);
 		dimRadioButton = new Dimension(60, 20);
 		dimBtnChoose = new Dimension(100, 40);
 		
@@ -129,6 +129,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		// lblFileOutput.setBorder(new EmptyBorder(0, 0, 0, 10));
 
 		// set Margin top
+		btnCopy.setBounds(0, 10, 0, 0);
+		pnCipher.setBorder(new EmptyBorder(5, 0, 0, 0));
 		pnFileInput.setBorder(new EmptyBorder(30, 0, 0, 0));
 		pnFileOutput.setBorder(new EmptyBorder(30, 0, 0, 0));
 		// set layout panel
@@ -164,7 +166,7 @@ pnCipher.add(btnCopy,BorderLayout.EAST);
 		add(pnSelectEnOrDe, BorderLayout.SOUTH);
 		// set border title
 		lblResult.setBounds(0, 50, 0, 0);
-		setBorder(new EmptyBorder(20, 20, 0, 20));
+		setBorder(new EmptyBorder(10, 20, 0, 20));
 //		Border blackline = BorderFactory
 //				.createTitledBorder("Encrypt or Decrypt");
 //		setBorder(blackline);

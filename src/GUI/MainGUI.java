@@ -2,6 +2,7 @@ package GUI;
 
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -12,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
@@ -28,12 +30,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+
 import javax.swing.BoxLayout;
 
 public class MainGUI {
@@ -136,6 +141,9 @@ public class MainGUI {
 	public void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("Main Frame");
+		
+       
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/logo.png")));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(pnMain, BorderLayout.CENTER);
 		// Display the window.

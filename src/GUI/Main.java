@@ -11,6 +11,8 @@ public class Main {
 
 		try {
 			UIManager.setLookAndFeel(new FlatIntelliJLaf());
+			
+			
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					MainGUI gui;
