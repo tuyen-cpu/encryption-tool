@@ -62,7 +62,7 @@ public class MainGUI {
 	String tabbedPaneCurrent;
 	String outText, textInput, inputFile, outputFile;
 	TabAsymmetric tabAsymmetric;
-
+	ImageIcon icon ;
 	public MainGUI() {
 		createComponent();
 		setFontComponent();
@@ -74,6 +74,7 @@ public class MainGUI {
 		addAlgorithmsAllTab();
 
 		addHandle();
+		
 	}
 
 	public void addAlgorithmsAllTab() {
@@ -101,6 +102,7 @@ public class MainGUI {
 	}
 
 	public void addComponent() {
+		
 		tabbedPane.addTab("Symmetric", null, pnSymmetric,
 				"Symmetric encryption");
 		tabbedPane.addTab("Asymmetric", null, pnAsymmetric,
@@ -131,7 +133,7 @@ public class MainGUI {
 		pnOption = new OptionGeneralUI();
 		pnKey = new OptionKeyUI();
 		pnEncrypt = new OptionEncryptUI();
-
+		icon = new ImageIcon(this.getClass().getResource("/img/success.png")); 
 		tabAsymmetric = new TabAsymmetric();
 		tabHash = new TabHash();
 		pnMain = new JPanel();
@@ -335,8 +337,12 @@ public class MainGUI {
 					inputFile = pnEncrypt.getLblFileInput().getText();
 					outputFile = pnEncrypt.getLblFileOutput().getText();
 					symmetric.encrypt(inputFile, outputFile);
-					JOptionPane.showMessageDialog(null, "Mã hóa thành công",
-							"Success", JOptionPane.OK_OPTION);
+					 
+					JOptionPane.showMessageDialog(
+	                        null,
+	                        "Successful encryption!",
+	                        "Success", JOptionPane.INFORMATION_MESSAGE,
+	                        icon);
 				} else {
 					System.out.println("Encrypt with string");
 					outText = symmetric.encrypt(textInput);
@@ -345,10 +351,20 @@ public class MainGUI {
 				if (pnEncrypt.getRdFile().isSelected()) {
 					inputFile = pnEncrypt.getLblFileInput().getText();
 					outputFile = pnEncrypt.getLblFileOutput().getText();
-					symmetric.decrypt(inputFile, outputFile);
-					System.out.println("Decrypt with string");
-					JOptionPane.showMessageDialog(null, "Giải mã thành công",
-							"Success", JOptionPane.OK_OPTION);
+					try{
+						symmetric.decrypt(inputFile, outputFile);
+						JOptionPane.showMessageDialog(
+		                        null,
+		                        "Successful decryption!",
+		                        "Success", JOptionPane.INFORMATION_MESSAGE,
+		                        icon);
+					}catch(Exception e){
+						JOptionPane.showMessageDialog(null, "Decryption failed",
+								"Success", JOptionPane.OK_OPTION);
+					}
+					
+					
+					
 				} else {
 					System.out.println("Decrypt with string");
 					outText = symmetric.decrypt(textInput);
@@ -416,8 +432,10 @@ public class MainGUI {
 			if (tabAsymmetric.getOptionEncryptUI().getPnSelectEnOrDe()
 					.getRdEncrypt().isSelected()) {
 				try {
+					System.out.println(tabAsymmetric
+							.getPublicFile().getAbsolutePath());
 					publickey = asymmetric.readPublicKey(tabAsymmetric
-							.getLblInputKeyPublic().getText());
+							.getPublicFile().getAbsolutePath());
 
 				} catch (InvalidKeySpecException | NoSuchAlgorithmException
 						| IOException e) {
@@ -426,10 +444,8 @@ public class MainGUI {
 				}
 			} else {
 				try {
-					privatekey = asymmetric.readPrivateKey(tabAsymmetric
-							.getLblInputKeyPrivate().getText());
-					System.out.println(tabAsymmetric.getLblInputKeyPrivate()
-							.getText());
+					privatekey = asymmetric.readPrivateKey(tabAsymmetric.getPrivateFile().getAbsolutePath());
+					System.out.println(tabAsymmetric.getPrivateFile().getAbsolutePath());
 
 				} catch (InvalidKeySpecException | NoSuchAlgorithmException
 						| IOException e) {

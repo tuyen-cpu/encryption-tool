@@ -16,10 +16,8 @@ public class Main {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					MainGUI gui;
-				
 						gui = new MainGUI();
 						gui.createAndShowGUI();
-					
 				}
 			});
 		} catch (Exception e) {

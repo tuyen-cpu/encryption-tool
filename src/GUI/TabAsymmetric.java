@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -35,9 +36,9 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 	private String[] listKeySize = { "1024", "2048", "3072", "4069" };
 	private JPanel pnOption, pnKey, pnEncypt, pnAlgorithms, pnKeySize, pnMode,
 			pnPadding, pnOptionKey, pnContainerKey, pnFieldPublic,pnPrivateKey,
-			pnFieldPrivate, pnFilePublic, pnFilePrivte, pnFileKey;
+			pnFieldPrivate, pnFilePublic, pnFilePrivte, pnFileKey,pnFieldPublicContainer,pnSum;
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblPadding,
-			lblInputKeyPublic, lblInputKeyPrivate,lblPrivatekey;
+			lblPrivatekey;
 	private JComboBox choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
 	private JButton btnCreateKey, btnImportPublicKey, btnImportPrivatekey,
 			btnCopyPrivateKey, btnCopyPublicKey;
@@ -45,7 +46,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 	private JTextField txtPublicKey, txtPrivateKey;
 	private Dimension dmTxtKey, dmBtnCopy, dmBtnCreate, dmChoose;
 	private OptionEncryptUI optionEncryptUI;
-	File fileChoose;
+	File publicFile,privateFile;
 	JFileChooser jFileChoose;
 
 	public TabAsymmetric() {
@@ -61,6 +62,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		dmBtnCopy = new Dimension(60, 40);
 		dmBtnCreate = new Dimension(120, 40);
 		dmChoose = new Dimension(140, 40);
+		pnFieldPublicContainer = new JPanel(new BorderLayout());
+		pnSum = new JPanel(new BorderLayout());
 		pnOption = new JPanel();
 		pnAlgorithms = new JPanel();
 		pnKeySize = new JPanel();
@@ -77,7 +80,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		choiceMode = new JComboBox(listMode);
 		choicePadding = new JComboBox(listPadding);
 		btnCreateKey = new JButton("Create key");
-		pnOptionKey = new JPanel();
+		pnOptionKey = new JPanel(new GridBagLayout());
 		pnContainerKey = new JPanel(new BorderLayout());
 		rdString = new JRadioButton("String");
 		rdFile = new JRadioButton("File");
@@ -93,20 +96,19 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 				"/img/copy.png")));
 		btnCopyPublicKey.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/copy.png")));
-		pnFieldPublic = new JPanel();
-		pnFieldPrivate = new JPanel();
+		pnFieldPublic = new JPanel(new BorderLayout());
+		pnFieldPrivate = new JPanel(new BorderLayout());
 		pnFilePublic = new JPanel();
 		pnFilePrivte = new JPanel();
 		pnFileKey = new JPanel(new BorderLayout());
-		lblInputKeyPublic = new JLabel();
-		lblInputKeyPrivate = new JLabel();
+		
 		btnImportPublicKey = new JButton("Choose key public");
 		btnImportPrivatekey = new JButton("Choose key private");
 		optionEncryptUI = new OptionEncryptUI();
 		optionEncryptUI.remove(optionEncryptUI.pnRadio);
 		jFileChoose = new JFileChooser();
 		pnPrivateKey = new JPanel(new BorderLayout());
-		lblPrivatekey = new JLabel("Private key:");
+		lblPrivatekey = new JLabel("Private key:",SwingConstants.CENTER);
 	}
 
 	public void addComponent() {
@@ -125,39 +127,42 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnOption.add(pnKeySize);
 		pnOption.add(pnMode);
 		pnOption.add(pnPadding);
-		pnKey.add(pnOptionKey, BorderLayout.NORTH);
-		pnKey.add(pnContainerKey);
+		pnKey.add(pnOptionKey, BorderLayout.CENTER);
+		pnKey.add(pnSum, BorderLayout.SOUTH);
 		pnOptionKey.add(rdString);
 		pnOptionKey.add(rdFile);
-
-		pnFieldPublic.add(btnCreateKey);
+		pnSum.add(pnContainerKey);
+//		pnSum.add(pnFileKey);
+		pnFieldPublic.add(btnCreateKey,BorderLayout.WEST);
 		pnFieldPublic.add(txtPublicKey);
-		pnFieldPublic.add(btnCopyPublicKey);
-
+		pnFieldPublicContainer.add(pnFieldPublic);
+		pnFieldPublicContainer.add(btnCopyPublicKey,BorderLayout.EAST);
+		pnFieldPrivate.add(btnCopyPrivateKey,BorderLayout.EAST);
 		pnFieldPrivate.add(pnPrivateKey);
 		pnPrivateKey.add(lblPrivatekey,BorderLayout.WEST);
 		pnPrivateKey.add(txtPrivateKey);
-		pnFieldPrivate.add(btnCopyPrivateKey);
 
-		pnContainerKey.add(pnFieldPublic, BorderLayout.NORTH);
-		pnContainerKey.add(pnFieldPrivate);
+		pnContainerKey.add(pnFieldPublicContainer, BorderLayout.NORTH);
+		pnContainerKey.add(pnFieldPrivate, BorderLayout.SOUTH);
+		pnFilePrivte.setLayout(new BorderLayout(0, 0));
 
-		pnFilePrivte.add(lblInputKeyPrivate);
+	
 		pnFilePrivte.add(btnImportPrivatekey);
+		pnFilePublic.setLayout(new BorderLayout(0, 0));
 
-		pnFilePublic.add(lblInputKeyPublic);
+	
 		pnFilePublic.add(btnImportPublicKey);
 
 		pnFileKey.add(pnFilePublic, BorderLayout.NORTH);
-		pnFileKey.add(pnFilePrivte);
+		pnFileKey.add(pnFilePrivte, BorderLayout.SOUTH);
 		add(pnOption, BorderLayout.NORTH);
 		add(pnKey, BorderLayout.CENTER);
 		add(optionEncryptUI, BorderLayout.SOUTH);
 		optionEncryptUI.getTxtPlain().setSize(7, 50);
-		optionEncryptUI.setPreferredSize(new Dimension(750, 265));
+//		optionEncryptUI.setPreferredSize(new Dimension(750, 265));
 //		Border optionLine = BorderFactory.createTitledBorder("Option");
 //		pnOption.setBorder(optionLine);
-		setBorder(new EmptyBorder(5, 10, 10, 10));
+		setBorder(new EmptyBorder(5, 0, 10, 0));
 //		((TitledBorder) pnOption.getBorder()).setTitleFont(new Font("Dialog",
 //				Font.PLAIN, 13));
 //		Border keyLine = BorderFactory.createTitledBorder("Key");
@@ -172,8 +177,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		btnCopyPublicKey.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnImportPrivatekey.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnImportPublicKey.setFont(new Font("Dialog", Font.PLAIN, 12));
-		lblInputKeyPrivate.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblInputKeyPublic.setFont(new Font("Dialog", Font.PLAIN, 14));
+		
 		btnCreateKey.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblPrivatekey.setFont(new Font("Dialog", Font.PLAIN, 14));
 		pnAlgorithms.setBorder(new EmptyBorder(0, 5, 0, 5));
@@ -186,7 +190,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		choicePadding.setFocusable(false);
 
 		pnFieldPrivate.setBorder(new EmptyBorder(-5, 45, 0, 0));
-		lblPrivatekey.setPreferredSize(new Dimension(80,40));
+		lblPrivatekey.setPreferredSize(new Dimension(120,40));
 		txtPublicKey.setPreferredSize(dmTxtKey);
 		txtPrivateKey.setPreferredSize(dmTxtKey);
 		btnCreateKey.setPreferredSize(dmBtnCreate);
@@ -197,7 +201,10 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		choicePadding.setPreferredSize(new Dimension(190,30));
 		optionEncryptUI.getBtnChooseInput().setPreferredSize(dmChoose);
 		optionEncryptUI.getBtnChooseOutput().setPreferredSize(dmChoose);
-		pnOption.setBorder(new EmptyBorder(20, 0, 20, 0));
+		pnOption.setBorder(new EmptyBorder(20, 10, 20, 10));
+		pnKey.setBorder(new EmptyBorder(0, 20, 0, 20));
+		pnFieldPrivate.setBorder(new EmptyBorder(0, 0, 0, 0));
+		optionEncryptUI.setPreferredSize( new Dimension(740, 280));
 	}
 
 	public void addHandle() {
@@ -209,8 +216,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					fileChoose = openFile();
-					lblInputKeyPrivate.setText(fileChoose.getAbsolutePath());
+					privateFile = openFile();
+					btnImportPrivatekey.setText(privateFile.getAbsolutePath());
 				} catch (Exception ex) {
 					System.out.println("Cancel choose file");
 				}
@@ -222,8 +229,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					fileChoose = openFile();
-					lblInputKeyPublic.setText(fileChoose.getAbsolutePath());
+					publicFile = openFile();
+					btnImportPublicKey.setText(publicFile.getAbsolutePath());
 				} catch (Exception ex) {
 					System.out.println("Cancel choose file");
 				}
@@ -251,6 +258,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 	public File openFile() {
 		int select = jFileChoose.showOpenDialog(null);
 		if (select == JFileChooser.APPROVE_OPTION) {
+			System.out.println(jFileChoose.getSelectedFile().getAbsolutePath());
 			return jFileChoose.getSelectedFile();
 		} else {
 			System.out.println("Cancel");
@@ -269,16 +277,16 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("rdString")) {
 			System.out.println("rdString");
-			pnKey.remove(pnFileKey);
-			pnKey.add(pnContainerKey);
-			pnKey.revalidate();
-			pnKey.repaint();
+			pnSum.remove(pnFileKey);
+			pnSum.add(pnContainerKey);
+			pnSum.revalidate();
+			pnSum.repaint();
 		} else {
 			System.out.println("rdFile");
-			pnKey.remove(pnContainerKey);
-			pnKey.add(pnFileKey);
-			pnKey.revalidate();
-			pnKey.repaint();
+			pnSum.remove(pnContainerKey);
+			pnSum.add(pnFileKey);
+			pnSum.revalidate();
+			pnSum.repaint();
 
 		}
 
@@ -463,21 +471,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		this.lblPadding = lblPadding;
 	}
 
-	public JLabel getLblInputKeyPublic() {
-		return lblInputKeyPublic;
-	}
 
-	public void setLblInputKeyPublic(JLabel lblInputKeyPublic) {
-		this.lblInputKeyPublic = lblInputKeyPublic;
-	}
-
-	public JLabel getLblInputKeyPrivate() {
-		return lblInputKeyPrivate;
-	}
-
-	public void setLblInputKeyPrivate(JLabel lblInputKeyPrivate) {
-		this.lblInputKeyPrivate = lblInputKeyPrivate;
-	}
 
 	
 
@@ -633,13 +627,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		this.dmChoose = dmChoose;
 	}
 
-	public File getFileChoose() {
-		return fileChoose;
-	}
 
-	public void setFileChoose(File fileChoose) {
-		this.fileChoose = fileChoose;
-	}
 
 	public JFileChooser getjFileChoose() {
 		return jFileChoose;
@@ -651,6 +639,38 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 
 	public void setOptionEncryptUI(OptionEncryptUI optionEncryptUI) {
 		this.optionEncryptUI = optionEncryptUI;
+	}
+
+	public JPanel getPnFieldPublicContainer() {
+		return pnFieldPublicContainer;
+	}
+
+	public void setPnFieldPublicContainer(JPanel pnFieldPublicContainer) {
+		this.pnFieldPublicContainer = pnFieldPublicContainer;
+	}
+
+	public JPanel getPnSum() {
+		return pnSum;
+	}
+
+	public void setPnSum(JPanel pnSum) {
+		this.pnSum = pnSum;
+	}
+
+	public File getPublicFile() {
+		return publicFile;
+	}
+
+	public void setPublicFile(File publicFile) {
+		this.publicFile = publicFile;
+	}
+
+	public File getPrivateFile() {
+		return privateFile;
+	}
+
+	public void setPrivateFile(File privateFile) {
+		this.privateFile = privateFile;
 	}
 	
 }

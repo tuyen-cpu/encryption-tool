@@ -16,12 +16,15 @@ import javax.swing.border.TitledBorder;
 import javax.swing.BoxLayout;
 public class OptionGeneralUI extends JPanel {
 
-	private String[] listAlgorithms = { "AES", "DES", "DESede" };
+	private String[] listAlgorithms = {"Twofish","AES", "DES", "DESede","RC2","ARCFOUR","Blowfish" };
 	private String[] listKeySize = { "128", "192", "256" };
 	private String[] listMode = { "CBC", "ECB","CFB","PCBC","OFB","CTR"};
 	private String[] listPadding = { "PKCS5Padding","NoPadding" };
 	private String[] listKeySizeAES = { "128", "192", "256" };
 	private String[] listKeySizeDES = { "56" };
+	private String[] listKeySizeBlowfish = { "40","128", "192", "256","448"};
+	
+	private String[] listKeySizeRC2 = { "40","128", "192", "256","512","1024" };
 	private String[] listKeySizeDESede = { "168","112" };
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblpadding;
 	JComboBox choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
@@ -122,6 +125,24 @@ public class OptionGeneralUI extends JPanel {
 			break;
 		case "DESede":
 			listKeySize = listKeySizeDESede;
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
+			System.out.println("DESede");
+			break;
+		case "RC2":
+			listKeySize = listKeySizeRC2;
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
+			System.out.println("DESede");
+			break;
+		case "RC4":
+			listKeySize = listKeySizeRC2;
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
+			System.out.println("DESede");
+			break;
+		case "Blowfish":
+			listKeySize = listKeySizeBlowfish;
 			model = new DefaultComboBoxModel<String>(listKeySize);
 			choiceKeySize.setModel(model);
 			System.out.println("DESede");
