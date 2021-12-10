@@ -39,37 +39,35 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 	JButton btnChooseInput, btnChooseOutput, btnCopy;
 	JRadioButton rdField, rdFile;
 	JPanel pnRadio, pnContainer, pnKeyField, pnKeyFile, pnFileInput,
-			pnFileOutput,pnCipher,pnCipherContainer;
+			pnFileOutput, pnCipher, pnCipherContainer, pnBtnOutput, pnBtnInput;
 	OptionSelectEncryptOrDecrypt pnSelectEnOrDe;
 	Dimension dimContainer, dimPlainText, dimRadioButton, dimBtnChoose;
 	JFileChooser fileKey;
-	JLabel lblFileInput, lblFileOutput,lblResult;
+	JLabel lblResult;
 	JTextArea txtPlain, txtCipher;
 	JScrollPane scrollPlain, scrollCipher;
 	File fileInput, fileOutput;
-	
 
 	public OptionEncryptUI() {
 		dimContainer = new Dimension(740, 360);
 		dimRadioButton = new Dimension(60, 20);
 		dimBtnChoose = new Dimension(100, 40);
-		
+		pnBtnOutput = new JPanel();
+		pnBtnInput = new JPanel();
 		pnSelectEnOrDe = new OptionSelectEncryptOrDecrypt();
 
 		rdField = new JRadioButton("String");
 		rdFile = new JRadioButton("File");
 
-		lblFileInput = new JLabel();
-		lblFileOutput = new JLabel();
-
-		pnFileOutput = new JPanel();
-		pnFileInput = new JPanel();
+		pnFileOutput = new JPanel(new BorderLayout());
+		pnFileInput = new JPanel(new BorderLayout());
 		pnCipher = new JPanel(new BorderLayout());
 		btnChooseInput = new JButton("File Input");
 		btnChooseOutput = new JButton("File Output");
 		btnCopy = new JButton();
-		btnCopy.setIcon(new ImageIcon(this.getClass().getResource("/img/copy.png")));
-		btnCopy.setPreferredSize(new Dimension(60,40));
+		btnCopy.setIcon(new ImageIcon(this.getClass().getResource(
+				"/img/copy.png")));
+		btnCopy.setPreferredSize(new Dimension(60, 40));
 		pnRadio = new JPanel();
 		pnContainer = new JPanel();
 		pnKeyField = new JPanel();
@@ -78,8 +76,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		txtPlain = new JTextArea(5, 60);
 		txtCipher = new JTextArea(1, 60);
 		pnCipherContainer = new JPanel(new BorderLayout());
-		lblResult = new JLabel("Result:",SwingConstants.CENTER);
-	
+		lblResult = new JLabel("Result:", SwingConstants.CENTER);
+
 		// remove focus painted button
 		btnChooseInput.setFocusPainted(false);
 		btnChooseOutput.setFocusPainted(false);
@@ -98,9 +96,6 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 		btnChooseInput.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnChooseOutput.setFont(new Font("Dialog", Font.PLAIN, 12));
-
-		lblFileInput.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblFileOutput.setFont(new Font("Dialog", Font.PLAIN, 14));
 
 		txtPlain.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		txtCipher.setFont(new Font("Monospaced", Font.PLAIN, 16));
@@ -143,23 +138,25 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		add(pnContainer, BorderLayout.CENTER);
 		pnKeyField.setLayout(new BorderLayout());
 		pnCipherContainer.add(scrollCipher);
-		pnCipherContainer.add(lblResult,BorderLayout.WEST);
-		lblResult.setPreferredSize(new Dimension(60,40));
-pnCipher.add(pnCipherContainer);
-pnCipher.add(btnCopy,BorderLayout.EAST);
+		pnCipherContainer.add(lblResult, BorderLayout.WEST);
+		lblResult.setPreferredSize(new Dimension(60, 40));
+		pnCipher.add(pnCipherContainer);
+		pnCipher.add(btnCopy, BorderLayout.EAST);
 		pnKeyField.add(scrollPlain);
 		pnKeyField.add(pnCipher, BorderLayout.SOUTH);
 		pnContainer.setLayout(new BorderLayout());
 
 		pnContainer.add(pnKeyField);
 		// pnContainer.add(pnKeyFile);
+		pnBtnOutput.setLayout(new BorderLayout(0, 0));
 
-		pnFileOutput.add(lblFileOutput);
-		pnFileOutput.add(btnChooseOutput);
+		pnBtnOutput.add(btnChooseOutput);
+		pnFileOutput.add(pnBtnOutput, BorderLayout.NORTH);
 		pnKeyFile.setLayout(new BorderLayout());
+		pnBtnInput.setLayout(new BorderLayout(0, 0));
 
-		pnFileInput.add(lblFileInput);
-		pnFileInput.add(btnChooseInput);
+		pnBtnInput.add(btnChooseInput);
+		pnFileInput.add(pnBtnInput);
 
 		pnKeyFile.add(pnFileInput, BorderLayout.NORTH);
 		pnKeyFile.add(pnFileOutput, BorderLayout.CENTER);
@@ -167,11 +164,11 @@ pnCipher.add(btnCopy,BorderLayout.EAST);
 		// set border title
 		lblResult.setBounds(0, 50, 0, 0);
 		setBorder(new EmptyBorder(10, 20, 0, 20));
-//		Border blackline = BorderFactory
-//				.createTitledBorder("Encrypt or Decrypt");
-//		setBorder(blackline);
-//		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
-//				Font.PLAIN, 13));
+		// Border blackline = BorderFactory
+		// .createTitledBorder("Encrypt or Decrypt");
+		// setBorder(blackline);
+		// ((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
+		// Font.PLAIN, 13));
 		addHandle();
 	}
 
@@ -182,7 +179,7 @@ pnCipher.add(btnCopy,BorderLayout.EAST);
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					fileInput = openFile();
-					lblFileInput.setText(fileInput.getAbsolutePath());
+					btnChooseInput.setText(fileInput.getAbsolutePath());
 					;
 				} catch (Exception e) {
 					System.out.println("Cancel choose file");
@@ -195,21 +192,21 @@ pnCipher.add(btnCopy,BorderLayout.EAST);
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					fileOutput = openFile();
-					lblFileOutput.setText(fileOutput.getAbsolutePath());
+					btnChooseOutput.setText(fileOutput.getAbsolutePath());
 				} catch (Exception e) {
 					System.out.println("Cancel choose file");
 				}
 
 			}
 		});
-btnCopy.addActionListener(new ActionListener() {
-	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		copyIntoClipBoard(txtCipher.getText());
-		
-	}
-});
+		btnCopy.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				copyIntoClipBoard(txtCipher.getText());
+
+			}
+		});
 	}
 
 	public void copyIntoClipBoard(String txt) {
@@ -371,22 +368,6 @@ btnCopy.addActionListener(new ActionListener() {
 
 	public void setFileKey(JFileChooser fileKey) {
 		this.fileKey = fileKey;
-	}
-
-	public JLabel getLblFileInput() {
-		return lblFileInput;
-	}
-
-	public void setLblFileInput(JLabel lblFileInput) {
-		this.lblFileInput = lblFileInput;
-	}
-
-	public JLabel getLblFileOutput() {
-		return lblFileOutput;
-	}
-
-	public void setLblFileOutput(JLabel lblFileOutput) {
-		this.lblFileOutput = lblFileOutput;
 	}
 
 	public JTextArea getTxtPlain() {

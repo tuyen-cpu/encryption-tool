@@ -16,7 +16,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.BoxLayout;
 public class OptionGeneralUI extends JPanel {
 
-	private String[] listAlgorithms = {"Twofish","AES", "DES", "DESede","RC2","ARCFOUR","Blowfish" };
+	private String[] listAlgorithms = {"Twofish","AES", "DES", "DESede","RC2","RC4","Blowfish" };
 	private String[] listKeySize = { "128", "192", "256" };
 	private String[] listMode = { "CBC", "ECB","CFB","PCBC","OFB","CTR"};
 	private String[] listPadding = { "PKCS5Padding","NoPadding" };
@@ -93,12 +93,6 @@ public class OptionGeneralUI extends JPanel {
 
 	}
 
-	public void setChoice(String[] listValue, Choice choice) {
-		choice.removeAll();
-		for (String algo : listValue) {
-			choice.add(algo);
-		}
-	}
 
 	public void addComponentIntoPanelKeySize() {
 		pnKeySize.add(lblKeySize);
@@ -130,12 +124,6 @@ public class OptionGeneralUI extends JPanel {
 			System.out.println("DESede");
 			break;
 		case "RC2":
-			listKeySize = listKeySizeRC2;
-			model = new DefaultComboBoxModel<String>(listKeySize);
-			choiceKeySize.setModel(model);
-			System.out.println("DESede");
-			break;
-		case "RC4":
 			listKeySize = listKeySizeRC2;
 			model = new DefaultComboBoxModel<String>(listKeySize);
 			choiceKeySize.setModel(model);

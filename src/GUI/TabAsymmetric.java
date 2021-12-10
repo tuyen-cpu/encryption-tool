@@ -105,7 +105,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		btnImportPublicKey = new JButton("Choose key public");
 		btnImportPrivatekey = new JButton("Choose key private");
 		optionEncryptUI = new OptionEncryptUI();
-		optionEncryptUI.remove(optionEncryptUI.pnRadio);
+	
 		jFileChoose = new JFileChooser();
 		pnPrivateKey = new JPanel(new BorderLayout());
 		lblPrivatekey = new JLabel("Private key:",SwingConstants.CENTER);

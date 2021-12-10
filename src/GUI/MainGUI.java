@@ -3,6 +3,7 @@ package GUI;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -24,6 +25,7 @@ import javax.swing.event.ChangeListener;
 
 import algorithms.Asymmetric;
 import algorithms.Hash;
+import algorithms.RSAFile;
 import algorithms.Symmetric;
 
 import java.awt.event.ActionListener;
@@ -42,12 +44,7 @@ import java.security.spec.InvalidKeySpecException;
 import javax.swing.BoxLayout;
 
 public class MainGUI {
-
-	public static String TAB_SYMMETRIC = "Symmetric";
-	public static String TAB_ASYMMETRIC = "Asymmetric";
-	public static String TAB_PBE = "PBE";
-	public static String TAB_HASH = "HASH";
-	private JPanel pnMain, pnSymmetric, pnBtnStart, pnAsymmetric, pnPBE,
+	private JPanel pnMain, pnSymmetric, pnBtnStart, pnAsymmetric, pnCombine,
 			pnHash;
 	OptionGeneralUI pnOption;
 	OptionKeyUI pnKey;
@@ -59,10 +56,12 @@ public class MainGUI {
 	int keysize;
 	Symmetric symmetric;
 	Asymmetric asymmetric;
+	RSAFile rsaFile;
 	String tabbedPaneCurrent;
 	String outText, textInput, inputFile, outputFile;
-	TabAsymmetric tabAsymmetric;
-	ImageIcon icon ;
+	TabAsymmetric tabAsymmetric, tabCombine;
+	ImageIcon icon;
+
 	public MainGUI() {
 		createComponent();
 		setFontComponent();
@@ -74,7 +73,7 @@ public class MainGUI {
 		addAlgorithmsAllTab();
 
 		addHandle();
-		
+
 	}
 
 	public void addAlgorithmsAllTab() {
@@ -83,7 +82,9 @@ public class MainGUI {
 			symmetric.createKey();
 			asymmetric = new Asymmetric("RSA", "ECB", "PKCS1Padding", 515);
 			asymmetric.genkey();
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			rsaFile = new RSAFile("AES", 128, "CBC", "PKCS5Padding");
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException
+				| IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -102,15 +103,16 @@ public class MainGUI {
 	}
 
 	public void addComponent() {
-		
+
 		tabbedPane.addTab("Symmetric", null, pnSymmetric,
 				"Symmetric encryption");
 		tabbedPane.addTab("Asymmetric", null, pnAsymmetric,
 				"Asymmetric encryption");
-		tabbedPane.addTab("PBE", null, pnPBE, null);
+		tabbedPane.addTab("Combine", null, pnCombine, null);
 		tabbedPane.addTab("Hash", null, pnHash, null);
 		pnHash.add(tabHash, BorderLayout.CENTER);
 		pnAsymmetric.add(tabAsymmetric, BorderLayout.CENTER);
+
 		pnSymmetric.setLayout(new BoxLayout(pnSymmetric, BoxLayout.Y_AXIS));
 		pnSymmetric.add(pnOption);
 		pnSymmetric.add(pnKey);
@@ -118,6 +120,7 @@ public class MainGUI {
 		pnBtnStart.add(btnStart);
 		pnMain.add(tabbedPane, BorderLayout.CENTER);
 		pnMain.add(pnBtnStart, BorderLayout.SOUTH);
+		pnCombine.add(tabCombine, BorderLayout.CENTER);
 
 	}
 
@@ -128,24 +131,100 @@ public class MainGUI {
 		btnStart = new JButton("Start");
 		pnSymmetric = new JPanel();
 		pnAsymmetric = new JPanel(new BorderLayout());
-		pnPBE = new JPanel();
+
+		pnCombine = new JPanel(new BorderLayout());
 		pnHash = new JPanel(new BorderLayout());
 		pnOption = new OptionGeneralUI();
 		pnKey = new OptionKeyUI();
 		pnEncrypt = new OptionEncryptUI();
-		icon = new ImageIcon(this.getClass().getResource("/img/success.png")); 
+		icon = new ImageIcon(this.getClass().getResource("/img/success.png"));
 		tabAsymmetric = new TabAsymmetric();
+		tabAsymmetric.getOptionEncryptUI().remove(
+				tabAsymmetric.getOptionEncryptUI().getPnRadio());
+		tabCombine = new TabAsymmetric();
+		setListTabCombine();
 		tabHash = new TabHash();
 		pnMain = new JPanel();
 		pnMain.setLayout(new BorderLayout());
 	}
 
+	public void setListTabCombine() {
+		DefaultComboBoxModel model;
+		System.out.println("ZOO");
+		tabCombine.setListAlgorithms(TabCombine.listAlgorithms);
+		model = new DefaultComboBoxModel<String>(TabCombine.listAlgorithms);
+		tabCombine.getChoiceAlgorithms().setModel(model);
+
+		tabCombine.setListKeySize(TabCombine.listKeySize);
+		model = new DefaultComboBoxModel<String>(TabCombine.listKeySize);
+		tabCombine.getChoiceKeySize().setModel(model);
+
+		tabCombine.setListMode(TabCombine.listMode);
+		model = new DefaultComboBoxModel<String>(TabCombine.listMode);
+		tabCombine.getChoiceMode().setModel(model);
+
+		tabCombine.setListPadding(TabCombine.listPadding);
+		model = new DefaultComboBoxModel<String>(TabCombine.listPadding);
+		tabCombine.getChoicePadding().setModel(model);
+
+		tabCombine.getChoiceAlgorithms().addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				DefaultComboBoxModel<String> model;
+				switch ((String) tabCombine.getChoiceAlgorithms()
+						.getSelectedItem()) {
+
+				case "AES":
+					tabCombine.setListKeySize(TabCombine.listKeySizeAES);
+					model = new DefaultComboBoxModel<String>(
+							TabCombine.listKeySizeAES);
+					tabCombine.getChoiceKeySize().setModel(model);
+					System.out.println("AES");
+					break;
+				case "DES":
+					tabCombine.setListKeySize(TabCombine.listKeySizeDES);
+					model = new DefaultComboBoxModel<String>(
+							TabCombine.listKeySizeDES);
+					tabCombine.getChoiceKeySize().setModel(model);
+					System.out.println("DES");
+					break;
+				case "DESede":
+					tabCombine.setListKeySize(TabCombine.listKeySizeDESede);
+					model = new DefaultComboBoxModel<String>(
+							TabCombine.listKeySizeDESede);
+					tabCombine.getChoiceKeySize().setModel(model);
+					System.out.println("DESede");
+					break;
+				case "RC2":
+					tabCombine.setListKeySize(TabCombine.listKeySizeRC2);
+					model = new DefaultComboBoxModel<String>(
+							TabCombine.listKeySizeRC2);
+					tabCombine.getChoiceKeySize().setModel(model);
+					System.out.println("DESede");
+					break;
+				case "Blowfish":
+					tabCombine.setListKeySize(TabCombine.listKeySizeBlowfish);
+					model = new DefaultComboBoxModel<String>(
+							TabCombine.listKeySizeBlowfish);
+					tabCombine.getChoiceKeySize().setModel(model);
+					System.out.println("DESede");
+					break;
+				default:
+					break;
+				}
+
+			}
+		});
+
+	}
+
 	public void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("Main Frame");
-		
-       
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/logo.png")));
+
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("/img/logo.png")));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(pnMain, BorderLayout.CENTER);
 		// Display the window.
@@ -213,6 +292,31 @@ public class MainGUI {
 
 			}
 		});
+		// create key combine
+		tabCombine.getBtnCreateKey().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				addControllOptionCombineTab();
+				try {
+					tabCombine.getTxtPrivateKey().setText("");
+					tabCombine.getTxtPublicKey().setText("");
+
+					rsaFile = new RSAFile(algorithm, keysize, mode, padding);
+					rsaFile.doGenkey();
+					tabCombine.getTxtPrivateKey().setText(
+							rsaFile.getPrivateKeyWithString());
+					tabCombine.getTxtPublicKey().setText(
+							rsaFile.getPublicKeyWithString());
+
+				} catch (NoSuchAlgorithmException | NoSuchPaddingException
+						| IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		});
 		btnStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -225,9 +329,9 @@ public class MainGUI {
 					System.out.println("Handle tab Asymmetric");
 					handleTabAsymmetric();
 					break;
-				case "PBE":
-					System.out.println("Handle tab PBE");
-					handleTabPBE();
+				case "Combine":
+					System.out.println("Handle tab Combine");
+					handleTabCombine();
 					break;
 				case "Hash":
 					System.out.println("Handle tab Hash");
@@ -252,7 +356,8 @@ public class MainGUI {
 						"Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			algorithm = (String)tabHash.getChoiceAlgorithms().getSelectedItem();
+			algorithm = (String) tabHash.getChoiceAlgorithms()
+					.getSelectedItem();
 			try {
 				Hash hash = new Hash(algorithm);
 				outText = hash.hash(textInput);
@@ -268,7 +373,8 @@ public class MainGUI {
 						"Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			algorithm = (String)tabHash.getChoiceAlgorithms().getSelectedItem();
+			algorithm = (String) tabHash.getChoiceAlgorithms()
+					.getSelectedItem();
 			try {
 				Hash hash = new Hash(algorithm);
 				outText = hash.hash(textInput);
@@ -313,7 +419,7 @@ public class MainGUI {
 		if (algorithm == null)
 			addControllOptionSymmetricTab();
 		outText = "";
-		keysize = Integer.parseInt((String)pnOption.getChoiceKeySize()
+		keysize = Integer.parseInt((String) pnOption.getChoiceKeySize()
 				.getSelectedItem());
 		try {
 			symmetric = new Symmetric(algorithm, mode, padding, keysize);
@@ -334,37 +440,30 @@ public class MainGUI {
 			if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()) {
 				if (pnEncrypt.getRdFile().isSelected()) {
 					System.out.println("Encrypt with file");
-					inputFile = pnEncrypt.getLblFileInput().getText();
-					outputFile = pnEncrypt.getLblFileOutput().getText();
 					symmetric.encrypt(inputFile, outputFile);
-					 
-					JOptionPane.showMessageDialog(
-	                        null,
-	                        "Successful encryption!",
-	                        "Success", JOptionPane.INFORMATION_MESSAGE,
-	                        icon);
+
+					JOptionPane.showMessageDialog(null,
+							"Successful encryption!", "Success",
+							JOptionPane.INFORMATION_MESSAGE, icon);
 				} else {
 					System.out.println("Encrypt with string");
 					outText = symmetric.encrypt(textInput);
 				}
 			} else {
 				if (pnEncrypt.getRdFile().isSelected()) {
-					inputFile = pnEncrypt.getLblFileInput().getText();
-					outputFile = pnEncrypt.getLblFileOutput().getText();
-					try{
+					inputFile = pnEncrypt.getFileInput().getAbsolutePath();
+					outputFile = pnEncrypt.getFileOutput().getAbsolutePath();
+					try {
 						symmetric.decrypt(inputFile, outputFile);
-						JOptionPane.showMessageDialog(
-		                        null,
-		                        "Successful decryption!",
-		                        "Success", JOptionPane.INFORMATION_MESSAGE,
-		                        icon);
-					}catch(Exception e){
-						JOptionPane.showMessageDialog(null, "Decryption failed",
-								"Success", JOptionPane.OK_OPTION);
+						JOptionPane.showMessageDialog(null,
+								"Successful decryption!", "Success",
+								JOptionPane.INFORMATION_MESSAGE, icon);
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null,
+								"Decryption failed", "Success",
+								JOptionPane.OK_OPTION);
 					}
-					
-					
-					
+
 				} else {
 					System.out.println("Decrypt with string");
 					outText = symmetric.decrypt(textInput);
@@ -379,10 +478,6 @@ public class MainGUI {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	}
-
-	public void handleTabPBE() {
-
 	}
 
 	public void handleTabAsymmetric() {
@@ -432,8 +527,8 @@ public class MainGUI {
 			if (tabAsymmetric.getOptionEncryptUI().getPnSelectEnOrDe()
 					.getRdEncrypt().isSelected()) {
 				try {
-					System.out.println(tabAsymmetric
-							.getPublicFile().getAbsolutePath());
+					System.out.println(tabAsymmetric.getPublicFile()
+							.getAbsolutePath());
 					publickey = asymmetric.readPublicKey(tabAsymmetric
 							.getPublicFile().getAbsolutePath());
 
@@ -444,8 +539,10 @@ public class MainGUI {
 				}
 			} else {
 				try {
-					privatekey = asymmetric.readPrivateKey(tabAsymmetric.getPrivateFile().getAbsolutePath());
-					System.out.println(tabAsymmetric.getPrivateFile().getAbsolutePath());
+					privatekey = asymmetric.readPrivateKey(tabAsymmetric
+							.getPrivateFile().getAbsolutePath());
+					System.out.println(tabAsymmetric.getPrivateFile()
+							.getAbsolutePath());
 
 				} catch (InvalidKeySpecException | NoSuchAlgorithmException
 						| IOException e) {
@@ -467,25 +564,141 @@ public class MainGUI {
 				System.out.println("Vao de set public");
 				asymmetric.setPublicKey(publickey);
 				System.out.println("Set public key");
+				outText = asymmetric.encrypt(textInput);
+				System.out.println("Encrypt with string");
 			} else {
 				System.out.println("Vao de set private");
 				asymmetric.setPrivateKey(privatekey);
 				System.out.println("Set private key");
-			}
-			// if radio is encrypt then into if, else is decrypt
-			if (tabAsymmetric.getOptionEncryptUI().getPnSelectEnOrDe()
-					.getRdEncrypt().isSelected()) {
-
-				System.out.println("Encrypt with string");
-				outText = asymmetric.encrypt(textInput);
-
-			} else {
-
-				System.out.println("Decrypt with string");
 				outText = asymmetric.decrypt(textInput);
-
+				System.out.println("Decrypt with string");
 			}
+
 			tabAsymmetric.getOptionEncryptUI().setTxtCipher(outText);
+			;
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	public void handleTabCombine() {
+		textInput = tabCombine.getOptionEncryptUI().getTxtPlain().getText();
+		if (textInput.equals("")
+				&& tabCombine.getOptionEncryptUI().getRdField().isSelected()) {
+			JOptionPane.showMessageDialog(null, "Empty text input", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if (tabCombine.getRdString().isSelected()
+				&& tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
+						.getRdDecrypt().isSelected()
+				&& tabCombine.getTxtPrivateKey().getText().equalsIgnoreCase("")) {
+			JOptionPane.showMessageDialog(null, "Empty private key", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if (tabCombine.getRdString().isSelected()
+				&& tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
+						.getRdEncrypt().isSelected()
+				&& tabCombine.getTxtPublicKey().getText().equalsIgnoreCase("")) {
+			JOptionPane.showMessageDialog(null, "Empty public key", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		PrivateKey privatekey = null;
+		PublicKey publickey = null;
+		if (tabCombine.getRdString().isSelected()) {
+			System.out.println("Input Key");
+			if (tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
+					.getRdEncrypt().isSelected()) {
+				privatekey = rsaFile.convertStringKeyToPrivateKey(tabCombine
+						.getTxtPrivateKey().getText());
+				System.out.println("add private key for decrypt");
+			} else {
+				publickey = rsaFile.convertStringKeyToPublicKey(tabCombine
+						.getTxtPublicKey().getText());
+
+				System.out.println("add public key for decrypt");
+			}
+		} else {
+			System.out.println("File Key");
+			if (tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
+					.getRdEncrypt().isSelected()) {
+				try {
+					System.out.println(tabCombine.getPublicFile()
+							.getAbsolutePath());
+
+					privatekey = rsaFile.readPrivateKey(tabCombine
+							.getPrivateFile().getAbsolutePath());
+				} catch (InvalidKeySpecException | NoSuchAlgorithmException
+						| IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					publickey = rsaFile.readPublicKey(tabCombine
+							.getPublicFile().getAbsolutePath());
+					System.out.println(tabCombine.getPrivateFile()
+							.getAbsolutePath());
+
+				} catch (InvalidKeySpecException | NoSuchAlgorithmException
+						| IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+
+		if (algorithm == null)
+			addControllOptionCombineTab();
+		outText = "";
+
+		try {
+			rsaFile = new RSAFile(algorithm, keysize, mode, padding);
+			if (tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
+					.getRdEncrypt().isSelected()) {
+				System.out.println("Vao ma hoa de set private");
+				rsaFile.setPrivateKey(privatekey);
+				System.out.println("Set private key");
+				if (tabCombine.getOptionEncryptUI().getRdField().isSelected()) {
+					System.out.println("Enter encryt with string");
+
+				} else {
+					inputFile = tabCombine.getOptionEncryptUI().getFileInput()
+							.getAbsolutePath();
+					outputFile = tabCombine.getOptionEncryptUI()
+							.getFileOutput().getAbsolutePath();
+
+					System.out.println("Enter encryt with file");
+					System.out.println(rsaFile.getPrivateKeyWithString());
+					rsaFile.doEncryptRSAWithAES(inputFile, outputFile);
+				}
+			} else {
+				System.out.println("Vao giai ma de set public");
+				rsaFile.setPublicKey(publickey);
+				System.out.println("Set public key");
+				if (tabCombine.getOptionEncryptUI().getRdField().isSelected()) {
+					System.out.println("Enter decryt with string");
+
+				} else {
+					inputFile = tabCombine.getOptionEncryptUI().getFileInput()
+							.getAbsolutePath();
+					outputFile = tabCombine.getOptionEncryptUI()
+							.getFileOutput().getAbsolutePath();
+
+					System.out.println("Enter decryt with file");
+					System.out.println(rsaFile.getPrivateKeyWithString());
+					rsaFile.doDeCryptRSAWithAES(inputFile, outputFile);
+				}
+			}
+
+			tabCombine.getOptionEncryptUI().setTxtCipher(outText);
 			;
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
 			// TODO Auto-generated catch block
@@ -498,18 +711,27 @@ public class MainGUI {
 
 	/* add option control for handle */
 	public void addControllOptionSymmetricTab() {
-		algorithm =(String) pnOption.getChoiceAlgorithms().getSelectedItem();
-		mode =(String)  pnOption.getChoiceMode().getSelectedItem();
+		algorithm = (String) pnOption.getChoiceAlgorithms().getSelectedItem();
+		mode = (String) pnOption.getChoiceMode().getSelectedItem();
 		padding = (String) pnOption.getChoicePadding().getSelectedItem();
 		keysize = Integer.parseInt((String) pnOption.getChoiceKeySize()
 				.getSelectedItem());
 	}
 
 	public void addControllOptionAsymmetricTab() {
-		algorithm = (String)tabAsymmetric.getChoiceAlgorithms().getSelectedItem();
-		mode = (String)tabAsymmetric.getChoiceMode().getSelectedItem();
-		padding = (String)tabAsymmetric.getChoicePadding().getSelectedItem();
-		keysize = Integer.parseInt((String)tabAsymmetric.getChoiceKeySize()
+		algorithm = (String) tabAsymmetric.getChoiceAlgorithms()
+				.getSelectedItem();
+		mode = (String) tabAsymmetric.getChoiceMode().getSelectedItem();
+		padding = (String) tabAsymmetric.getChoicePadding().getSelectedItem();
+		keysize = Integer.parseInt((String) tabAsymmetric.getChoiceKeySize()
+				.getSelectedItem());
+	}
+
+	public void addControllOptionCombineTab() {
+		algorithm = (String) tabCombine.getChoiceAlgorithms().getSelectedItem();
+		mode = (String) tabCombine.getChoiceMode().getSelectedItem();
+		padding = (String) tabCombine.getChoicePadding().getSelectedItem();
+		keysize = Integer.parseInt((String) tabCombine.getChoiceKeySize()
 				.getSelectedItem());
 	}
 }
