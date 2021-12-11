@@ -2,13 +2,15 @@ package GUI;
 
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,11 +21,11 @@ import java.awt.Toolkit;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import algorithms.Asymmetric;
+import algorithms.Gif;
 import algorithms.Hash;
 import algorithms.RSAFile;
 import algorithms.Symmetric;
@@ -32,14 +34,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BoxLayout;
 
@@ -60,7 +61,7 @@ public class MainGUI {
 	String tabbedPaneCurrent;
 	String outText, textInput, inputFile, outputFile;
 	TabAsymmetric tabAsymmetric, tabCombine;
-	ImageIcon icon;
+	ImageIcon icon, iconLoading;
 
 	public MainGUI() {
 		createComponent();
@@ -126,7 +127,6 @@ public class MainGUI {
 
 	public void createComponent() {
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-
 		pnBtnStart = new JPanel();
 		btnStart = new JButton("Start");
 		pnSymmetric = new JPanel();
@@ -150,7 +150,7 @@ public class MainGUI {
 
 	public void setListTabCombine() {
 		DefaultComboBoxModel model;
-		System.out.println("ZOO");
+
 		tabCombine.setListAlgorithms(TabCombine.listAlgorithms);
 		model = new DefaultComboBoxModel<String>(TabCombine.listAlgorithms);
 		tabCombine.getChoiceAlgorithms().setModel(model);
@@ -220,6 +220,7 @@ public class MainGUI {
 	}
 
 	public void createAndShowGUI() {
+		System.out.println("GUI");
 		// Create and set up the window.
 		JFrame frame = new JFrame("Main Frame");
 
@@ -439,12 +440,21 @@ public class MainGUI {
 			// if radio is encrypt then into if, else is decrypt
 			if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()) {
 				if (pnEncrypt.getRdFile().isSelected()) {
+					inputFile = pnEncrypt.getFileInput().getAbsolutePath();
+					outputFile = pnEncrypt.getFileOutput().getAbsolutePath();
 					System.out.println("Encrypt with file");
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							Gif.getIconLoading();
+		
+						}
+					});
+					
 					symmetric.encrypt(inputFile, outputFile);
 
-					JOptionPane.showMessageDialog(null,
-							"Successful encryption!", "Success",
-							JOptionPane.INFORMATION_MESSAGE, icon);
+					// JOptionPane.showMessageDialog(null,
+					// "Successful encryption!", "Success",
+					// JOptionPane.INFORMATION_MESSAGE, icon);
 				} else {
 					System.out.println("Encrypt with string");
 					outText = symmetric.encrypt(textInput);
@@ -454,6 +464,7 @@ public class MainGUI {
 					inputFile = pnEncrypt.getFileInput().getAbsolutePath();
 					outputFile = pnEncrypt.getFileOutput().getAbsolutePath();
 					try {
+
 						symmetric.decrypt(inputFile, outputFile);
 						JOptionPane.showMessageDialog(null,
 								"Successful decryption!", "Success",

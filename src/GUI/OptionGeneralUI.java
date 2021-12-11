@@ -1,22 +1,15 @@
 package GUI;
-
-import java.awt.Choice;
 import java.awt.Dimension;
 import java.awt.Font;
-
-import javax.swing.BorderFactory;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.BoxLayout;
 public class OptionGeneralUI extends JPanel {
 
-	private String[] listAlgorithms = {"Twofish","AES", "DES", "DESede","RC2","RC4","Blowfish" };
+	private String[] listAlgorithms = {"ARCFOUR","AES", "DES", "DESede","RC2","RC4","Blowfish" };
 	private String[] listKeySize = { "128", "192", "256" };
 	private String[] listMode = { "CBC", "ECB","CFB","PCBC","OFB","CTR"};
 	private String[] listPadding = { "PKCS5Padding","NoPadding" };
