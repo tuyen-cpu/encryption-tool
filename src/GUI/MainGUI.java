@@ -406,6 +406,19 @@ public class MainGUI {
 		jLoading.setModal(true);
 	}
 
+	public void checkEmptyFileInputAndOutput() {
+		if (pnEncrypt.getFileInput() == null) {
+			JOptionPane.showMessageDialog(null, "File input empty", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if (pnEncrypt.getFileOutput() == null) {
+			JOptionPane.showMessageDialog(null, "File output empty", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+	}
+
 	public void handleTabSymmetric() {
 		textInput = pnEncrypt.getTxtPlain().getText();
 		if (textInput.equals("") && pnEncrypt.getRdField().isSelected()) {
@@ -431,6 +444,11 @@ public class MainGUI {
 			}
 		} else {
 			System.out.println("File Key");
+			if (pnKey.getFileInputKey() == null) {
+				JOptionPane.showMessageDialog(null, "File key empty", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			try {
 				txtkey = symmetric.readKey(pnKey.getFileInputKey()
 						.getAbsolutePath());
@@ -469,10 +487,10 @@ public class MainGUI {
 			// if radio is encrypt then into if, else is decrypt
 			if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()) {
 				if (pnEncrypt.getRdFile().isSelected()) {
+					checkEmptyFileInputAndOutput();
 					inputFile = pnEncrypt.getFileInput().getAbsolutePath();
 					outputFile = pnEncrypt.getFileOutput().getAbsolutePath();
 					System.out.println("Encrypt with file");
-
 					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
 						@Override
 						protected String doInBackground()
@@ -491,7 +509,6 @@ public class MainGUI {
 						@Override
 						protected void done() {
 							jLoading.dispose();
-
 						}
 					};
 					worker.execute(); // here the process thread initiates
@@ -516,20 +533,19 @@ public class MainGUI {
 				}
 			} else {
 				if (pnEncrypt.getRdFile().isSelected()) {
+					checkEmptyFileInputAndOutput();
 					inputFile = pnEncrypt.getFileInput().getAbsolutePath();
 					outputFile = pnEncrypt.getFileOutput().getAbsolutePath();
 					try {
-
 						symmetric.decrypt(inputFile, outputFile);
 						JOptionPane.showMessageDialog(null,
 								"Successful decryption!", "Success",
 								JOptionPane.INFORMATION_MESSAGE, icon);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(null,
-								"Decryption failed", "Success",
+								"Decryption failed11", "Error",
 								JOptionPane.OK_OPTION);
 					}
-
 				} else {
 					System.out.println("Decrypt with string");
 					outText = symmetric.decrypt(textInput);
@@ -538,10 +554,8 @@ public class MainGUI {
 			pnEncrypt.setTxtCipher(outText);
 			;
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
@@ -702,7 +716,6 @@ public class MainGUI {
 							.getPrivateFile().getAbsolutePath());
 				} catch (InvalidKeySpecException | NoSuchAlgorithmException
 						| IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
