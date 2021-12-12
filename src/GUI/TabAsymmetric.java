@@ -84,6 +84,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnContainerKey = new JPanel(new BorderLayout());
 		rdString = new JRadioButton("String");
 		rdFile = new JRadioButton("File");
+		rdString.setFocusPainted(false);
+		rdFile.setFocusPainted(false);
 		rdString.setSelected(true);
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdString);

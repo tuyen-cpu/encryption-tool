@@ -283,15 +283,37 @@ public class MainGUI {
 					tabAsymmetric.getTxtPrivateKey().setText("");
 					tabAsymmetric.getTxtPublicKey().setText("");
 
-					asymmetric = new Asymmetric(algorithm, mode, padding,
-							keysize);
-					asymmetric.genkey();
+					
+					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+						@Override
+						protected String doInBackground()
+								throws InterruptedException {
+							try {
+								asymmetric = new Asymmetric(algorithm, mode, padding,
+										keysize);
+								asymmetric.genkey();
+								return "success";
+							} catch (Exception e) {
+								e.printStackTrace();
+								System.out.println("loi ngay day");
+								return "error";
+							}
+						}
+
+						@Override
+						protected void done() {
+							jLoading.dispose();
+						}
+					};
+					worker.execute(); // here the process thread initiates
+					jLoading.setVisible(true);
+
 					tabAsymmetric.getTxtPrivateKey().setText(
 							asymmetric.getPrivateKeyWithString());
 					tabAsymmetric.getTxtPublicKey().setText(
 							asymmetric.getPublicKeyWithString());
 
-				} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -306,17 +328,36 @@ public class MainGUI {
 				addControllOptionCombineTab();
 				try {
 					tabCombine.getTxtPrivateKey().setText("");
-					tabCombine.getTxtPublicKey().setText("");
+					tabCombine.getTxtPublicKey().setText("");	
+					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+						@Override
+						protected String doInBackground()
+								throws InterruptedException {
+							try {
+								rsaFile = new RSAFile(algorithm, keysize, mode, padding);
+								rsaFile.doGenkey();
+								return "success";
+							} catch (Exception e) {
+								e.printStackTrace();
+								System.out.println("loi ngay day");
+								return "error";
+							}
+						}
 
-					rsaFile = new RSAFile(algorithm, keysize, mode, padding);
-					rsaFile.doGenkey();
+						@Override
+						protected void done() {
+							jLoading.dispose();
+						}
+					};
+					worker.execute(); // here the process thread initiates
+					jLoading.setVisible(true);
+					
 					tabCombine.getTxtPrivateKey().setText(
 							rsaFile.getPrivateKeyWithString());
 					tabCombine.getTxtPublicKey().setText(
 							rsaFile.getPublicKeyWithString());
 
-				} catch (NoSuchAlgorithmException | NoSuchPaddingException
-						| IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -769,10 +810,41 @@ public void getDialogNotuSupportNopaddingWithFile(){
 							.getAbsolutePath();
 					outputFile = tabCombine.getOptionEncryptUI()
 							.getFileOutput().getAbsolutePath();
-
-					System.out.println("Enter encryt with file");
+					System.out.println("Combine encryt with file");
 					System.out.println(rsaFile.getPrivateKeyWithString());
-					rsaFile.doEncryptRSAWithAES(inputFile, outputFile);
+					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+						@Override
+						protected String doInBackground()
+								throws InterruptedException {
+							try {
+								rsaFile.doEncryptRSAWithAES(inputFile, outputFile);
+								return "success";
+							} catch (Exception e) {
+								e.printStackTrace();
+								return "error";
+							}
+						}
+
+						@Override
+						protected void done() {
+							jLoading.dispose();
+						}
+					};
+					worker.execute(); // here the process thread initiates
+					jLoading.setVisible(true);
+					try {
+						if (worker.get().equalsIgnoreCase("success")) {
+							JOptionPane.showMessageDialog(null,
+									"Successful encryption!", "Success",
+									JOptionPane.INFORMATION_MESSAGE, icon);
+						} else {
+							JOptionPane.showMessageDialog(null, "Invalid key",
+									"Error", JOptionPane.ERROR_MESSAGE);
+
+						}
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 			} else {
 				System.out.println("Vao giai ma de set public");
@@ -788,8 +860,40 @@ public void getDialogNotuSupportNopaddingWithFile(){
 							.getFileOutput().getAbsolutePath();
 
 					System.out.println("Enter decryt with file");
-					System.out.println(rsaFile.getPrivateKeyWithString());
-					rsaFile.doDeCryptRSAWithAES(inputFile, outputFile);
+					
+					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+						@Override
+						protected String doInBackground()
+								throws InterruptedException {
+							try {
+								rsaFile.doDeCryptRSAWithAES(inputFile, outputFile);
+								return "success";
+							} catch (Exception e) {
+								e.printStackTrace();
+								return "error";
+							}
+						}
+
+						@Override
+						protected void done() {
+							jLoading.dispose();
+						}
+					};
+					worker.execute(); // here the process thread initiates
+					jLoading.setVisible(true);
+					try {
+						if (worker.get().equalsIgnoreCase("success")) {
+							JOptionPane.showMessageDialog(null,
+									"Successful decryption!", "Success",
+									JOptionPane.INFORMATION_MESSAGE, icon);
+						} else {
+							JOptionPane.showMessageDialog(null, "Invalid key",
+									"Error", JOptionPane.ERROR_MESSAGE);
+
+						}
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
 
