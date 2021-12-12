@@ -9,7 +9,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.BoxLayout;
 public class OptionGeneralUI extends JPanel {
 
-	private String[] listAlgorithms = {"ARCFOUR","AES", "DES", "DESede","RC2","RC4","Blowfish" };
+	private String[] listAlgorithms = {"AES", "DES", "DESede","RC2","RC4","Blowfish" };
 	private String[] listKeySize = { "128", "192", "256" };
 	private String[] listMode = { "CBC", "ECB","CFB","PCBC","OFB","CTR"};
 	private String[] listPadding = { "PKCS5Padding","NoPadding" };

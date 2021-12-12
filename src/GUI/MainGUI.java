@@ -418,7 +418,13 @@ public class MainGUI {
 			return;
 		}
 	}
-
+public void getDialogNotuSupportNopaddingWithFile(){
+	if(padding.equalsIgnoreCase("NoPadding")){
+		JOptionPane.showMessageDialog(null, "No support file encryption and decryption with Nopadding", "Error",
+				JOptionPane.PLAIN_MESSAGE);
+		return;
+	}
+}
 	public void handleTabSymmetric() {
 		textInput = pnEncrypt.getTxtPlain().getText();
 		if (textInput.equals("") && pnEncrypt.getRdField().isSelected()) {
@@ -487,6 +493,11 @@ public class MainGUI {
 			// if radio is encrypt then into if, else is decrypt
 			if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()) {
 				if (pnEncrypt.getRdFile().isSelected()) {
+					if(padding.equalsIgnoreCase("NoPadding")){
+						JOptionPane.showMessageDialog(null, "No support file encryption and decryption with Nopadding", "Error",
+								JOptionPane.PLAIN_MESSAGE);
+						return;
+					}
 					checkEmptyFileInputAndOutput();
 					inputFile = pnEncrypt.getFileInput().getAbsolutePath();
 					outputFile = pnEncrypt.getFileOutput().getAbsolutePath();
@@ -533,6 +544,11 @@ public class MainGUI {
 				}
 			} else {
 				if (pnEncrypt.getRdFile().isSelected()) {
+					if(padding.equalsIgnoreCase("NoPadding")){
+						JOptionPane.showMessageDialog(null, "No support file encryption and decryption with Nopadding", "Error",
+								JOptionPane.PLAIN_MESSAGE);
+						return;
+					}
 					checkEmptyFileInputAndOutput();
 					inputFile = pnEncrypt.getFileInput().getAbsolutePath();
 					outputFile = pnEncrypt.getFileOutput().getAbsolutePath();
@@ -543,7 +559,7 @@ public class MainGUI {
 								JOptionPane.INFORMATION_MESSAGE, icon);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(null,
-								"Decryption failed11", "Error",
+								"Decryption failed", "Error",
 								JOptionPane.OK_OPTION);
 					}
 				} else {
