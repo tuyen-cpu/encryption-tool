@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -62,6 +63,8 @@ public class MainGUI {
 	String outText, textInput, inputFile, outputFile;
 	TabAsymmetric tabAsymmetric, tabCombine;
 	ImageIcon icon, iconLoading;
+	JFrame frame;
+	JDialog jLoading;
 
 	public MainGUI() {
 		createComponent();
@@ -131,7 +134,8 @@ public class MainGUI {
 		btnStart = new JButton("Start");
 		pnSymmetric = new JPanel();
 		pnAsymmetric = new JPanel(new BorderLayout());
-
+		iconLoading = icon = new ImageIcon(this.getClass().getResource(
+				"/img/loading.gif"));
 		pnCombine = new JPanel(new BorderLayout());
 		pnHash = new JPanel(new BorderLayout());
 		pnOption = new OptionGeneralUI();
@@ -146,6 +150,7 @@ public class MainGUI {
 		tabHash = new TabHash();
 		pnMain = new JPanel();
 		pnMain.setLayout(new BorderLayout());
+		loading(frame);
 	}
 
 	public void setListTabCombine() {
@@ -222,7 +227,7 @@ public class MainGUI {
 	public void createAndShowGUI() {
 		System.out.println("GUI");
 		// Create and set up the window.
-		JFrame frame = new JFrame("Main Frame");
+		frame = new JFrame("Main Frame");
 
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
 				getClass().getResource("/img/logo.png")));
@@ -389,6 +394,18 @@ public class MainGUI {
 		tabHash.getTxtResult().setText(outText);
 	}
 
+	public void loading(JFrame frameParent) {
+		jLoading = new JDialog(frame);
+		JPanel p1 = new JPanel(new BorderLayout());
+		p1.add(new JLabel(iconLoading), BorderLayout.CENTER);
+		jLoading.setUndecorated(true);
+		jLoading.getContentPane().add(p1);
+		jLoading.pack();
+		jLoading.setLocationRelativeTo(frame);
+		jLoading.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		jLoading.setModal(true);
+	}
+
 	public void handleTabSymmetric() {
 		textInput = pnEncrypt.getTxtPlain().getText();
 		if (textInput.equals("") && pnEncrypt.getRdField().isSelected()) {
@@ -398,8 +415,20 @@ public class MainGUI {
 		}
 		Key txtkey = null;
 		if (pnKey.getRdField().isSelected()) {
+			if (pnKey.getTxtKey().equals("")) {
+				JOptionPane.showMessageDialog(null, "Empty key", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			System.out.println("Input Key");
-			txtkey = symmetric.convertStringKeyToSecretKey(pnKey.getTxtKey());
+			try {
+				txtkey = symmetric.convertStringKeyToSecretKey(pnKey
+						.getTxtKey());
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Key valid", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 		} else {
 			System.out.println("File Key");
 			try {
@@ -443,18 +472,44 @@ public class MainGUI {
 					inputFile = pnEncrypt.getFileInput().getAbsolutePath();
 					outputFile = pnEncrypt.getFileOutput().getAbsolutePath();
 					System.out.println("Encrypt with file");
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							Gif.getIconLoading();
-		
-						}
-					});
-					
-					symmetric.encrypt(inputFile, outputFile);
 
-					// JOptionPane.showMessageDialog(null,
-					// "Successful encryption!", "Success",
-					// JOptionPane.INFORMATION_MESSAGE, icon);
+					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+						@Override
+						protected String doInBackground()
+								throws InterruptedException {
+							try {
+
+								symmetric.encrypt(inputFile, outputFile);
+								return "success";
+							} catch (Exception e) {
+								e.printStackTrace();
+								System.out.println("loi ngay day");
+								return "error";
+							}
+						}
+
+						@Override
+						protected void done() {
+							jLoading.dispose();
+
+						}
+					};
+					worker.execute(); // here the process thread initiates
+					jLoading.setVisible(true);
+					try {
+						if (worker.get().equalsIgnoreCase("success")) {
+							JOptionPane.showMessageDialog(null,
+									"Successful encryption!", "Success",
+									JOptionPane.INFORMATION_MESSAGE, icon);
+						} else {
+							JOptionPane.showMessageDialog(null, "Invalid key",
+									"Error", JOptionPane.ERROR_MESSAGE);
+
+						}
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+
 				} else {
 					System.out.println("Encrypt with string");
 					outText = symmetric.encrypt(textInput);

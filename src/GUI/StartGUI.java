@@ -6,6 +6,7 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JLabel;
 
@@ -32,7 +33,8 @@ public class StartGUI extends JFrame{
 		lblNewLabel_1.setForeground(Color.WHITE);
 		lblNewLabel_1.setFont(new Font("UTM Avo", Font.PLAIN, 15));
 		getContentPane().add(lblNewLabel_1, BorderLayout.SOUTH);
-		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("/img/logo.png")));
 		setUndecorated(true);
 		setResizable(false);
 		setVisible(true);
