@@ -107,9 +107,9 @@ public class TabHash extends JPanel implements ActionListener {
 		pnCompareContainer.add(pnAlgorithms);
 	choiceAlgorithms.setFocusable(false);
 		
-		choiceAlgorithms.setPreferredSize(new Dimension(150,50));
+		choiceAlgorithms.setPreferredSize(new Dimension(150,40));
 		lblFileInput.setMaximumSize(new Dimension(10, 40));
-		pnCompareContainer.setPreferredSize(new Dimension(650, 150));
+		pnCompareContainer.setPreferredSize(new Dimension(650, 190));
 		btnCopy.setPreferredSize(new Dimension(60, 40));
 		btnCheckCompare.setPreferredSize(new Dimension(80, 40));
 		lblResult.setPreferredSize(new Dimension(85, 40));
@@ -193,6 +193,11 @@ public class TabHash extends JPanel implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(txtCompare.getText().equalsIgnoreCase("")){
+					JOptionPane.showMessageDialog(null, "Empty text",
+							"Dialog", JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
 			if(txtResult.getText().equals(txtCompare.getText())){
 				ImageIcon icon = new ImageIcon(this.getClass().getResource("/img/success.png"));
                
