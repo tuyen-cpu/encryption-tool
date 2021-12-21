@@ -14,6 +14,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Scanner;
@@ -26,6 +28,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 public class Symmetric {
 	private SecretKey key;
 	private Cipher cipher;
@@ -36,11 +40,17 @@ public class Symmetric {
 
 	public Symmetric(String algorithm, String mode, String padding, int keySize)
 			throws NoSuchAlgorithmException, NoSuchPaddingException {
+		Security.addProvider(new BouncyCastleProvider());
 		this.algorithm = algorithm;
 		this.mode = mode;
 		this.padding = padding;
-		this.cipher = Cipher
-				.getInstance(algorithm + "/" + mode + "/" + padding);
+		try {
+			this.cipher = Cipher
+					.getInstance(algorithm + "/" + mode + "/" + padding,"BC");
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.keySize = keySize;
 	}
 
@@ -73,8 +83,8 @@ public class Symmetric {
 		return originalKey;
 	}
 
-	public SecretKey createKey() throws NoSuchAlgorithmException {
-		KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm);
+	public SecretKey createKey() throws NoSuchAlgorithmException, NoSuchProviderException {
+		KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm,"BC");
 		keyGenerator.init(keySize);
 		key = keyGenerator.generateKey();
 		return key;
@@ -124,6 +134,7 @@ public class Symmetric {
 			return null;
 		try {
 			checkSpeckey(Cipher.DECRYPT_MODE);
+
 			byte[] cipherText = decoder.decode(text);
 			byte[] plaintext = cipher.doFinal(cipherText);
 			String out = new String(plaintext, "UTF-8");

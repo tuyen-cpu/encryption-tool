@@ -9,14 +9,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.BoxLayout;
 public class OptionGeneralUI extends JPanel {
 
-	private String[] listAlgorithms = {"AES", "DES", "DESede","RC2","RC4","Blowfish" };
+	private String[] listAlgorithms = {"AES", "DES", "DESede","RC2","Serpent","IDEA","Twofish","Blowfish","Camellia" };
 	private String[] listKeySize = { "128", "192", "256" };
-	private String[] listMode = { "CBC", "ECB","CFB","PCBC","OFB","CTR"};
-	private String[] listPadding = { "PKCS5Padding","NoPadding" };
+	private String[] listMode = { "GCFB","OpenPGPCFB","CBC", "ECB","CFB","OFB","CTR"};
+	private String[] listPadding = { "PKCS5Padding","NoPadding","ISO7816-4Padding","PKCS7Padding","ISO10126Padding","X9.23Padding" };
 	private String[] listKeySizeAES = { "128", "192", "256" };
 	private String[] listKeySizeDES = { "56" };
+	private String[] listKeySizeIDEA = { "128" };
 	private String[] listKeySizeBlowfish = { "40","128", "192", "256","448"};
-	
+	private String[] listModeTwofishAndCamellia = {"OpenPGPCFB","ECB","CTR"};
 	private String[] listKeySizeRC2 = { "40","128", "192", "256","512","1024" };
 	private String[] listKeySizeDESede = { "168","112" };
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblpadding;
@@ -102,31 +103,73 @@ public class OptionGeneralUI extends JPanel {
 			listKeySize = listKeySizeAES;
 			model = new DefaultComboBoxModel<String>(listKeySize);
 			choiceKeySize.setModel(model);
+			model = new DefaultComboBoxModel<String>(listMode);
+			choiceMode.setModel(model);
 			System.out.println("AES");
 			break;
 		case "DES":
 			listKeySize = listKeySizeDES;
 			model = new DefaultComboBoxModel<String>(listKeySize);
 			choiceKeySize.setModel(model);
+			model = new DefaultComboBoxModel<String>(listMode);
+			choiceMode.setModel(model);
 			System.out.println("DES");
 			break;
 		case "DESede":
 			listKeySize = listKeySizeDESede;
 			model = new DefaultComboBoxModel<String>(listKeySize);
 			choiceKeySize.setModel(model);
+			model = new DefaultComboBoxModel<String>(listMode);
+			choiceMode.setModel(model);
 			System.out.println("DESede");
 			break;
 		case "RC2":
 			listKeySize = listKeySizeRC2;
 			model = new DefaultComboBoxModel<String>(listKeySize);
 			choiceKeySize.setModel(model);
-			System.out.println("DESede");
+			model = new DefaultComboBoxModel<String>(listMode);
+			choiceMode.setModel(model);
+			System.out.println("RC2");
 			break;
 		case "Blowfish":
 			listKeySize = listKeySizeBlowfish;
 			model = new DefaultComboBoxModel<String>(listKeySize);
 			choiceKeySize.setModel(model);
-			System.out.println("DESede");
+			model = new DefaultComboBoxModel<String>(listMode);
+			choiceMode.setModel(model);
+			System.out.println("Blowfish");
+			break;
+		case "IDEA":
+			listKeySize = listKeySizeIDEA;
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
+			model = new DefaultComboBoxModel<String>(listMode);
+			choiceMode.setModel(model);
+			System.out.println("IDEA");
+			break;
+		case "Twofish":
+			listKeySize = listKeySizeAES;
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
+			model = new DefaultComboBoxModel<String>(listModeTwofishAndCamellia);
+			choiceMode.setModel(model);
+			System.out.println("Twofish");
+			break;
+		case "Camellia":
+			listKeySize = listKeySizeAES;
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
+			model = new DefaultComboBoxModel<String>(listModeTwofishAndCamellia);
+			choiceMode.setModel(model);
+			System.out.println("Camellia");
+			break;
+		case "Serpent":
+			listKeySize = listKeySizeAES;
+			model = new DefaultComboBoxModel<String>(listKeySize);
+			choiceKeySize.setModel(model);
+			model = new DefaultComboBoxModel<String>(listModeTwofishAndCamellia);
+			choiceMode.setModel(model);
+			System.out.println("Camellia");
 			break;
 		default:
 			break;

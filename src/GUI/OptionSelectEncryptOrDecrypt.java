@@ -20,8 +20,8 @@ public class OptionSelectEncryptOrDecrypt extends JPanel {
 		bg.add(rdEncrypt);
 		bg.add(rdDecrypt);
 		
-		rdEncrypt.setPreferredSize(new Dimension(80,20));
-		rdDecrypt.setPreferredSize(new Dimension(80,20));
+		rdEncrypt.setPreferredSize(new Dimension(65,20));
+		rdDecrypt.setPreferredSize(new Dimension(68,20));
 		rdEncrypt.setFont(new Font("Dialog", Font.PLAIN, 12));
 		rdDecrypt.setFont(new Font("Dialog", Font.PLAIN, 12));
 		add(rdEncrypt);
