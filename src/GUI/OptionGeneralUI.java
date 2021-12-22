@@ -27,7 +27,7 @@ public class OptionGeneralUI extends JPanel {
 	private JPanel pnAlgorithms, pnKeySize, pnMode, pnPadding;
 
 	public OptionGeneralUI() {
-		dimContainer = new Dimension(740, 65);
+		dimContainer = new Dimension(720, 65);
 		dimlbl = new Dimension(67, 30);
 		
 
@@ -79,7 +79,7 @@ public class OptionGeneralUI extends JPanel {
 		add(pnKeySize);
 		add(pnMode);
 		add(pnPadding);
-		setBorder(new EmptyBorder(20, 0, 0, 0));
+		setBorder(new EmptyBorder(20, 10, 0, 10));
 //		Border blackline = BorderFactory.createTitledBorder("Option");
 //		setBorder(blackline);
 //		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",

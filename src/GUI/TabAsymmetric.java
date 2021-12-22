@@ -82,8 +82,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		btnCreateKey = new JButton("Create key");
 		pnOptionKey = new JPanel(new GridBagLayout());
 		pnContainerKey = new JPanel(new BorderLayout());
-		rdString = new JRadioButton("String");
-		rdFile = new JRadioButton("File");
+		rdString = new JRadioButton("Text key");
+		rdFile = new JRadioButton("Import file key");
 		rdString.setFocusPainted(false);
 		rdFile.setFocusPainted(false);
 		rdString.setSelected(true);
@@ -109,6 +109,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		optionEncryptUI = new OptionEncryptUI();
 	
 		jFileChoose = new JFileChooser();
+		jFileChoose.setCurrentDirectory(jFileChoose.getFileSystemView().getParentDirectory(new File("D:\\")));
 		pnPrivateKey = new JPanel(new BorderLayout());
 		lblPrivatekey = new JLabel("Private key:",SwingConstants.CENTER);
 	}

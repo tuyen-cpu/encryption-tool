@@ -55,8 +55,8 @@ public class TabHash extends JPanel implements ActionListener {
 		// create component
 		txtString = new JTextArea();
 		txtResult = new JTextField();
-		rdString = new JRadioButton("String");
-		rdFile = new JRadioButton("File");
+		rdString = new JRadioButton("Text");
+		rdFile = new JRadioButton("Import file");
 		lblFileInput = new JLabel();
 		btnFileInput = new JButton("Choose file");
 		btnCopy = new JButton();
@@ -74,8 +74,11 @@ public class TabHash extends JPanel implements ActionListener {
 		pnCompare = new JPanel(new BorderLayout());
 		lblResult = new JLabel("Hash code:");
 		jFileChoose = new JFileChooser();
+		jFileChoose.setCurrentDirectory(jFileChoose.getFileSystemView().getParentDirectory(new File("D:\\")));
 		pnAlgorithms = new JPanel();
 		choiceAlgorithms = new JComboBox(listAlgorithms);
+		rdFile.setFocusPainted(false);
+		rdString.setFocusPainted(false);
 		// group radio button
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdString);

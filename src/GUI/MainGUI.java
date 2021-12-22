@@ -42,6 +42,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.BoxLayout;
@@ -49,24 +50,24 @@ import javax.swing.BoxLayout;
 public class MainGUI {
 	private JPanel pnMain, pnSymmetric, pnBtnStart, pnAsymmetric, pnCombine,
 			pnHash;
-	OptionGeneralUI pnOption;
-	OptionKeyUI pnKey;
-	OptionEncryptUI pnEncrypt;
-	TabHash tabHash;
+	private OptionGeneralUI pnOption;
+	private OptionKeyUI pnKey;
+	private OptionEncryptUI pnEncrypt;
+	private TabHash tabHash;
 	private JTabbedPane tabbedPane;
-	JButton btnStart;
-	String algorithm, mode, padding;
-	int keysize;
-	Symmetric symmetric;
-	Asymmetric asymmetric;
-	RSAFile rsaFile;
-	String tabbedPaneCurrent;
-	String outText, textInput, inputFile, outputFile;
-	TabAsymmetric tabAsymmetric, tabCombine;
-	ImageIcon icon, iconLoading;
-	JFrame frame;
-	JDialog jLoading;
-
+	private JButton btnStart;
+	private String algorithm, mode, padding;
+	private int keysize;
+	private Symmetric symmetric;
+	private Asymmetric asymmetric;
+	private RSAFile rsaFile;
+	private String tabbedPaneCurrent;
+	private String outText, textInput, inputFile, outputFile;
+	private TabAsymmetric tabAsymmetric, tabCombine;
+	private ImageIcon icon, iconLoading;
+	static JFrame frame;
+	private JDialog jLoading;
+	
 	public MainGUI() {
 		createComponent();
 		setFontComponent();
@@ -600,6 +601,7 @@ public void getDialogNotuSupportNopaddingWithFile(){
 								"Successful decryption!", "Success",
 								JOptionPane.INFORMATION_MESSAGE, icon);
 					} catch (Exception e) {
+						e.printStackTrace();
 						JOptionPane.showMessageDialog(null,
 								"Decryption failed", "Error",
 								JOptionPane.OK_OPTION);

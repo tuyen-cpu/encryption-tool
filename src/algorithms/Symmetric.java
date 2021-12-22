@@ -47,6 +47,7 @@ public class Symmetric {
 		try {
 			this.cipher = Cipher
 					.getInstance(algorithm + "/" + mode + "/" + padding,"BC");
+			
 		} catch (NoSuchProviderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -254,46 +255,9 @@ public class Symmetric {
 		 * AES (128,192,256) DES (56) DESede (168) GCM
 		 */
 
-		Symmetric s = new Symmetric("DES", "ECB", "NoPadding", 56);
-	s.setKey((SecretKey) s.readKey("F:\\test\\key.txt"));;
-	System.out.println(s.getKeyWithString());
-//		String sourceFile = new String("F:\\test\\s\\ff.docx");
-//		String destFile = new String("F:\\test\\d\\ff.docx");
-//		s.encrypt(sourceFile, destFile);
-//		String sourceFile1 = new String("F:\\test\\d\\ff.docx");
-//		String destFile1 = new String("F:\\test\\s\\f.docx");
-//		s.decrypt(sourceFile1, destFile1);
-	System.out.println(s.decrypt("VGN/nDvhvoeWManL20NF3w=="));
-
-		// Symmetric s1 = new Symmetric("AES", 128);
-		// s1.createKey();
-		// System.out.println("khóa: "+s1.getKeyWithString());
-		// String str1 =new
-		// String("Khoa cntt nông lâm tp hồ chi minh 123%^&%^$.");
-		// String out = s1.encrypt(str1);
-		// System.out.println("Sau khi ma hoa: "+out);
-		// System.out.println("Sau khi giải mã: "+s1.decrypt(out));
-		//
-		// System.out.println("---------");
-		//
-		// Symmetric s2 = new Symmetric("AES", 256);
-		// s2.createKey();
-		// System.out.println("khóa: "+s2.getKeyWithString());
-		// String str2 =new
-		// String("All key generators share the concepts of a keysize and a source of randomness");
-		// String out2 = s2.encrypt(str2);
-		// System.out.println("Sau khi ma hoa: "+out2);
-		// System.out.println("Sau khi giải mã: "+s2.decrypt(out2));
-		//
-		// System.out.println("---------");
-		//
-		// Symmetric s3 = new Symmetric("DESede", 168);
-		// s3.createKey();
-		// System.out.println("khóa: "+s3.getKeyWithString());
-		// String str3 =new String("Trần quang Tuyền 123///...~~~");
-		// String out3 = s3.encrypt(str3);
-		// System.out.println("Sau khi ma hoa: "+out3);
-		// System.out.println("Sau khi giải mã: "+s3.decrypt(out3));
+		Symmetric s = new Symmetric("AES", "ECB", "PKCS5Padding", 128);
+	s.setKey((SecretKey) s.readKey("F:\\AA\\key.txt"));;
+		s.decrypt("F:\\AA\\t.txt", "F:\\AA\\ttt.txt");
 
 	}
 }

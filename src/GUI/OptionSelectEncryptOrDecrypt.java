@@ -2,6 +2,8 @@ package GUI;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
@@ -16,6 +18,8 @@ public class OptionSelectEncryptOrDecrypt extends JPanel {
 		rdEncrypt.setSelected(true);
 		rdEncrypt.setFocusPainted(false);
 		rdDecrypt.setFocusPainted(false);
+		rdEncrypt.setActionCommand("rdEncrypt");
+		rdDecrypt.setActionCommand("rdDecrypt");
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdEncrypt);
 		bg.add(rdDecrypt);
@@ -26,6 +30,7 @@ public class OptionSelectEncryptOrDecrypt extends JPanel {
 		rdDecrypt.setFont(new Font("Dialog", Font.PLAIN, 12));
 		add(rdEncrypt);
 		add(rdDecrypt);
+		
 	}
 
 	public JRadioButton getRdEncrypt() {
@@ -43,5 +48,7 @@ public class OptionSelectEncryptOrDecrypt extends JPanel {
 	public void setRdDecrypt(JRadioButton rdDecrypt) {
 		this.rdDecrypt = rdDecrypt;
 	}
+
+
 	
 }

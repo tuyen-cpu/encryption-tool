@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
@@ -32,32 +33,40 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import algorithms.Symmetric;
+
 import java.awt.GridLayout;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Base64;
 
 public class OptionEncryptUI extends JPanel implements ActionListener {
-	JButton btnChooseInput, btnChooseOutput, btnCopy;
-	JRadioButton rdField, rdFile;
-	JPanel pnRadio, pnContainer, pnKeyField, pnKeyFile, pnFileInput,
-			pnFileOutput, pnCipher, pnCipherContainer, pnBtnOutput, pnBtnInput;
-	OptionSelectEncryptOrDecrypt pnSelectEnOrDe;
-	Dimension dimContainer, dimPlainText, dimRadioButton, dimBtnChoose;
-	JFileChooser fileKey;
-	JLabel lblResult;
-	JTextArea txtPlain, txtCipher;
-	JScrollPane scrollPlain, scrollCipher;
-	File fileInput, fileOutput;
-
+	private JButton btnChooseInput, btnChooseOutput, btnCopy,btnSave;
+	private JRadioButton rdField, rdFile;
+	private JPanel pnRadio, pnContainer, pnKeyField, pnKeyFile, pnFileInput,
+			pnFileOutput, pnCipher, pnCipherContainer, pnBtnOutput, pnBtnInput,pnBtn;
+	private OptionSelectEncryptOrDecrypt pnSelectEnOrDe;
+	private Dimension dimContainer, dimPlainText, dimRadioButton, dimBtnChoose;
+	private JFileChooser fileKey;
+	private JLabel lblResult;
+	private JTextArea txtPlain, txtCipher;
+	private JScrollPane scrollPlain, scrollCipher;
+	private File fileInput, fileOutput,fileSave;
+	private static Base64.Decoder decoder = Base64.getDecoder();
 	public OptionEncryptUI() {
 		dimContainer = new Dimension(740, 360);
 		dimRadioButton = new Dimension(60, 20);
 		dimBtnChoose = new Dimension(100, 40);
 		pnBtnOutput = new JPanel();
 		pnBtnInput = new JPanel();
+		pnBtn = new JPanel();
 		pnSelectEnOrDe = new OptionSelectEncryptOrDecrypt();
 
-		rdField = new JRadioButton("String");
-		rdFile = new JRadioButton("File");
+		rdField = new JRadioButton("Encrypt with text");
+		rdFile = new JRadioButton("Encrypt with file");
 
 		pnFileOutput = new JPanel(new BorderLayout());
 		pnFileInput = new JPanel(new BorderLayout());
@@ -67,14 +76,24 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		btnCopy = new JButton();
 		btnCopy.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/copy.png")));
+		btnSave= new JButton();
+		btnSave.setIcon(new ImageIcon(this.getClass().getResource(
+				"/img/icon-save.png")));
 		btnCopy.setPreferredSize(new Dimension(60, 40));
+		btnSave.setPreferredSize(new Dimension(60, 40));
 		pnRadio = new JPanel();
 		pnContainer = new JPanel();
 		pnKeyField = new JPanel();
 		pnKeyFile = new JPanel();
 		fileKey = new JFileChooser();
+		fileKey.setCurrentDirectory(fileKey.getFileSystemView()
+				.getParentDirectory(new File("D:\\")));
 		txtPlain = new JTextArea(5, 60);
-		txtCipher = new JTextArea(1, 60);
+		txtCipher = new JTextArea(4,50);
+		txtPlain.setLineWrap(true);
+		txtPlain.setWrapStyleWord(true);
+		txtCipher.setLineWrap(true);
+		txtCipher.setWrapStyleWord(true);
 		pnCipherContainer = new JPanel(new BorderLayout());
 		lblResult = new JLabel("Result:", SwingConstants.CENTER);
 
@@ -85,9 +104,11 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		rdFile.setFocusPainted(false);
 		scrollPlain = new JScrollPane(txtPlain);
 		scrollCipher = new JScrollPane(txtCipher);
-		// scrollPlain.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		 scrollPlain.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		 scrollPlain.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollCipher
-				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollCipher.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		// default select radio
 		rdField.setSelected(true);
 		// set Font
@@ -108,8 +129,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		bg.add(rdField);
 		bg.add(rdFile);
 		// set Size component
-		rdField.setPreferredSize(dimRadioButton);
-		rdFile.setPreferredSize(dimRadioButton);
+		// rdField.setPreferredSize(dimRadioButton);
+		// rdFile.setPreferredSize(dimRadioButton);
 		setPreferredSize(dimContainer);
 		btnChooseInput.setPreferredSize(dimBtnChoose);
 		btnChooseOutput.setPreferredSize(dimBtnChoose);
@@ -118,7 +139,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		// add event radio button
 		rdField.addActionListener(this);
 		rdFile.addActionListener(this);
-
+		pnSelectEnOrDe.getRdEncrypt().addActionListener(this);
+		pnSelectEnOrDe.getRdDecrypt().addActionListener(this);
 		// lblKeyFile.setBorder(BorderFactory.createEtchedBorder());
 		// lblFileInput.setBorder(new EmptyBorder(0, 0, 0, 10));
 		// lblFileOutput.setBorder(new EmptyBorder(0, 0, 0, 10));
@@ -140,8 +162,12 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		pnCipherContainer.add(scrollCipher);
 		pnCipherContainer.add(lblResult, BorderLayout.WEST);
 		lblResult.setPreferredSize(new Dimension(60, 40));
+		pnBtn.setLayout(new GridLayout(0,1));
+		pnBtn.add(btnCopy);
+		pnBtn.add(btnSave);
 		pnCipher.add(pnCipherContainer);
-		pnCipher.add(btnCopy, BorderLayout.EAST);
+	
+		pnCipher.add(pnBtn, BorderLayout.EAST);
 		pnKeyField.add(scrollPlain);
 		pnKeyField.add(pnCipher, BorderLayout.SOUTH);
 		pnContainer.setLayout(new BorderLayout());
@@ -207,6 +233,19 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 			}
 		});
+		btnSave.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(!txtCipher.getText().equalsIgnoreCase("")){
+					saveFile();
+				}else{
+					JOptionPane.showMessageDialog(MainGUI.frame, "Empty result!",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
+				
+			}
+		});
 	}
 
 	public void copyIntoClipBoard(String txt) {
@@ -217,7 +256,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 	// get File from computer to App
 	public File openFile() {
-		int select = fileKey.showOpenDialog(null);
+		int select = fileKey.showOpenDialog(this);
 		if (select == JFileChooser.APPROVE_OPTION) {
 			return fileKey.getSelectedFile();
 		} else {
@@ -225,24 +264,74 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 			return null;
 		}
 	}
+	public void saveFile() {
+		int select = fileKey.showSaveDialog(this);
+		if (select == JFileChooser.APPROVE_OPTION) {
+			System.out.println("Save into: "
+					+ fileKey.getSelectedFile().getName());
+			fileSave = fileKey.getSelectedFile();
+			if (fileSave.exists()) {
+
+				int dialogResult = JOptionPane.showConfirmDialog(this, "File "
+						+ fileSave.getName()
+						+ " already exists, do you want to replace this file?",
+						"Warning", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if (dialogResult == JOptionPane.YES_OPTION) {
+					
+					 try (FileOutputStream fos = new FileOutputStream(fileSave)) {
+				            fos.write(decoder.decode(txtCipher.getText()));
+				        } catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					System.out.println("replace!");
+				}else{
+					System.out.println("no replace!");
+				}
+			}else{
+				 try (FileOutputStream fos = new FileOutputStream(fileSave)) {
+			            fos.write(decoder.decode(txtCipher.getText()));
+			        } catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				System.out.println("Saved!");
+			}
+
+		} else {
+			System.out.println("Cancel");
+		}
+
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("rdField")) {
-
+		switch (e.getActionCommand()) {
+		case "rdField":
 			pnContainer.removeAll();
 			pnContainer.add(pnKeyField);
 			pnContainer.revalidate();
 			pnContainer.repaint();
-
-		} else {
-			// fileKey.showSaveDialog(null);
+			break;
+		case "rdFile":
 			pnContainer.removeAll();
 			pnContainer.add(pnKeyFile);
 			pnContainer.revalidate();
 			pnContainer.repaint();
-
+			break;
+		case "rdEncrypt":
+			rdField.setText("Encrypt with text");
+			rdFile.setText("Encrypt with file");
+			break;
+		case "rdDecrypt":
+			rdField.setText("Decrypt with text");
+			rdFile.setText("Decrypt with file");
+			break;
+		default:
+			break;
 		}
+		
 
 	}
 
