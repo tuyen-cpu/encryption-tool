@@ -7,6 +7,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.BoxLayout;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.BevelBorder;
+import java.awt.Color;
 public class OptionGeneralUI extends JPanel {
 
 	private String[] listAlgorithms = {"AES", "DES", "DESede","RC2","Serpent","IDEA","Twofish","Blowfish","Camellia" };
@@ -79,7 +82,7 @@ public class OptionGeneralUI extends JPanel {
 		add(pnKeySize);
 		add(pnMode);
 		add(pnPadding);
-		setBorder(new EmptyBorder(20, 10, 0, 10));
+		setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, new Color(255, 255, 255), new Color(255, 255, 255), new Color(255, 255, 255), new Color(255, 255, 255)), new EmptyBorder(10, 10, 10, 10)));
 //		Border blackline = BorderFactory.createTitledBorder("Option");
 //		setBorder(blackline);
 //		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",

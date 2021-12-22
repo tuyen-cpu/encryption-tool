@@ -36,6 +36,14 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 import javax.swing.BoxLayout;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.border.SoftBevelBorder;
 
 public class OptionKeyUI extends JPanel implements ActionListener {
 	JButton btnCreateKey, btnCopy, btnChooseFile, btnSave;
@@ -57,6 +65,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		pnRadio = new JPanel();
 		pnBtn = new JPanel();
 		pnContainer = new JPanel();
+		pnContainer.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
 		pnKeyField = new JPanel(new BorderLayout());
 		pnKeyFile = new JPanel();
 		fileKey = new JFileChooser();
@@ -80,7 +89,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 
 		txtKey.setPreferredSize(dimKeyField);
 		btnCreateKey.setPreferredSize(dimBtnCreateKey);
-		btnChooseFile.setPreferredSize(dimBtnCreateKey);
+		btnChooseFile.setPreferredSize(new Dimension(100, 42));
 
 		setPreferredSize(dimContainer);
 		btnChooseFile.addActionListener(new ActionListener() {
@@ -91,19 +100,11 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 			}
 		});
 
-		setBorder(new EmptyBorder(20, 0, 0, 0));
-		pnKeyFile.setBorder(new EmptyBorder(0, 20, 0, 20));
-		pnKeyField.setBorder(new EmptyBorder(0, 20, 0, 20));
+		setBorder(new EmptyBorder(20, 20, 0, 20));
 		// set layout panel
 		setLayout(new BorderLayout());
 		pnRadio.setLayout(new BorderLayout(0, 0));
-		GridBagLayout gbl_pnContainerRadio = new GridBagLayout();
-		gbl_pnContainerRadio.columnWidths = new int[] { 293, 57, 81, 0 };
-		gbl_pnContainerRadio.rowHeights = new int[] { 24, 0 };
-		gbl_pnContainerRadio.columnWeights = new double[] { 0.0, 0.0, 0.0,
-				Double.MIN_VALUE };
-		gbl_pnContainerRadio.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-		pnContainerRadio.setLayout(gbl_pnContainerRadio);
+//		
 		// Create component
 		rdField = new JRadioButton("Text key");
 		rdField.setFocusPainted(false);
@@ -118,12 +119,8 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		// add event radio button
 		rdField.addActionListener(this);
 		// add component
-		GridBagConstraints gbc_rdField = new GridBagConstraints();
-		gbc_rdField.anchor = GridBagConstraints.NORTHWEST;
-		gbc_rdField.insets = new Insets(0, 0, 0, 5);
-		gbc_rdField.gridx = 1;
-		gbc_rdField.gridy = 0;
-		pnContainerRadio.add(rdField, gbc_rdField);
+	
+		pnContainerRadio.add(rdField);
 		pnRadio.add(pnContainerRadio);
 		rdFile = new JRadioButton("Import file key");
 		rdFile.setFocusPainted(false);
@@ -131,11 +128,9 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		rdFile.setActionCommand("rdFile");
 		bg.add(rdFile);
 		rdFile.addActionListener(this);
-		GridBagConstraints gbc_rdFile = new GridBagConstraints();
-		gbc_rdFile.anchor = GridBagConstraints.NORTHWEST;
-		gbc_rdFile.gridx = 2;
-		gbc_rdFile.gridy = 0;
-		pnContainerRadio.add(rdFile, gbc_rdFile);
+		
+		
+		pnContainerRadio.add(rdFile);
 		pnContainerRadio.setBorder(new EmptyBorder(0, 22, 0, 0));
 		add(pnRadio, BorderLayout.NORTH);
 		add(pnContainer, BorderLayout.CENTER);
@@ -182,8 +177,8 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		pnBtn.add(btnCopy);
 		pnKeyField.add(pnKey);
 		pnKeyField.add(pnBtn, BorderLayout.EAST);
-		pnContainer.add(pnKeyField);
-		// pnContainer.add(pnKeyFile);
+//		pnContainer.add(pnKeyField);
+		 pnContainer.add(pnKeyFile);
 		pnKeyFile.setLayout(new BorderLayout());
 
 		pnKeyFile.add(btnChooseFile);

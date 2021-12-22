@@ -25,6 +25,9 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.BoxLayout;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.BevelBorder;
+import java.awt.Color;
 
 public class TabAsymmetric extends JPanel implements ActionListener {
 	private String[] listAlgorithms = { "RSA" };
@@ -165,7 +168,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 //		optionEncryptUI.setPreferredSize(new Dimension(750, 265));
 //		Border optionLine = BorderFactory.createTitledBorder("Option");
 //		pnOption.setBorder(optionLine);
-		setBorder(new EmptyBorder(5, 0, 10, 0));
+		setBorder(new EmptyBorder(0, 0, 10, 0));
 //		((TitledBorder) pnOption.getBorder()).setTitleFont(new Font("Dialog",
 //				Font.PLAIN, 13));
 //		Border keyLine = BorderFactory.createTitledBorder("Key");
@@ -183,10 +186,10 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		
 		btnCreateKey.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblPrivatekey.setFont(new Font("Dialog", Font.PLAIN, 14));
-		pnAlgorithms.setBorder(new EmptyBorder(0, 5, 0, 5));
-		pnKeySize.setBorder(new EmptyBorder(0, 5, 0, 5));
-		pnMode.setBorder(new EmptyBorder(0, 5, 0, 5));
-		pnPadding.setBorder(new EmptyBorder(0, 5, 0, 5));
+		pnAlgorithms.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnKeySize.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnMode.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnPadding.setBorder(new EmptyBorder(0, 0, 0, 0));
 		choiceAlgorithms.setFocusable(false);
 		choiceKeySize.setFocusable(false);
 		choiceMode.setFocusable(false);
@@ -201,10 +204,10 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		btnCopyPrivateKey.setPreferredSize(dmBtnCopy);
 		btnImportPublicKey.setPreferredSize(dmChoose);
 		btnImportPrivatekey.setPreferredSize(dmChoose);
-		choicePadding.setPreferredSize(new Dimension(190,30));
+		choicePadding.setPreferredSize(new Dimension(190,26));
 		optionEncryptUI.getBtnChooseInput().setPreferredSize(dmChoose);
 		optionEncryptUI.getBtnChooseOutput().setPreferredSize(dmChoose);
-		pnOption.setBorder(new EmptyBorder(20, 10, 20, 10));
+		pnOption.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(255, 255, 255), new Color(255, 255, 255)), new EmptyBorder(10, 10, 10, 10)));
 		pnKey.setBorder(new EmptyBorder(0, 20, 0, 20));
 		pnFieldPrivate.setBorder(new EmptyBorder(0, 0, 0, 0));
 		optionEncryptUI.setPreferredSize( new Dimension(740, 280));

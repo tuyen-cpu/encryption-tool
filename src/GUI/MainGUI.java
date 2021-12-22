@@ -67,7 +67,7 @@ public class MainGUI {
 	private ImageIcon icon, iconLoading;
 	static JFrame frame;
 	private JDialog jLoading;
-	
+
 	public MainGUI() {
 		createComponent();
 		setFontComponent();
@@ -100,6 +100,7 @@ public class MainGUI {
 	public void setFontComponent() {
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 18));
 		tabbedPane.setFont(new Font("Dialog", Font.PLAIN, 13));
+		
 		btnStart.setPreferredSize(new Dimension(150, 50));
 		btnStart.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/start.png")));
@@ -270,7 +271,8 @@ public class MainGUI {
 					symmetric.createKey();
 					String key = symmetric.getKeyWithString();
 					pnKey.setTxtKey(key);
-				} catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
+				} catch (NoSuchAlgorithmException | NoSuchPaddingException
+						| NoSuchProviderException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -285,14 +287,13 @@ public class MainGUI {
 					tabAsymmetric.getTxtPrivateKey().setText("");
 					tabAsymmetric.getTxtPublicKey().setText("");
 
-					
 					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
 						@Override
 						protected String doInBackground()
 								throws InterruptedException {
 							try {
-								asymmetric = new Asymmetric(algorithm, mode, padding,
-										keysize);
+								asymmetric = new Asymmetric(algorithm, mode,
+										padding, keysize);
 								asymmetric.genkey();
 								return "success";
 							} catch (Exception e) {
@@ -330,13 +331,14 @@ public class MainGUI {
 				addControllOptionCombineTab();
 				try {
 					tabCombine.getTxtPrivateKey().setText("");
-					tabCombine.getTxtPublicKey().setText("");	
+					tabCombine.getTxtPublicKey().setText("");
 					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
 						@Override
 						protected String doInBackground()
 								throws InterruptedException {
 							try {
-								rsaFile = new RSAFile(algorithm, keysize, mode, padding);
+								rsaFile = new RSAFile(algorithm, keysize, mode,
+										padding);
 								rsaFile.doGenkey();
 								return "success";
 							} catch (Exception e) {
@@ -353,7 +355,7 @@ public class MainGUI {
 					};
 					worker.execute(); // here the process thread initiates
 					jLoading.setVisible(true);
-					
+
 					tabCombine.getTxtPrivateKey().setText(
 							rsaFile.getPrivateKeyWithString());
 					tabCombine.getTxtPublicKey().setText(
@@ -461,13 +463,16 @@ public class MainGUI {
 			return;
 		}
 	}
-public void getDialogNotuSupportNopaddingWithFile(){
-	if(padding.equalsIgnoreCase("NoPadding")){
-		JOptionPane.showMessageDialog(null, "No support file encryption and decryption with Nopadding", "Error",
-				JOptionPane.PLAIN_MESSAGE);
-		return;
+
+	public void getDialogNotuSupportNopaddingWithFile() {
+		if (padding.equalsIgnoreCase("NoPadding")) {
+			JOptionPane.showMessageDialog(null,
+					"No support file encryption and decryption with Nopadding",
+					"Error", JOptionPane.PLAIN_MESSAGE);
+			return;
+		}
 	}
-}
+
 	public void handleTabSymmetric() {
 		textInput = pnEncrypt.getTxtPlain().getText();
 		if (textInput.equals("") && pnEncrypt.getRdField().isSelected()) {
@@ -536,9 +541,12 @@ public void getDialogNotuSupportNopaddingWithFile(){
 			// if radio is encrypt then into if, else is decrypt
 			if (pnEncrypt.getPnSelectEnOrDe().getRdEncrypt().isSelected()) {
 				if (pnEncrypt.getRdFile().isSelected()) {
-					if(padding.equalsIgnoreCase("NoPadding")){
-						JOptionPane.showMessageDialog(null, "No support file encryption and decryption with Nopadding", "Error",
-								JOptionPane.PLAIN_MESSAGE);
+					if (padding.equalsIgnoreCase("NoPadding")) {
+						JOptionPane
+								.showMessageDialog(
+										null,
+										"No support file encryption and decryption with Nopadding",
+										"Error", JOptionPane.PLAIN_MESSAGE);
 						return;
 					}
 					checkEmptyFileInputAndOutput();
@@ -587,9 +595,12 @@ public void getDialogNotuSupportNopaddingWithFile(){
 				}
 			} else {
 				if (pnEncrypt.getRdFile().isSelected()) {
-					if(padding.equalsIgnoreCase("NoPadding")){
-						JOptionPane.showMessageDialog(null, "No support file encryption and decryption with Nopadding", "Error",
-								JOptionPane.PLAIN_MESSAGE);
+					if (padding.equalsIgnoreCase("NoPadding")) {
+						JOptionPane
+								.showMessageDialog(
+										null,
+										"No support file encryption and decryption with Nopadding",
+										"Error", JOptionPane.PLAIN_MESSAGE);
 						return;
 					}
 					checkEmptyFileInputAndOutput();
@@ -726,6 +737,8 @@ public void getDialogNotuSupportNopaddingWithFile(){
 	}
 
 	public void handleTabCombine() {
+		// if text input empty and selected radio field => show dialog empty
+		// input
 		textInput = tabCombine.getOptionEncryptUI().getTxtPlain().getText();
 		if (textInput.equals("")
 				&& tabCombine.getOptionEncryptUI().getRdField().isSelected()) {
@@ -820,7 +833,8 @@ public void getDialogNotuSupportNopaddingWithFile(){
 						protected String doInBackground()
 								throws InterruptedException {
 							try {
-								rsaFile.doEncryptRSAWithAES(inputFile, outputFile);
+								rsaFile.doEncryptRSAWithAES(inputFile,
+										outputFile);
 								return "success";
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -863,13 +877,14 @@ public void getDialogNotuSupportNopaddingWithFile(){
 							.getFileOutput().getAbsolutePath();
 
 					System.out.println("Enter decryt with file");
-					
+
 					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
 						@Override
 						protected String doInBackground()
 								throws InterruptedException {
 							try {
-								rsaFile.doDeCryptRSAWithAES(inputFile, outputFile);
+								rsaFile.doDeCryptRSAWithAES(inputFile,
+										outputFile);
 								return "success";
 							} catch (Exception e) {
 								e.printStackTrace();

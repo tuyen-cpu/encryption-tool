@@ -1,5 +1,7 @@
 package GUI;
 
+import java.awt.Color;
+
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -11,9 +13,11 @@ public class Main {
 	public static void main(String[] args) throws ParseException {
 		try {
 			UIManager.setLookAndFeel(new FlatIntelliJLaf());
+			
 			StartGUI  start= new StartGUI();
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
+					
 					MainGUI gui = new MainGUI();
 					start.dispose();
 					gui.createAndShowGUI();
