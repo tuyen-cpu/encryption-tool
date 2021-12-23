@@ -177,8 +177,8 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		pnBtn.add(btnCopy);
 		pnKeyField.add(pnKey);
 		pnKeyField.add(pnBtn, BorderLayout.EAST);
-//		pnContainer.add(pnKeyField);
-		 pnContainer.add(pnKeyFile);
+		pnContainer.add(pnKeyField);
+//		 pnContainer.add(pnKeyFile);
 		pnKeyFile.setLayout(new BorderLayout());
 
 		pnKeyFile.add(btnChooseFile);

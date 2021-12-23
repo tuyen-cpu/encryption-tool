@@ -64,7 +64,7 @@ public class OptionGeneralUI extends JPanel {
 		choiceMode.setFocusable(false);
 		choicePadding.setFocusable(false);
 		/* Set dimension */
-		setPreferredSize(dimContainer);	
+//		setPreferredSize(dimContainer);	
 
 		/* Add label & choice into Panel */
 		pnAlgorithms.add(lblAlgorithms);

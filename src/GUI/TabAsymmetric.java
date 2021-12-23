@@ -28,6 +28,7 @@ import javax.swing.BoxLayout;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.BevelBorder;
 import java.awt.Color;
+import java.awt.FlowLayout;
 
 public class TabAsymmetric extends JPanel implements ActionListener {
 	private String[] listAlgorithms = { "RSA" };
@@ -39,7 +40,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 	private String[] listKeySize = { "1024", "2048", "3072", "4069" };
 	private JPanel pnOption, pnKey, pnEncypt, pnAlgorithms, pnKeySize, pnMode,
 			pnPadding, pnOptionKey, pnContainerKey, pnFieldPublic,pnPrivateKey,
-			pnFieldPrivate, pnFilePublic, pnFilePrivte, pnFileKey,pnFieldPublicContainer,pnSum;
+			pnFieldPrivate, pnFilePublic, pnFilePrivte, pnFileKey,pnFieldPublicContainer,pnSum,pnCenter;
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblPadding,
 			lblPrivatekey;
 	private JComboBox choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
@@ -73,6 +74,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnMode = new JPanel();
 		pnPadding = new JPanel();
 		pnKey = new JPanel(new BorderLayout());
+		pnCenter = new JPanel(new BorderLayout());
+		pnCenter.setBorder(new EmptyBorder(20, 20, 0, 20));
 		pnEncypt = new JPanel();
 		lblAlgorithms = new JLabel("Algorithms:");
 		lblKeySize = new JLabel("Key size:");
@@ -83,7 +86,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		choiceMode = new JComboBox(listMode);
 		choicePadding = new JComboBox(listPadding);
 		btnCreateKey = new JButton("Create key");
-		pnOptionKey = new JPanel(new GridBagLayout());
+		pnOptionKey = new JPanel();
 		pnContainerKey = new JPanel(new BorderLayout());
 		rdString = new JRadioButton("Text key");
 		rdFile = new JRadioButton("Import file key");
@@ -110,6 +113,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		btnImportPublicKey = new JButton("Choose key public");
 		btnImportPrivatekey = new JButton("Choose key private");
 		optionEncryptUI = new OptionEncryptUI();
+		optionEncryptUI.setBorder(null);
 	
 		jFileChoose = new JFileChooser();
 		jFileChoose.setCurrentDirectory(jFileChoose.getFileSystemView().getParentDirectory(new File("D:\\")));
@@ -135,6 +139,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnOption.add(pnPadding);
 		pnKey.add(pnOptionKey, BorderLayout.CENTER);
 		pnKey.add(pnSum, BorderLayout.SOUTH);
+		pnOptionKey.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		pnOptionKey.add(rdString);
 		pnOptionKey.add(rdFile);
 		pnSum.add(pnContainerKey);
@@ -162,8 +167,10 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnFileKey.add(pnFilePublic, BorderLayout.NORTH);
 		pnFileKey.add(pnFilePrivte, BorderLayout.SOUTH);
 		add(pnOption, BorderLayout.NORTH);
-		add(pnKey, BorderLayout.CENTER);
-		add(optionEncryptUI, BorderLayout.SOUTH);
+		pnCenter.add(pnKey, BorderLayout.NORTH);
+		pnCenter.add(optionEncryptUI);
+		add(pnCenter);
+		
 		optionEncryptUI.getTxtPlain().setSize(7, 50);
 //		optionEncryptUI.setPreferredSize(new Dimension(750, 265));
 //		Border optionLine = BorderFactory.createTitledBorder("Option");
@@ -208,7 +215,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		optionEncryptUI.getBtnChooseInput().setPreferredSize(dmChoose);
 		optionEncryptUI.getBtnChooseOutput().setPreferredSize(dmChoose);
 		pnOption.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(255, 255, 255), new Color(255, 255, 255)), new EmptyBorder(10, 10, 10, 10)));
-		pnKey.setBorder(new EmptyBorder(0, 20, 0, 20));
+		pnKey.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
 		pnFieldPrivate.setBorder(new EmptyBorder(0, 0, 0, 0));
 		optionEncryptUI.setPreferredSize( new Dimension(740, 280));
 	}

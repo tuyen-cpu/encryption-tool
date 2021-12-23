@@ -92,7 +92,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		fileKey = new JFileChooser();
 		fileKey.setCurrentDirectory(fileKey.getFileSystemView()
 				.getParentDirectory(new File("D:\\")));
-		txtPlain = new JTextArea(5, 60);
+		txtPlain = new JTextArea(4, 60);
 		txtCipher = new JTextArea(4, 50);
 		txtPlain.setLineWrap(true);
 		txtPlain.setWrapStyleWord(true);

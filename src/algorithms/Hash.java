@@ -33,6 +33,9 @@ public class Hash {
 			byte[] messageDigest = md.digest(input.getBytes());
 			BigInteger number = new BigInteger(1, messageDigest);
 			String hashtext = number.toString(16);
+			while (hashtext.length() < 32) {
+	             hashtext = "0" + hashtext;
+	         }
 			return hashtext;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,18 +49,18 @@ public class Hash {
 		this.md = MessageDigest.getInstance(algorithms);
 		InputStream is = new FileInputStream(new File(file));
 		DigestInputStream dis = new DigestInputStream(is, md);
-
 		byte[] buffer = new byte[1024];
-
 		int read = dis.read(buffer);
 		while (read != -1) {
 			read = dis.read(buffer);
-
 		}
 		dis.close();
 		is.close();
 		BigInteger number = new BigInteger(1, dis.getMessageDigest().digest());
 		String hashtext = number.toString(16);
+		 while (hashtext.length() < 32) {
+             hashtext = "0" + hashtext;
+         }
 		return hashtext;
 	}
 

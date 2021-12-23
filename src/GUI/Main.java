@@ -13,6 +13,7 @@ public class Main {
 	public static void main(String[] args) throws ParseException {
 		try {
 			UIManager.setLookAndFeel(new FlatIntelliJLaf());
+//			UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme");
 			
 			StartGUI  start= new StartGUI();
 			SwingUtilities.invokeLater(new Runnable() {

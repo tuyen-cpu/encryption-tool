@@ -106,7 +106,7 @@ public class MainGUI {
 				"/img/start.png")));
 		btnStart.setHorizontalAlignment(SwingConstants.LEFT);
 		pnBtnStart.setBorder(new EmptyBorder(0, 0, 10, 0));
-		pnMain.setPreferredSize(new Dimension(750, 600));
+		pnMain.setPreferredSize(new Dimension(800, 650));
 	}
 
 	public void addComponent() {
@@ -418,7 +418,7 @@ public class MainGUI {
 			}
 		} else {
 			System.out.println("Hash with file");
-			textInput = tabHash.getLblFileInput().getText();
+			textInput = tabHash.getFileInput().getAbsolutePath();
 			if (textInput.equalsIgnoreCase("")) {
 				JOptionPane.showMessageDialog(null, "Empty file input",
 						"Error", JOptionPane.ERROR_MESSAGE);
@@ -428,9 +428,9 @@ public class MainGUI {
 					.getSelectedItem();
 			try {
 				Hash hash = new Hash(algorithm);
-				outText = hash.hash(textInput);
+				outText = hash.hashFile(textInput);
 				System.out.println("Hash success!");
-			} catch (NoSuchAlgorithmException e) {
+			} catch (NoSuchAlgorithmException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
