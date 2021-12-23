@@ -68,6 +68,7 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		dmChoose = new Dimension(140, 40);
 		pnFieldPublicContainer = new JPanel(new BorderLayout());
 		pnSum = new JPanel(new BorderLayout());
+		pnSum.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
 		pnOption = new JPanel();
 		pnAlgorithms = new JPanel();
 		pnKeySize = new JPanel();
@@ -215,7 +216,6 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		optionEncryptUI.getBtnChooseInput().setPreferredSize(dmChoose);
 		optionEncryptUI.getBtnChooseOutput().setPreferredSize(dmChoose);
 		pnOption.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(255, 255, 255), new Color(255, 255, 255)), new EmptyBorder(10, 10, 10, 10)));
-		pnKey.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
 		pnFieldPrivate.setBorder(new EmptyBorder(0, 0, 0, 0));
 		optionEncryptUI.setPreferredSize( new Dimension(740, 280));
 	}

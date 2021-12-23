@@ -43,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Base64;
+
 import javax.swing.border.BevelBorder;
 
 public class OptionEncryptUI extends JPanel implements ActionListener {
@@ -69,8 +70,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		pnBtn = new JPanel();
 		pnSelectEnOrDe = new OptionSelectEncryptOrDecrypt();
 
-		rdField = new JRadioButton("Encrypt with text");
-		rdFile = new JRadioButton("Encrypt with file");
+		rdField = new JRadioButton("Text encrypt");
+		rdFile = new JRadioButton("File encrypt");
 
 		pnFileOutput = new JPanel(new BorderLayout());
 		pnFileInput = new JPanel(new BorderLayout());
@@ -196,9 +197,11 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		add(pnSelectEnOrDe, BorderLayout.SOUTH);
 		// set border title
 		lblResult.setBounds(0, 50, 0, 0);
-	
-		pnContainer.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
-setBorder(new EmptyBorder(20,20,20,20));
+
+		pnContainer.setBorder(new CompoundBorder(new BevelBorder(
+				BevelBorder.LOWERED, null, null, new Color(200, 200, 200),
+				new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
+		setBorder(new EmptyBorder(20, 20, 20, 20));
 		// Border blackline = BorderFactory
 		// .createTitledBorder("Encrypt or Decrypt");
 		// setBorder(blackline);
@@ -213,11 +216,25 @@ setBorder(new EmptyBorder(20,20,20,20));
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					fileInput = openFile();
-					btnChooseInput.setText(fileInput.getAbsolutePath());
-					;
+					boolean isStop = false;
+					do {
+						fileInput = openFile();
+						if (fileInput.exists()) {
+							btnChooseInput.setText(fileInput.getAbsolutePath());
+							isStop = true;
+						} else {
+							JOptionPane.showMessageDialog(MainGUI.frame,
+									"File " + fileInput.getName()
+											+ " doesn't exist!", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							System.out.println("File does not exist!");
+							isStop = false;
+						}
+					} while (!isStop);
 				} catch (Exception e) {
-					System.out.println("Cancel choose file");
+					System.out.println(fileInput);
+					btnChooseInput.setText("Choose file input");
+					System.out.println("Cancel choose file!");
 				}
 			}
 		});
@@ -226,8 +243,7 @@ setBorder(new EmptyBorder(20,20,20,20));
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					boolean stop = true;
-					do {
+			
 						fileOutput = openFile();
 						if (fileOutput.exists()) {
 							int dialogResult = JOptionPane.showConfirmDialog(
@@ -240,17 +256,17 @@ setBorder(new EmptyBorder(20,20,20,20));
 							if (dialogResult == JOptionPane.YES_OPTION) {
 								btnChooseOutput.setText(fileOutput
 										.getAbsolutePath());
-								stop = true;
+							
 								System.out.println("Replace file!");
 							} else {
-								stop = false;
+								
 								System.out.println("No replace file!");
 							}
 						} else {
 							btnChooseOutput.setText(fileOutput
 									.getAbsolutePath());
 						}
-					} while (!stop);
+				
 				} catch (Exception e) {
 					System.out.println("Cancel choose file");
 				}
@@ -354,12 +370,12 @@ setBorder(new EmptyBorder(20,20,20,20));
 			pnContainer.repaint();
 			break;
 		case "rdEncrypt":
-			rdField.setText("Encrypt with text");
-			rdFile.setText("Encrypt with file");
+			rdField.setText("Text encrypt");
+			rdFile.setText("File encrypt");
 			break;
 		case "rdDecrypt":
-			rdField.setText("Decrypt with text");
-			rdFile.setText("Decrypt with file");
+			rdField.setText("Text decrypt");
+			rdFile.setText("File decrypt");
 			break;
 		default:
 			break;

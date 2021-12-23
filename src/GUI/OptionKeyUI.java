@@ -38,7 +38,9 @@ import java.awt.Insets;
 import javax.swing.BoxLayout;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
+
 import java.awt.Color;
+
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
@@ -89,15 +91,33 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 
 		txtKey.setPreferredSize(dimKeyField);
 		btnCreateKey.setPreferredSize(dimBtnCreateKey);
-		btnChooseFile.setPreferredSize(new Dimension(100, 42));
+		btnChooseFile.setPreferredSize(new Dimension(100, 40));
 
 		setPreferredSize(dimContainer);
 		btnChooseFile.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				openFile();
+				boolean isStop=false;
+				do{
+					fileInputKey=openFile();
+				
+					if(fileInputKey.exists()){
+						btnChooseFile.setText(fileInputKey.getAbsolutePath());
+						isStop=true;
+					}else{
+						JOptionPane.showMessageDialog(MainGUI.frame, "File "+fileInputKey.getName()+" doesn't exist!",
+								"Error", JOptionPane.ERROR_MESSAGE);
+						System.out.println("File does not exist!");
+						btnChooseFile.setText("Choose file");
+						isStop=false;
+						
+					}
+				}while(!isStop);
+			
 			}
+			
+			
 		});
 
 		setBorder(new EmptyBorder(20, 20, 0, 20));
@@ -195,19 +215,27 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		clipboard.setContents(stringSelection, null);
 	}
 
-	public void openFile() {
-
+//	public void openFile() {
+//
+//		int select = fileKey.showOpenDialog(this);
+//		if (select == JFileChooser.APPROVE_OPTION) {
+//			System.out.println("file: " + fileKey.getSelectedFile().getName());
+//			btnChooseFile.setText("" + fileKey.getSelectedFile().getName());
+//			fileInputKey = fileKey.getSelectedFile();
+//		} else {
+//			System.out.println("Cancel");
+//		}
+//
+//	}
+	public File openFile() {
 		int select = fileKey.showOpenDialog(this);
 		if (select == JFileChooser.APPROVE_OPTION) {
-			System.out.println("file: " + fileKey.getSelectedFile().getName());
-			btnChooseFile.setText("" + fileKey.getSelectedFile().getName());
-			fileInputKey = fileKey.getSelectedFile();
+			return fileKey.getSelectedFile();
 		} else {
 			System.out.println("Cancel");
+			return null;
 		}
-
 	}
-
 	public void saveFile() {
 		int select = fileKey.showSaveDialog(this);
 		if (select == JFileChooser.APPROVE_OPTION) {

@@ -101,10 +101,9 @@ public class MainGUI {
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 18));
 		tabbedPane.setFont(new Font("Dialog", Font.PLAIN, 13));
 		
-		btnStart.setPreferredSize(new Dimension(150, 50));
+		btnStart.setPreferredSize(new Dimension(150, 60));
 		btnStart.setIcon(new ImageIcon(this.getClass().getResource(
-				"/img/start.png")));
-		btnStart.setHorizontalAlignment(SwingConstants.LEFT);
+				"/img/icon-play.png")));
 		pnBtnStart.setBorder(new EmptyBorder(0, 0, 10, 0));
 		pnMain.setPreferredSize(new Dimension(800, 650));
 	}
