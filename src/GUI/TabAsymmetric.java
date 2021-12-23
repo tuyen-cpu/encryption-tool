@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -27,6 +28,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.BoxLayout;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.BevelBorder;
+
 import java.awt.Color;
 import java.awt.FlowLayout;
 
@@ -111,8 +113,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnFilePrivte = new JPanel();
 		pnFileKey = new JPanel(new BorderLayout());
 		
-		btnImportPublicKey = new JButton("Choose key public");
-		btnImportPrivatekey = new JButton("Choose key private");
+		btnImportPublicKey = new JButton("Choose public key");
+		btnImportPrivatekey = new JButton("Choose private key");
 		optionEncryptUI = new OptionEncryptUI();
 		optionEncryptUI.setBorder(null);
 	
@@ -229,9 +231,24 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					privateFile = openFile();
-					btnImportPrivatekey.setText(privateFile.getAbsolutePath());
+					boolean isStop=false;
+					do{
+						privateFile = openFile();
+						if(privateFile.exists()){
+							btnImportPrivatekey.setText(privateFile.getAbsolutePath());
+							isStop=true;
+						}else{
+							JOptionPane.showMessageDialog(MainGUI.frame, "File "+privateFile.getName()+" doesn't exist!",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							System.out.println("File does not exist!");
+							btnImportPrivatekey.setText("Choose private key");
+							privateFile=null;
+							isStop=false;
+							
+						}
+					}while(!isStop);
 				} catch (Exception ex) {
+					privateFile=null;
 					System.out.println("Cancel choose file");
 				}
 
@@ -242,9 +259,24 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					publicFile = openFile();
-					btnImportPublicKey.setText(publicFile.getAbsolutePath());
+					boolean isStop=false;
+					do{
+						publicFile = openFile();
+						if(publicFile.exists()){
+							btnImportPublicKey.setText(publicFile.getAbsolutePath());
+							isStop=true;
+						}else{
+							JOptionPane.showMessageDialog(MainGUI.frame, "File "+publicFile.getName()+" doesn't exist!",
+									"Error", JOptionPane.ERROR_MESSAGE);
+							System.out.println("File does not exist!");
+							btnImportPublicKey.setText("Choose public key");
+							publicFile=null;
+							isStop=false;
+							
+						}
+					}while(!isStop);
 				} catch (Exception ex) {
+					publicFile=null;
 					System.out.println("Cancel choose file");
 				}
 

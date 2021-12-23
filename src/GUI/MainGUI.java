@@ -677,10 +677,17 @@ public class MainGUI {
 			if (tabAsymmetric.getOptionEncryptUI().getPnSelectEnOrDe()
 					.getRdEncrypt().isSelected()) {
 				try {
-					System.out.println(tabAsymmetric.getPublicFile()
-							.getAbsolutePath());
-					publickey = asymmetric.readPublicKey(tabAsymmetric
-							.getPublicFile().getAbsolutePath());
+					if(tabAsymmetric.getPublicFile()==null){
+						JOptionPane.showMessageDialog(MainGUI.frame, "Public key file empty",
+								"Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}else{
+						System.out.println(tabAsymmetric.getPublicFile()
+								.getAbsolutePath());
+						publickey = asymmetric.readPublicKey(tabAsymmetric
+								.getPublicFile().getAbsolutePath());
+					}
+					
 
 				} catch (InvalidKeySpecException | NoSuchAlgorithmException
 						| IOException e) {
@@ -689,11 +696,18 @@ public class MainGUI {
 				}
 			} else {
 				try {
-					privatekey = asymmetric.readPrivateKey(tabAsymmetric
-							.getPrivateFile().getAbsolutePath());
-					System.out.println(tabAsymmetric.getPrivateFile()
-							.getAbsolutePath());
+					if(tabAsymmetric.getPublicFile()==null){
+						JOptionPane.showMessageDialog(MainGUI.frame, "Private key file empty",
+								"Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}else{
+						privatekey = asymmetric.readPrivateKey(tabAsymmetric
+								.getPrivateFile().getAbsolutePath());
+						System.out.println(tabAsymmetric.getPrivateFile()
+								.getAbsolutePath());
 
+					}
+					
 				} catch (InvalidKeySpecException | NoSuchAlgorithmException
 						| IOException e) {
 					// TODO Auto-generated catch block
