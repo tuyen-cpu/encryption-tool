@@ -42,12 +42,12 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 	private String[] listKeySize = { "1024", "2048", "3072", "4069" };
 	private JPanel pnOption, pnKey, pnEncypt, pnAlgorithms, pnKeySize, pnMode,
 			pnPadding, pnOptionKey, pnContainerKey, pnFieldPublic,pnPrivateKey,
-			pnFieldPrivate, pnFilePublic, pnFilePrivte, pnFileKey,pnFieldPublicContainer,pnSum,pnCenter;
+			pnFieldPrivate, pnFilePublic, pnFilePrivte, pnFileKey,pnFieldPublicContainer,pnSum,pnCenter,pnBtnPrivate,pnBtnPublic;
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblPadding,
 			lblPrivatekey;
 	private JComboBox choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
 	private JButton btnCreateKey, btnImportPublicKey, btnImportPrivatekey,
-			btnCopyPrivateKey, btnCopyPublicKey;
+			btnCopyPrivateKey, btnCopyPublicKey,btnSavePrivate,btnSavePublic;
 	private JRadioButton rdString, rdFile;
 	private JTextField txtPublicKey, txtPrivateKey;
 	private Dimension dmTxtKey, dmBtnCopy, dmBtnCreate, dmChoose;
@@ -68,6 +68,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		dmBtnCopy = new Dimension(60, 40);
 		dmBtnCreate = new Dimension(120, 40);
 		dmChoose = new Dimension(140, 40);
+		btnSavePrivate = new JButton();
+		btnSavePublic = new JButton();
 		pnFieldPublicContainer = new JPanel(new BorderLayout());
 		pnSum = new JPanel(new BorderLayout());
 		pnSum.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
@@ -76,6 +78,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnKeySize = new JPanel();
 		pnMode = new JPanel();
 		pnPadding = new JPanel();
+		pnBtnPrivate = new JPanel(new BorderLayout());
+		pnBtnPublic = new JPanel(new BorderLayout());
 		pnKey = new JPanel(new BorderLayout());
 		pnCenter = new JPanel(new BorderLayout());
 		pnCenter.setBorder(new EmptyBorder(20, 20, 0, 20));
@@ -107,6 +111,10 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 				"/img/copy.png")));
 		btnCopyPublicKey.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/copy.png")));
+		btnSavePublic.setIcon(new ImageIcon(this.getClass().getResource(
+				"/img/icon-save.png")));
+		btnSavePrivate.setIcon(new ImageIcon(this.getClass().getResource(
+				"/img/icon-save.png")));
 		pnFieldPublic = new JPanel(new BorderLayout());
 		pnFieldPrivate = new JPanel(new BorderLayout());
 		pnFilePublic = new JPanel();
@@ -149,9 +157,13 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 //		pnSum.add(pnFileKey);
 		pnFieldPublic.add(btnCreateKey,BorderLayout.WEST);
 		pnFieldPublic.add(txtPublicKey);
+		pnBtnPublic.add(btnSavePublic, BorderLayout.WEST);
+pnBtnPublic.add(btnCopyPublicKey);
 		pnFieldPublicContainer.add(pnFieldPublic);
-		pnFieldPublicContainer.add(btnCopyPublicKey,BorderLayout.EAST);
-		pnFieldPrivate.add(btnCopyPrivateKey,BorderLayout.EAST);
+		pnFieldPublicContainer.add(pnBtnPublic,BorderLayout.EAST);
+		pnBtnPrivate.add(btnSavePrivate, BorderLayout.WEST);
+		pnBtnPrivate.add(btnCopyPrivateKey);
+		pnFieldPrivate.add(pnBtnPrivate,BorderLayout.EAST);
 		pnFieldPrivate.add(pnPrivateKey);
 		pnPrivateKey.add(lblPrivatekey,BorderLayout.WEST);
 		pnPrivateKey.add(txtPrivateKey);
@@ -205,6 +217,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		choiceMode.setFocusable(false);
 		choicePadding.setFocusable(false);
 
+		btnSavePrivate.setPreferredSize(dmBtnCopy);
+		btnSavePublic.setPreferredSize(dmBtnCopy);
 		pnFieldPrivate.setBorder(new EmptyBorder(-5, 45, 0, 0));
 		lblPrivatekey.setPreferredSize(new Dimension(120,40));
 		txtPublicKey.setPreferredSize(dmTxtKey);
