@@ -81,9 +81,11 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		btnCopy = new JButton();
 		btnCopy.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/copy.png")));
+		btnCopy.setToolTipText("Copy");
 		btnSave = new JButton();
 		btnSave.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/icon-save.png")));
+		btnSave.setToolTipText("Save");
 		btnCopy.setPreferredSize(new Dimension(60, 40));
 		btnSave.setPreferredSize(new Dimension(60, 40));
 		pnRadio = new JPanel();
@@ -94,6 +96,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		fileKey.setCurrentDirectory(fileKey.getFileSystemView()
 				.getParentDirectory(new File("D:\\")));
 		txtPlain = new JTextArea(4, 60);
+		txtPlain.setToolTipText("Enter input to proceed with encryption or decryption");
 		txtCipher = new JTextArea(4, 50);
 		txtPlain.setLineWrap(true);
 		txtPlain.setWrapStyleWord(true);
@@ -243,30 +246,29 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-			
-						fileOutput = openFile();
-						if (fileOutput.exists()) {
-							int dialogResult = JOptionPane.showConfirmDialog(
-									MainGUI.frame,
-									"File "
-											+ fileOutput.getName()
-											+ " already exists, do you want to replace this file?",
-									"Warning", JOptionPane.YES_NO_OPTION,
-									JOptionPane.QUESTION_MESSAGE);
-							if (dialogResult == JOptionPane.YES_OPTION) {
-								btnChooseOutput.setText(fileOutput
-										.getAbsolutePath());
-							
-								System.out.println("Replace file!");
-							} else {
-								
-								System.out.println("No replace file!");
-							}
-						} else {
+
+					fileOutput = openFile();
+					if (fileOutput.exists()) {
+						int dialogResult = JOptionPane.showConfirmDialog(
+								MainGUI.frame,
+								"File "
+										+ fileOutput.getName()
+										+ " already exists, do you want to replace this file?",
+								"Warning", JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE);
+						if (dialogResult == JOptionPane.YES_OPTION) {
 							btnChooseOutput.setText(fileOutput
 									.getAbsolutePath());
+
+							System.out.println("Replace file!");
+						} else {
+
+							System.out.println("No replace file!");
 						}
-				
+					} else {
+						btnChooseOutput.setText(fileOutput.getAbsolutePath());
+					}
+
 				} catch (Exception e) {
 					System.out.println("Cancel choose file");
 				}
@@ -277,6 +279,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				copyIntoClipBoard(txtCipher.getText());
+				
 
 			}
 		});
@@ -294,12 +297,29 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 			}
 		});
+		txtPlain.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				DialogCustom.stopDialog();
+				
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(txtPlain.getText().trim().equals("")){
+					DialogCustom.showDescription(txtPlain, "Enter input to encryption or decryption");
+				}
+				
+			}
+		});
 	}
 
 	public void copyIntoClipBoard(String txt) {
 		StringSelection stringSelection = new StringSelection(txt);
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(stringSelection, null);
+		DialogCustom.showShortDialog(btnCopy, "Copied!");
 	}
 
 	// get File from computer to App

@@ -86,6 +86,11 @@ public class TabHash extends JPanel implements ActionListener {
 		choiceAlgorithms = new JComboBox(listAlgorithms);
 		rdFile.setFocusPainted(false);
 		rdString.setFocusPainted(false);
+		txtString.setToolTipText("Input text");
+		choiceAlgorithms.setToolTipText("Select algorithms");
+		btnCheckCompare.setToolTipText("Press to check");
+		btnCopy.setToolTipText("Press to copy");
+		btnFileInput.setToolTipText("Press to select file");
 		// group radio button
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdString);
@@ -229,6 +234,22 @@ public class TabHash extends JPanel implements ActionListener {
 				JOptionPane.showMessageDialog(MainGUI.frame, "Mismatched",
 						"Dialog", JOptionPane.ERROR_MESSAGE);
 			}
+				
+			}
+		});
+		txtString.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				DialogCustom.stopDialog();
+				
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(txtString.getText().trim().equals("")){
+					DialogCustom.showDescription(txtString, "Enter input");
+				}
 				
 			}
 		});

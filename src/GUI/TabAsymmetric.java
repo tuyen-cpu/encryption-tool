@@ -8,6 +8,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 
 import javax.swing.BorderFactory;
@@ -70,6 +72,8 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		dmChoose = new Dimension(140, 40);
 		btnSavePrivate = new JButton();
 		btnSavePublic = new JButton();
+		btnSavePublic.setToolTipText("Save");
+		btnSavePrivate.setToolTipText("Save");
 		pnFieldPublicContainer = new JPanel(new BorderLayout());
 		pnSum = new JPanel(new BorderLayout());
 		pnSum.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
@@ -208,6 +212,11 @@ pnBtnPublic.add(btnCopyPublicKey);
 		
 		btnCreateKey.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblPrivatekey.setFont(new Font("Dialog", Font.PLAIN, 14));
+		txtPrivateKey.setFont(new Font("Dialog", Font.PLAIN, 14));
+		txtPublicKey.setFont(new Font("Dialog", Font.PLAIN, 14));
+		txtPrivateKey.setToolTipText("Private key");
+		txtPublicKey.setToolTipText("Public key");
+		btnCreateKey.setToolTipText("Press to create key");
 		pnAlgorithms.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnKeySize.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnMode.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -309,6 +318,36 @@ pnBtnPublic.add(btnCopyPublicKey);
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				optionEncryptUI.copyIntoClipBoard(txtPublicKey.getText());
+
+			}
+		});
+		txtPrivateKey.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				DialogCustom.stopDialog();
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(txtPrivateKey.getText().trim().equals("")){
+					DialogCustom.showDescription(txtPrivateKey, "Enter private key");				
+				}
+
+			}
+		});
+		txtPublicKey.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				DialogCustom.stopDialog();
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(txtPublicKey.getText().trim().equals("")){
+					DialogCustom.showDescription(txtPublicKey, "Enter public key");				
+				}
 
 			}
 		});

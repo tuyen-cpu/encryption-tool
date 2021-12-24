@@ -1,10 +1,7 @@
 package GUI;
 
-import java.awt.Color;
-
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.json.ParseException;
 

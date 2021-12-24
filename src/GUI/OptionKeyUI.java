@@ -3,11 +3,17 @@ package GUI;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+
+import javafx.scene.control.Tooltip;
+import javafx.stage.Popup;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -18,7 +24,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.ToolTipManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -47,6 +56,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.SoftBevelBorder;
 
+import com.sun.org.apache.xpath.internal.FoundIndex;
+
 public class OptionKeyUI extends JPanel implements ActionListener {
 	JButton btnCreateKey, btnCopy, btnChooseFile, btnSave;
 	JTextField txtKey;
@@ -60,14 +71,20 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 
 	public OptionKeyUI() {
 		btnCreateKey = new JButton("Create Key");
+		btnCreateKey.setToolTipText("Press to create key");
 		pnContainerRadio = new JPanel();
 		pnKey = new JPanel(new BorderLayout());
 		btnChooseFile = new JButton("Choose file");
+		btnChooseFile.setToolTipText("Choose a file from your computer");
 		txtKey = new JTextField();
+		txtKey.setToolTipText("Enter key");
+
 		pnRadio = new JPanel();
 		pnBtn = new JPanel();
 		pnContainer = new JPanel();
-		pnContainer.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
+		pnContainer.setBorder(new CompoundBorder(new BevelBorder(
+				BevelBorder.LOWERED, null, null, new Color(200, 200, 200),
+				new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
 		pnKeyField = new JPanel(new BorderLayout());
 		pnKeyFile = new JPanel();
 		fileKey = new JFileChooser();
@@ -98,33 +115,48 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				boolean isStop=false;
-				do{
-					fileInputKey=openFile();
-				
-					if(fileInputKey.exists()){
+				boolean isStop = false;
+				do {
+					fileInputKey = openFile();
+
+					if (fileInputKey.exists()) {
 						btnChooseFile.setText(fileInputKey.getAbsolutePath());
-						isStop=true;
-					}else{
-						JOptionPane.showMessageDialog(MainGUI.frame, "File "+fileInputKey.getName()+" doesn't exist!",
+						isStop = true;
+					} else {
+						JOptionPane.showMessageDialog(MainGUI.frame, "File "
+								+ fileInputKey.getName() + " doesn't exist!",
 								"Error", JOptionPane.ERROR_MESSAGE);
 						System.out.println("File does not exist!");
 						btnChooseFile.setText("Choose file");
-						isStop=false;
-						
-					}
-				}while(!isStop);
-			
-			}
-			
-			
-		});
+						isStop = false;
 
+					}
+				} while (!isStop);
+
+			}
+
+		});
+		
+		txtKey.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				DialogCustom.stopDialog();
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(txtKey.getText().trim().equals("")){
+					DialogCustom.showDescription(txtKey, "Enter key");				
+				}
+
+			}
+		});
 		setBorder(new EmptyBorder(20, 20, 0, 20));
 		// set layout panel
 		setLayout(new BorderLayout());
 		pnRadio.setLayout(new BorderLayout(0, 0));
-//		
+		//
 		// Create component
 		rdField = new JRadioButton("Text key");
 		rdField.setFocusPainted(false);
@@ -139,7 +171,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		// add event radio button
 		rdField.addActionListener(this);
 		// add component
-	
+
 		pnContainerRadio.add(rdField);
 		pnRadio.add(pnContainerRadio);
 		rdFile = new JRadioButton("Import file key");
@@ -148,8 +180,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		rdFile.setActionCommand("rdFile");
 		bg.add(rdFile);
 		rdFile.addActionListener(this);
-		
-		
+
 		pnContainerRadio.add(rdFile);
 		pnContainerRadio.setBorder(new EmptyBorder(0, 22, 0, 0));
 		add(pnRadio, BorderLayout.NORTH);
@@ -161,8 +192,10 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		btnCopy = new JButton();
 		btnCopy.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/copy.png")));
+		btnCopy.setToolTipText("Copy");
 		btnCopy.setFocusPainted(false);
 		btnSave = new JButton();
+		btnSave.setToolTipText("Save");
 		btnSave.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/icon-save.png")));
 		btnCopy.setPreferredSize(dimBtnCopyKey);
@@ -171,8 +204,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String txt = txtKey.getText();
-				if (!txt.equals(""))
-					copyIntoClipBoard(txt);
+				copyIntoClipBoard(txt);
 
 			}
 		});
@@ -180,9 +212,9 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!txtKey.getText().equalsIgnoreCase("")){
+				if (!txtKey.getText().equalsIgnoreCase("")) {
 					saveFile();
-				}else{
+				} else {
 					JOptionPane.showMessageDialog(MainGUI.frame, "Empty key!",
 							"Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -198,7 +230,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		pnKeyField.add(pnKey);
 		pnKeyField.add(pnBtn, BorderLayout.EAST);
 		pnContainer.add(pnKeyField);
-//		 pnContainer.add(pnKeyFile);
+		// pnContainer.add(pnKeyFile);
 		pnKeyFile.setLayout(new BorderLayout());
 
 		pnKeyFile.add(btnChooseFile);
@@ -213,20 +245,21 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		StringSelection stringSelection = new StringSelection(txt);
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(stringSelection, null);
+		DialogCustom.showShortDialog(btnCopy, "Copied!");
 	}
 
-//	public void openFile() {
-//
-//		int select = fileKey.showOpenDialog(this);
-//		if (select == JFileChooser.APPROVE_OPTION) {
-//			System.out.println("file: " + fileKey.getSelectedFile().getName());
-//			btnChooseFile.setText("" + fileKey.getSelectedFile().getName());
-//			fileInputKey = fileKey.getSelectedFile();
-//		} else {
-//			System.out.println("Cancel");
-//		}
-//
-//	}
+	// public void openFile() {
+	//
+	// int select = fileKey.showOpenDialog(this);
+	// if (select == JFileChooser.APPROVE_OPTION) {
+	// System.out.println("file: " + fileKey.getSelectedFile().getName());
+	// btnChooseFile.setText("" + fileKey.getSelectedFile().getName());
+	// fileInputKey = fileKey.getSelectedFile();
+	// } else {
+	// System.out.println("Cancel");
+	// }
+	//
+	// }
 	public File openFile() {
 		int select = fileKey.showOpenDialog(this);
 		if (select == JFileChooser.APPROVE_OPTION) {
@@ -236,6 +269,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 			return null;
 		}
 	}
+
 	public void saveFile() {
 		int select = fileKey.showSaveDialog(this);
 		if (select == JFileChooser.APPROVE_OPTION) {
@@ -252,10 +286,10 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 				if (dialogResult == JOptionPane.YES_OPTION) {
 					writeFile(txtKey.getText(), fileSave);
 					System.out.println("replace!");
-				}else{
+				} else {
 					System.out.println("no replace!");
 				}
-			}else{
+			} else {
 				writeFile(txtKey.getText(), fileSave);
 				System.out.println("Saved!");
 			}
