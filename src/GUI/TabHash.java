@@ -201,12 +201,16 @@ public class TabHash extends JPanel implements ActionListener {
 					if(fileInput.exists()){
 						btnFileInput.setText(fileInput.getAbsolutePath());
 					}else{
+						btnFileInput.setText("Choose file");
 						JOptionPane.showMessageDialog(MainGUI.frame, "File "+fileInput.getName()+" doesn't exist!",
 								"Error", JOptionPane.ERROR_MESSAGE);
+						fileInput=null;
 						System.out.println("File does not exist!");
 						return;
 					}
 				} catch (Exception ex) {
+					fileInput=null;
+					btnFileInput.setText("Choose file");
 					System.out.println("Cancel choose file!");
 				}
 
@@ -225,7 +229,7 @@ public class TabHash extends JPanel implements ActionListener {
 				ImageIcon icon = new ImageIcon(this.getClass().getResource("/img/success.png"));
                
 				JOptionPane.showMessageDialog(
-                        null,
+                        MainGUI.frame,
                         "Matched",
                         "Success", JOptionPane.INFORMATION_MESSAGE,
                         icon);

@@ -425,7 +425,7 @@ public class MainGUI {
 			System.out.println("Hash with string");
 			textInput = tabHash.getTxtString().getText();
 			if (textInput.equalsIgnoreCase("")) {
-				JOptionPane.showMessageDialog(null, "Empty text input",
+				JOptionPane.showMessageDialog(frame, "Empty text input",
 						"Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -440,12 +440,13 @@ public class MainGUI {
 			}
 		} else {
 			System.out.println("Hash with file");
-			textInput = tabHash.getFileInput().getAbsolutePath();
-			if (textInput.equalsIgnoreCase("")) {
-				JOptionPane.showMessageDialog(null, "Empty file input",
+			if(tabHash.getFileInput()==null){
+				JOptionPane.showMessageDialog(frame, "Empty file input",
 						"Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			textInput = tabHash.getFileInput().getAbsolutePath();
+			
 			algorithm = (String) tabHash.getChoiceAlgorithms()
 					.getSelectedItem();
 			try {
@@ -475,12 +476,12 @@ public class MainGUI {
 
 	public void checkEmptyFileInputAndOutput() {
 		if (pnEncrypt.getFileInput() == null) {
-			JOptionPane.showMessageDialog(null, "File input empty", "Error",
+			JOptionPane.showMessageDialog(frame, "File input empty", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		if (pnEncrypt.getFileOutput() == null) {
-			JOptionPane.showMessageDialog(null, "File output empty", "Error",
+			JOptionPane.showMessageDialog(frame, "File output empty", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -488,7 +489,7 @@ public class MainGUI {
 
 	public void getDialogNotuSupportNopaddingWithFile() {
 		if (padding.equalsIgnoreCase("NoPadding")) {
-			JOptionPane.showMessageDialog(null,
+			JOptionPane.showMessageDialog(frame,
 					"No support file encryption and decryption with Nopadding",
 					"Error", JOptionPane.PLAIN_MESSAGE);
 			return;
@@ -498,14 +499,14 @@ public class MainGUI {
 	public void handleTabSymmetric() {
 		textInput = pnEncrypt.getTxtPlain().getText();
 		if (textInput.equals("") && pnEncrypt.getRdField().isSelected()) {
-			JOptionPane.showMessageDialog(null, "Empty text input", "Error",
+			JOptionPane.showMessageDialog(frame, "Empty text input", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		Key txtkey = null;
 		if (pnKey.getRdField().isSelected()) {
 			if (pnKey.getTxtKey().equals("")) {
-				JOptionPane.showMessageDialog(null, "Empty key", "Error",
+				JOptionPane.showMessageDialog(frame, "Empty key", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -514,14 +515,14 @@ public class MainGUI {
 				txtkey = symmetric.convertStringKeyToSecretKey(pnKey
 						.getTxtKey());
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(null, "Key valid", "Error",
+				JOptionPane.showMessageDialog(frame, "Key valid", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 		} else {
 			System.out.println("File Key");
 			if (pnKey.getFileInputKey() == null) {
-				JOptionPane.showMessageDialog(null, "File key empty", "Error",
+				JOptionPane.showMessageDialog(frame, "File key empty", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -529,14 +530,14 @@ public class MainGUI {
 				txtkey = symmetric.readKey(pnKey.getFileInputKey()
 						.getAbsolutePath());
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(null, "File key valid", "Error",
+				JOptionPane.showMessageDialog(frame, "File key valid", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 				return;
 			}
 		}
 		if (txtkey == null) {
-			JOptionPane.showMessageDialog(null, "Empty key", "Error",
+			JOptionPane.showMessageDialog(frame, "Empty key", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -551,12 +552,12 @@ public class MainGUI {
 				try {
 					symmetric.setKey((SecretKey) txtkey);
 				} catch (Exception e2) {
-					JOptionPane.showMessageDialog(null, "Invalid key", "Error",
+					JOptionPane.showMessageDialog(frame, "Invalid key", "Error",
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			if (symmetric.getKey() == null) {
-				JOptionPane.showMessageDialog(null, "Empty key", "Error",
+				JOptionPane.showMessageDialog(frame, "Empty key", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -599,11 +600,11 @@ public class MainGUI {
 					jLoading.setVisible(true);
 					try {
 						if (worker.get().equalsIgnoreCase("success")) {
-							JOptionPane.showMessageDialog(null,
+							JOptionPane.showMessageDialog(frame,
 									"Successful encryption!", "Success",
 									JOptionPane.INFORMATION_MESSAGE, icon);
 						} else {
-							JOptionPane.showMessageDialog(null, "Invalid key",
+							JOptionPane.showMessageDialog(frame, "Invalid key",
 									"Error", JOptionPane.ERROR_MESSAGE);
 
 						}
@@ -630,12 +631,12 @@ public class MainGUI {
 					outputFile = pnEncrypt.getFileOutput().getAbsolutePath();
 					try {
 						symmetric.decrypt(inputFile, outputFile);
-						JOptionPane.showMessageDialog(null,
+						JOptionPane.showMessageDialog(frame,
 								"Successful decryption!", "Success",
 								JOptionPane.INFORMATION_MESSAGE, icon);
 					} catch (Exception e) {
 						e.printStackTrace();
-						JOptionPane.showMessageDialog(null,
+						JOptionPane.showMessageDialog(frame,
 								"Decryption failed", "Error",
 								JOptionPane.OK_OPTION);
 					}
@@ -657,7 +658,7 @@ public class MainGUI {
 		textInput = tabAsymmetric.getOptionEncryptUI().getTxtPlain().getText();
 		if (textInput.equals("")
 				&& tabAsymmetric.getOptionEncryptUI().getRdField().isSelected()) {
-			JOptionPane.showMessageDialog(null, "Empty text input", "Error",
+			JOptionPane.showMessageDialog(frame, "Empty text input", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -666,7 +667,7 @@ public class MainGUI {
 						.getRdDecrypt().isSelected()
 				&& tabAsymmetric.getTxtPrivateKey().getText()
 						.equalsIgnoreCase("")) {
-			JOptionPane.showMessageDialog(null, "Empty private key", "Error",
+			JOptionPane.showMessageDialog(frame, "Empty private key", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -675,7 +676,7 @@ public class MainGUI {
 						.getRdEncrypt().isSelected()
 				&& tabAsymmetric.getTxtPublicKey().getText()
 						.equalsIgnoreCase("")) {
-			JOptionPane.showMessageDialog(null, "Empty public key", "Error",
+			JOptionPane.showMessageDialog(frame, "Empty public key", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -779,7 +780,7 @@ public class MainGUI {
 		textInput = tabCombine.getOptionEncryptUI().getTxtPlain().getText();
 		if (textInput.equals("")
 				&& tabCombine.getOptionEncryptUI().getRdField().isSelected()) {
-			JOptionPane.showMessageDialog(null, "Empty text input", "Error",
+			JOptionPane.showMessageDialog(frame, "Empty text input", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -787,7 +788,7 @@ public class MainGUI {
 				&& tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
 						.getRdEncrypt().isSelected()
 				&& tabCombine.getTxtPrivateKey().getText().equalsIgnoreCase("")) {
-			JOptionPane.showMessageDialog(null, "Empty private key", "Error",
+			JOptionPane.showMessageDialog(frame, "Empty private key", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -795,7 +796,7 @@ public class MainGUI {
 				&& tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
 						.getRdDecrypt().isSelected()
 				&& tabCombine.getTxtPublicKey().getText().equalsIgnoreCase("")) {
-			JOptionPane.showMessageDialog(null, "Empty public key", "Error",
+			JOptionPane.showMessageDialog(frame, "Empty public key", "Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -820,7 +821,7 @@ public class MainGUI {
 					.getRdEncrypt().isSelected()) {
 				try {
 					if(tabCombine.getPrivateFile()==null){
-						JOptionPane.showMessageDialog(null, "Empty private key", "Error",
+						JOptionPane.showMessageDialog(frame, "Empty private key", "Error",
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -836,7 +837,7 @@ public class MainGUI {
 			} else {
 				try {
 					if(tabCombine.getPrivateFile()==null){
-						JOptionPane.showMessageDialog(null, "Empty public key", "Error",
+						JOptionPane.showMessageDialog(frame, "Empty public key", "Error",
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -910,11 +911,11 @@ public class MainGUI {
 					jLoading.setVisible(true);
 					try {
 						if (worker.get().equalsIgnoreCase("success")) {
-							JOptionPane.showMessageDialog(null,
+							JOptionPane.showMessageDialog(frame,
 									"Successful encryption!", "Success",
 									JOptionPane.INFORMATION_MESSAGE, icon);
 						} else {
-							JOptionPane.showMessageDialog(null, "Invalid key",
+							JOptionPane.showMessageDialog(frame, "Invalid key",
 									"Error", JOptionPane.ERROR_MESSAGE);
 
 						}
@@ -960,11 +961,11 @@ public class MainGUI {
 					jLoading.setVisible(true);
 					try {
 						if (worker.get().equalsIgnoreCase("success")) {
-							JOptionPane.showMessageDialog(null,
+							JOptionPane.showMessageDialog(frame,
 									"Successful decryption!", "Success",
 									JOptionPane.INFORMATION_MESSAGE, icon);
 						} else {
-							JOptionPane.showMessageDialog(null, "Invalid key",
+							JOptionPane.showMessageDialog(frame, "Invalid key",
 									"Error", JOptionPane.ERROR_MESSAGE);
 
 						}
