@@ -17,9 +17,11 @@ import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -35,31 +37,53 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 public class RSAFile {
 	private static Base64.Encoder encoder = Base64.getEncoder();
 	private static Base64.Decoder decoder = Base64.getDecoder();
 	static SecureRandom srandom = new SecureRandom();
 	private PrivateKey privateKey;
 	private PublicKey publicKey;
-	private String algorithms, mode, padding;
-	private int keySize;
-	Cipher ci;
+	private String algorithms,algorithms2, mode,mode2, padding,padding2;
+	private int keySize,keySize2;
+	Cipher ci,ci2;
 	int ivSize;
 
-	public RSAFile(String algorithms, int keySize, String mode, String padding)
-			throws NoSuchAlgorithmException, NoSuchPaddingException, FileNotFoundException, IOException {
+	public RSAFile(String algorithms, int keySize, String mode, String padding,String algorithms2, int keySize2, String mode2, String padding2)
+			throws NoSuchAlgorithmException, NoSuchPaddingException, FileNotFoundException, IOException, NoSuchProviderException {
+		Security.addProvider(new BouncyCastleProvider());
 		this.algorithms = algorithms;
 		this.keySize = keySize;
 		this.mode = mode;
 		this.padding = padding;
+		this.algorithms2 = algorithms2;
+		this.keySize2 = keySize2;
+		this.mode2 = mode2;
+		this.padding2 = padding2;
 		ci = Cipher.getInstance(this.algorithms + "/" + this.mode + "/"
 				+ this.padding);
-		if (algorithms.equalsIgnoreCase("AES")) {
-			ivSize = 16;
-		} else {
-			ivSize = 8;
+		try {
+			ci2 = Cipher.getInstance(this.algorithms2 + "/" + this.mode2 + "/"
+					+ this.padding2,"BC");
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		doGenkey();
+	
+			if (algorithms2.equalsIgnoreCase("AES")) {
+				ivSize = 16;
+			} else {
+				ivSize = 8;
+			}
+		
+		
+		try {
+			doGenkey();
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void processFile(Cipher ci, InputStream in, OutputStream out)
@@ -80,9 +104,9 @@ public class RSAFile {
 	}
 
 	public void doGenkey() throws FileNotFoundException, IOException,
-			NoSuchAlgorithmException {
+			NoSuchAlgorithmException, NoSuchProviderException {
 
-		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+		KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithms);
 		kpg.initialize(2048);
 		KeyPair kp = kpg.generateKeyPair();
 		privateKey = kp.getPrivate();
@@ -97,8 +121,8 @@ public class RSAFile {
 			dest.mkdirs();
 
 		}
-		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-		kpg.initialize(2048);
+		KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithms);
+		kpg.initialize(keySize);
 		KeyPair kp = kpg.generateKeyPair();
 
 		try (FileOutputStream out = new FileOutputStream(path + "/private.key")) {
@@ -120,7 +144,7 @@ public class RSAFile {
 		String prikeyString = new String(bytes, StandardCharsets.UTF_8);
 		bytes = decoder.decode(prikeyString);
 		PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(bytes);
-		KeyFactory kf = KeyFactory.getInstance("RSA");
+		KeyFactory kf = KeyFactory.getInstance(algorithms);
 		System.out.println("Read Private key success!");
 		return kf.generatePrivate(ks);
 	}
@@ -131,7 +155,7 @@ public class RSAFile {
 		String pubkeyString = new String(bytes, StandardCharsets.UTF_8);
 		bytes = decoder.decode(pubkeyString);
 		X509EncodedKeySpec ks = new X509EncodedKeySpec(bytes);
-		KeyFactory kf = KeyFactory.getInstance("RSA");
+		KeyFactory kf = KeyFactory.getInstance(algorithms);
 		System.out.println("Read Public key success!");
 
 		return kf.generatePublic(ks);
@@ -142,29 +166,33 @@ public class RSAFile {
 			String outputFile) throws NoSuchAlgorithmException,
 			FileNotFoundException, IOException, InvalidKeyException,
 			NoSuchPaddingException, IllegalBlockSizeException,
-			BadPaddingException, InvalidAlgorithmParameterException {
-		System.out.println("thuat toan"+algorithms);
-		KeyGenerator kgen = KeyGenerator.getInstance(algorithms);
-		kgen.init(keySize);
+			BadPaddingException, InvalidAlgorithmParameterException, NoSuchProviderException {
+		System.out.println("thuat toan"+algorithms2);
+		KeyGenerator kgen = KeyGenerator.getInstance(algorithms2,"BC");
+		kgen.init(keySize2);
 		SecretKey skey = kgen.generateKey();
 		byte[] iv = new byte[ivSize];
 		srandom.nextBytes(iv);
 		IvParameterSpec ivspec = new IvParameterSpec(iv);
 		try (FileOutputStream out = new FileOutputStream(outputFile)) {
 			{
-				Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-				cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-				byte[] b = cipher.doFinal(skey.getEncoded());
+				
+				ci.init(Cipher.ENCRYPT_MODE, privateKey);
+				byte[] b = ci.doFinal(skey.getEncoded());
 				out.write(b);
 				System.out.println("AES key Length" + b.length);
 			}
 
 			out.write(iv);
 			System.out.println("IV Length:" + iv.length);
-
-			ci.init(Cipher.ENCRYPT_MODE, skey, ivspec);
+if(mode2.equalsIgnoreCase("ECB")){
+	ci2.init(Cipher.ENCRYPT_MODE, skey);
+}else{
+	ci2.init(Cipher.ENCRYPT_MODE, skey, ivspec);
+}
+		
 			try (FileInputStream in = new FileInputStream(inputFile)) {
-				processFile(ci, in, out);
+				processFile(ci2, in, out);
 			}
 		}
 	}
@@ -177,21 +205,25 @@ public class RSAFile {
 		try (FileInputStream in = new FileInputStream(inputFile)) {
 			SecretKeySpec skey = null;
 			{
-				Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-				cipher.init(Cipher.DECRYPT_MODE, publicKey);
+				
+				ci.init(Cipher.DECRYPT_MODE, publicKey);
 				byte[] b = new byte[256];
 				in.read(b);
-				byte[] keyb = cipher.doFinal(b);
+				byte[] keyb = ci.doFinal(b);
 				skey = new SecretKeySpec(keyb, algorithms);
 
 			}
 			byte[] iv = new byte[ivSize];
 			in.read(iv);
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
-			ci.init(Cipher.DECRYPT_MODE, skey, ivspec);
-
+			
+			if(mode2.equalsIgnoreCase("ECB")){
+				ci2.init(Cipher.DECRYPT_MODE, skey);
+			}else{
+				ci2.init(Cipher.DECRYPT_MODE, skey, ivspec);
+			}
 			try (FileOutputStream out = new FileOutputStream(outputFile)) {
-				processFile(ci, in, out);
+				processFile(ci2, in, out);
 			}
 		}
 	}
@@ -216,7 +248,7 @@ public class RSAFile {
 		try {
 			byte[] data = decoder.decode(stored);
 			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(data);
-			KeyFactory fact = KeyFactory.getInstance("RSA");
+			KeyFactory fact = KeyFactory.getInstance(algorithms);
 			return fact.generatePrivate(spec);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Private key valid", "Error",
@@ -231,7 +263,7 @@ public class RSAFile {
 		try {
 			byte[] data = decoder.decode(stored);
 			X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
-			KeyFactory fact = KeyFactory.getInstance("RSA");
+			KeyFactory fact = KeyFactory.getInstance(algorithms);
 			return fact.generatePublic(spec);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Public key valid", "Error",
@@ -253,15 +285,5 @@ public class RSAFile {
 	public String getPrivateKeyWithString() {
 		return convertKeytoString(privateKey);
 	}
-	public static void main(String[] args) throws InvalidKeySpecException,
-			NoSuchAlgorithmException, IOException, InvalidKeyException,
-			NoSuchPaddingException, IllegalBlockSizeException,
-			BadPaddingException, InvalidAlgorithmParameterException {
-		RSAFile rsa = new RSAFile("Blowfish", 448, "PCBC", "PKCS5Padding");
-		rsa.doGenkey();
-		rsa.doEncryptRSAWithAES( "F:\\test\\tuyen.txt",
-				"F:\\test\\tuyen1.txt");
-		rsa.doDeCryptRSAWithAES("F:\\test\\tuyen1.txt",
-				"F:\\test\\tuyen11.txt");
-	}
+
 }

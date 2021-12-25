@@ -76,12 +76,14 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		pnFileOutput = new JPanel(new BorderLayout());
 		pnFileInput = new JPanel(new BorderLayout());
 		pnCipher = new JPanel(new BorderLayout());
-		btnChooseInput = new JButton("File Input");
-		btnChooseOutput = new JButton("File Output");
+		btnChooseInput = new JButton("Choose file Input");
+		btnChooseOutput = new JButton("Choose file Output");
 		btnCopy = new JButton();
 		btnCopy.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/copy.png")));
 		btnCopy.setToolTipText("Copy");
+		btnChooseInput.setToolTipText("Press to choose input file");
+		btnChooseOutput.setToolTipText("Press to choose out file");
 		btnSave = new JButton();
 		btnSave.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/icon-save.png")));
@@ -159,7 +161,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		// set Margin top
 		btnCopy.setBounds(0, 10, 0, 0);
 		pnCipher.setBorder(new EmptyBorder(5, 0, 0, 0));
-		pnFileInput.setBorder(new EmptyBorder(30, 0, 0, 0));
+		pnFileInput.setBorder(new EmptyBorder(60, 0, 0, 0));
 		pnFileOutput.setBorder(new EmptyBorder(30, 0, 0, 0));
 		// set layout panel
 		setLayout(new BorderLayout());
@@ -182,9 +184,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		pnKeyField.add(scrollPlain);
 		pnKeyField.add(pnCipher, BorderLayout.SOUTH);
 		pnContainer.setLayout(new BorderLayout());
-
 		pnContainer.add(pnKeyField);
-		// pnContainer.add(pnKeyFile);
+//		 pnContainer.add(pnKeyFile);
 		pnBtnOutput.setLayout(new BorderLayout(0, 0));
 
 		pnBtnOutput.add(btnChooseOutput);
@@ -231,10 +232,14 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 											+ " doesn't exist!", "Error",
 									JOptionPane.ERROR_MESSAGE);
 							System.out.println("File does not exist!");
+							fileInput = null;
+							btnChooseInput.setText("Choose file input");
 							isStop = false;
 						}
 					} while (!isStop);
 				} catch (Exception e) {
+					fileInput = null;
+					btnChooseInput.setText("Choose file input");
 					System.out.println(fileInput);
 					btnChooseInput.setText("Choose file input");
 					System.out.println("Cancel choose file!");
@@ -262,7 +267,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 
 							System.out.println("Replace file!");
 						} else {
-
+							fileOutput = null;
+							btnChooseOutput.setText("Choose file output");
 							System.out.println("No replace file!");
 						}
 					} else {
@@ -270,6 +276,8 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 					}
 
 				} catch (Exception e) {
+					fileOutput = null;
+					btnChooseOutput.setText("Choose file output");
 					System.out.println("Cancel choose file");
 				}
 			}
@@ -279,7 +287,6 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				copyIntoClipBoard(txtCipher.getText());
-				
 
 			}
 		});
@@ -298,19 +305,20 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 			}
 		});
 		txtPlain.addFocusListener(new FocusListener() {
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				DialogCustom.stopDialog();
-				
+
 			}
-			
+
 			@Override
 			public void focusGained(FocusEvent e) {
-				if(txtPlain.getText().trim().equals("")){
-					DialogCustom.showDescription(txtPlain, "Enter input to encryption or decryption");
+				if (txtPlain.getText().trim().equals("")) {
+					DialogCustom.showDescription(txtPlain,
+							"Enter input to encryption or decryption");
 				}
-				
+
 			}
 		});
 	}

@@ -56,8 +56,8 @@ public class MainGUI {
 	private TabHash tabHash;
 	private JTabbedPane tabbedPane;
 	private JButton btnStart;
-	private String algorithm, mode, padding;
-	private int keysize;
+	private String algorithm, mode, padding, algo2, mode2, padding2;
+	private int keysize, keysize2;
 	private Symmetric symmetric;
 	private Asymmetric asymmetric;
 	private RSAFile rsaFile;
@@ -88,7 +88,9 @@ public class MainGUI {
 			symmetric.createKey();
 			asymmetric = new Asymmetric("RSA", "ECB", "PKCS1Padding", 515);
 			asymmetric.genkey();
-			rsaFile = new RSAFile("AES", 128, "CBC", "PKCS5Padding");
+			rsaFile = new RSAFile("RSA", 1024, "ECB",
+					"OAEPWithSHA-1AndMGF1Padding", "AES", 128, "CBC",
+					"PKCS5Padding");
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException
 				| IOException | NoSuchProviderException e) {
 			// TODO Auto-generated catch block
@@ -100,7 +102,7 @@ public class MainGUI {
 	public void setFontComponent() {
 		btnStart.setFont(new Font("Dialog", Font.PLAIN, 18));
 		tabbedPane.setFont(new Font("Dialog", Font.PLAIN, 13));
-		
+
 		btnStart.setPreferredSize(new Dimension(150, 60));
 		btnStart.setIcon(new ImageIcon(this.getClass().getResource(
 				"/img/icon-play.png")));
@@ -147,84 +149,96 @@ public class MainGUI {
 		tabAsymmetric = new TabAsymmetric();
 		tabAsymmetric.getOptionEncryptUI().remove(
 				tabAsymmetric.getOptionEncryptUI().getPnRadio());
+		tabAsymmetric.getPnOptionContainer().remove(tabAsymmetric.getGeneralUI());
 		tabCombine = new TabAsymmetric();
-		setListTabCombine();
+		String[] modeCombine={"OpenPGPCFB","CBC", "ECB","CFB","OFB","CTR"};
+		tabCombine.getGeneralUI().setListMode(modeCombine);
+		tabCombine.getGeneralUI().changeContentChoice();
+		tabCombine.getOptionEncryptUI().getRdFile().setSelected(true);
+		tabCombine.getOptionEncryptUI().remove(
+				tabCombine.getOptionEncryptUI().getPnRadio());
+		tabCombine.getOptionEncryptUI().getPnContainer().removeAll();
+		tabCombine.getOptionEncryptUI().getPnContainer()
+				.add(tabCombine.getOptionEncryptUI().getPnKeyFile());
+
+//		 setListTabCombine();
+		
 		tabHash = new TabHash();
 		pnMain = new JPanel();
 		pnMain.setLayout(new BorderLayout());
 		loading(frame);
 	}
 
-	public void setListTabCombine() {
-		DefaultComboBoxModel model;
-
-		tabCombine.setListAlgorithms(TabCombine.listAlgorithms);
-		model = new DefaultComboBoxModel<String>(TabCombine.listAlgorithms);
-		tabCombine.getChoiceAlgorithms().setModel(model);
-
-		tabCombine.setListKeySize(TabCombine.listKeySize);
-		model = new DefaultComboBoxModel<String>(TabCombine.listKeySize);
-		tabCombine.getChoiceKeySize().setModel(model);
-
-		tabCombine.setListMode(TabCombine.listMode);
-		model = new DefaultComboBoxModel<String>(TabCombine.listMode);
-		tabCombine.getChoiceMode().setModel(model);
-
-		tabCombine.setListPadding(TabCombine.listPadding);
-		model = new DefaultComboBoxModel<String>(TabCombine.listPadding);
-		tabCombine.getChoicePadding().setModel(model);
-
-		tabCombine.getChoiceAlgorithms().addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
-				DefaultComboBoxModel<String> model;
-				switch ((String) tabCombine.getChoiceAlgorithms()
-						.getSelectedItem()) {
-
-				case "AES":
-					tabCombine.setListKeySize(TabCombine.listKeySizeAES);
-					model = new DefaultComboBoxModel<String>(
-							TabCombine.listKeySizeAES);
-					tabCombine.getChoiceKeySize().setModel(model);
-					System.out.println("AES");
-					break;
-				case "DES":
-					tabCombine.setListKeySize(TabCombine.listKeySizeDES);
-					model = new DefaultComboBoxModel<String>(
-							TabCombine.listKeySizeDES);
-					tabCombine.getChoiceKeySize().setModel(model);
-					System.out.println("DES");
-					break;
-				case "DESede":
-					tabCombine.setListKeySize(TabCombine.listKeySizeDESede);
-					model = new DefaultComboBoxModel<String>(
-							TabCombine.listKeySizeDESede);
-					tabCombine.getChoiceKeySize().setModel(model);
-					System.out.println("DESede");
-					break;
-				case "RC2":
-					tabCombine.setListKeySize(TabCombine.listKeySizeRC2);
-					model = new DefaultComboBoxModel<String>(
-							TabCombine.listKeySizeRC2);
-					tabCombine.getChoiceKeySize().setModel(model);
-					System.out.println("DESede");
-					break;
-				case "Blowfish":
-					tabCombine.setListKeySize(TabCombine.listKeySizeBlowfish);
-					model = new DefaultComboBoxModel<String>(
-							TabCombine.listKeySizeBlowfish);
-					tabCombine.getChoiceKeySize().setModel(model);
-					System.out.println("DESede");
-					break;
-				default:
-					break;
-				}
-
-			}
-		});
-
-	}
+//	 public void setListTabCombine() {
+//	 DefaultComboBoxModel model;
+//	
+//	 tabCombine.setListAlgorithms(TabCombine.listAlgorithms);
+//	 model = new DefaultComboBoxModel<String>(TabCombine.listAlgorithms);
+//	 tabCombine.getChoiceAlgorithms().setModel(model);
+//	
+//	 tabCombine.setListKeySize(TabCombine.listKeySize);
+//	 model = new DefaultComboBoxModel<String>(TabCombine.listKeySize);
+//	 tabCombine.getChoiceKeySize().setModel(model);
+//	
+//	 tabCombine.setListMode(TabCombine.listMode);
+//	 model = new DefaultComboBoxModel<String>(TabCombine.listMode);
+//	 tabCombine.getChoiceMode().setModel(model);
+//	
+//	 tabCombine.setListPadding(TabCombine.listPadding);
+//	 model = new DefaultComboBoxModel<String>(TabCombine.listPadding);
+//	 tabCombine.getChoicePadding().setModel(model);
+//	
+//	 tabCombine.getChoiceAlgorithms().addItemListener(new ItemListener() {
+//	
+//	 @Override
+//	 public void itemStateChanged(ItemEvent arg0) {
+//	 DefaultComboBoxModel<String> model;
+//	 switch ((String) tabCombine.getChoiceAlgorithms()
+//	 .getSelectedItem()) {
+//	
+//	 case "AES":
+//	 tabCombine.setListKeySize(TabCombine.listKeySizeAES);
+//	 model = new DefaultComboBoxModel<String>(
+//	 TabCombine.listKeySizeAES);
+//	 tabCombine.getChoiceKeySize().setModel(model);
+//	 System.out.println("AES");
+//	 break;
+//	 case "DES":
+//	 tabCombine.setListKeySize(TabCombine.listKeySizeDES);
+//	 model = new DefaultComboBoxModel<String>(
+//	 TabCombine.listKeySizeDES);
+//	 tabCombine.getChoiceKeySize().setModel(model);
+//	 System.out.println("DES");
+//	 break;
+//	 case "DESede":
+//	 tabCombine.setListKeySize(TabCombine.listKeySizeDESede);
+//	 model = new DefaultComboBoxModel<String>(
+//	 TabCombine.listKeySizeDESede);
+//	 tabCombine.getChoiceKeySize().setModel(model);
+//	 System.out.println("DESede");
+//	 break;
+//	 case "RC2":
+//	 tabCombine.setListKeySize(TabCombine.listKeySizeRC2);
+//	 model = new DefaultComboBoxModel<String>(
+//	 TabCombine.listKeySizeRC2);
+//	 tabCombine.getChoiceKeySize().setModel(model);
+//	 System.out.println("DESede");
+//	 break;
+//	 case "Blowfish":
+//	 tabCombine.setListKeySize(TabCombine.listKeySizeBlowfish);
+//	 model = new DefaultComboBoxModel<String>(
+//	 TabCombine.listKeySizeBlowfish);
+//	 tabCombine.getChoiceKeySize().setModel(model);
+//	 System.out.println("DESede");
+//	 break;
+//	 default:
+//	 break;
+//	 }
+//	
+//	 }
+//	 });
+//	
+//	 }
 
 	public void createAndShowGUI() {
 		System.out.println("GUI");
@@ -260,6 +274,14 @@ public class MainGUI {
 
 			}
 		});
+		tabCombine.getGeneralUI().getChoiceAlgorithms().addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				tabCombine.getGeneralUI().changeContentChoice();
+				
+			}
+		});
 		pnKey.getBtnCreateKey().addActionListener(new ActionListener() {
 
 			@Override
@@ -285,7 +307,6 @@ public class MainGUI {
 				try {
 					tabAsymmetric.getTxtPrivateKey().setText("");
 					tabAsymmetric.getTxtPublicKey().setText("");
-
 					SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
 						@Override
 						protected String doInBackground()
@@ -336,8 +357,10 @@ public class MainGUI {
 						protected String doInBackground()
 								throws InterruptedException {
 							try {
+
 								rsaFile = new RSAFile(algorithm, keysize, mode,
-										padding);
+										padding, algo2, keysize2, mode2,
+										padding2);
 								rsaFile.doGenkey();
 								return "success";
 							} catch (Exception e) {
@@ -677,17 +700,17 @@ public class MainGUI {
 			if (tabAsymmetric.getOptionEncryptUI().getPnSelectEnOrDe()
 					.getRdEncrypt().isSelected()) {
 				try {
-					if(tabAsymmetric.getPublicFile()==null){
-						JOptionPane.showMessageDialog(MainGUI.frame, "Public key file empty",
-								"Error", JOptionPane.ERROR_MESSAGE);
+					if (tabAsymmetric.getPublicFile() == null) {
+						JOptionPane.showMessageDialog(MainGUI.frame,
+								"Public key file empty", "Error",
+								JOptionPane.ERROR_MESSAGE);
 						return;
-					}else{
+					} else {
 						System.out.println(tabAsymmetric.getPublicFile()
 								.getAbsolutePath());
 						publickey = asymmetric.readPublicKey(tabAsymmetric
 								.getPublicFile().getAbsolutePath());
 					}
-					
 
 				} catch (InvalidKeySpecException | NoSuchAlgorithmException
 						| IOException e) {
@@ -696,18 +719,19 @@ public class MainGUI {
 				}
 			} else {
 				try {
-					if(tabAsymmetric.getPublicFile()==null){
-						JOptionPane.showMessageDialog(MainGUI.frame, "Private key file empty",
-								"Error", JOptionPane.ERROR_MESSAGE);
+					if (tabAsymmetric.getPrivateFile() == null) {
+						JOptionPane.showMessageDialog(MainGUI.frame,
+								"Private key file empty", "Error",
+								JOptionPane.ERROR_MESSAGE);
 						return;
-					}else{
+					} else {
 						privatekey = asymmetric.readPrivateKey(tabAsymmetric
 								.getPrivateFile().getAbsolutePath());
 						System.out.println(tabAsymmetric.getPrivateFile()
 								.getAbsolutePath());
 
 					}
-					
+
 				} catch (InvalidKeySpecException | NoSuchAlgorithmException
 						| IOException e) {
 					// TODO Auto-generated catch block
@@ -761,7 +785,7 @@ public class MainGUI {
 		}
 		if (tabCombine.getRdString().isSelected()
 				&& tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
-						.getRdDecrypt().isSelected()
+						.getRdEncrypt().isSelected()
 				&& tabCombine.getTxtPrivateKey().getText().equalsIgnoreCase("")) {
 			JOptionPane.showMessageDialog(null, "Empty private key", "Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -769,7 +793,7 @@ public class MainGUI {
 		}
 		if (tabCombine.getRdString().isSelected()
 				&& tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
-						.getRdEncrypt().isSelected()
+						.getRdDecrypt().isSelected()
 				&& tabCombine.getTxtPublicKey().getText().equalsIgnoreCase("")) {
 			JOptionPane.showMessageDialog(null, "Empty public key", "Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -795,7 +819,12 @@ public class MainGUI {
 			if (tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
 					.getRdEncrypt().isSelected()) {
 				try {
-					System.out.println(tabCombine.getPublicFile()
+					if(tabCombine.getPrivateFile()==null){
+						JOptionPane.showMessageDialog(null, "Empty private key", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					System.out.println(tabCombine.getPrivateFile()
 							.getAbsolutePath());
 
 					privatekey = rsaFile.readPrivateKey(tabCombine
@@ -806,9 +835,14 @@ public class MainGUI {
 				}
 			} else {
 				try {
+					if(tabCombine.getPrivateFile()==null){
+						JOptionPane.showMessageDialog(null, "Empty public key", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					publickey = rsaFile.readPublicKey(tabCombine
 							.getPublicFile().getAbsolutePath());
-					System.out.println(tabCombine.getPrivateFile()
+					System.out.println(tabCombine.getPublicFile()
 							.getAbsolutePath());
 
 				} catch (InvalidKeySpecException | NoSuchAlgorithmException
@@ -825,7 +859,7 @@ public class MainGUI {
 		outText = "";
 
 		try {
-			rsaFile = new RSAFile(algorithm, keysize, mode, padding);
+			rsaFile = new RSAFile(algorithm, keysize, mode, padding,algo2, keysize2, mode2, padding2);
 			if (tabCombine.getOptionEncryptUI().getPnSelectEnOrDe()
 					.getRdEncrypt().isSelected()) {
 				System.out.println("Vao ma hoa de set private");
@@ -835,8 +869,20 @@ public class MainGUI {
 					System.out.println("Enter encryt with string");
 
 				} else {
+					if (tabCombine.getOptionEncryptUI().getFileInput() == null) {
+						JOptionPane.showMessageDialog(MainGUI.frame,
+								"File input empty", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					inputFile = tabCombine.getOptionEncryptUI().getFileInput()
 							.getAbsolutePath();
+					if (tabCombine.getOptionEncryptUI().getFileOutput() == null) {
+						JOptionPane.showMessageDialog(MainGUI.frame,
+								"File output empty", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					outputFile = tabCombine.getOptionEncryptUI()
 							.getFileOutput().getAbsolutePath();
 					System.out.println("Combine encryt with file");
@@ -963,5 +1009,14 @@ public class MainGUI {
 		padding = (String) tabCombine.getChoicePadding().getSelectedItem();
 		keysize = Integer.parseInt((String) tabCombine.getChoiceKeySize()
 				.getSelectedItem());
+		algo2 = (String) tabCombine.getGeneralUI().getChoiceAlgorithms()
+				.getSelectedItem();
+		keysize2 = Integer.parseInt((String) tabCombine.getGeneralUI().getChoiceKeySize()
+				.getSelectedItem());
+		mode2 = (String) tabCombine.getGeneralUI().getChoiceMode()
+				.getSelectedItem();
+		padding2 = (String) tabCombine.getGeneralUI().getChoicePadding()
+				.getSelectedItem();
+		
 	}
 }

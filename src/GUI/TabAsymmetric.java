@@ -10,7 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Base64;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -37,31 +42,36 @@ import java.awt.FlowLayout;
 public class TabAsymmetric extends JPanel implements ActionListener {
 	private String[] listAlgorithms = { "RSA" };
 	private String[] listMode = { "ECB" };
-	private String[] listPadding = {"OAEPWithSHA-1AndMGF1Padding","OAEPWithSHA-256AndMGF1Padding","PKCS1Padding"
-			 };
+	private String[] listPadding = { "OAEPWithSHA-1AndMGF1Padding",
+			"OAEPWithSHA-256AndMGF1Padding", "PKCS1Padding" };
 
-			
 	private String[] listKeySize = { "1024", "2048", "3072", "4069" };
-	private JPanel pnOption, pnKey, pnEncypt, pnAlgorithms, pnKeySize, pnMode,
-			pnPadding, pnOptionKey, pnContainerKey, pnFieldPublic,pnPrivateKey,
-			pnFieldPrivate, pnFilePublic, pnFilePrivte, pnFileKey,pnFieldPublicContainer,pnSum,pnCenter,pnBtnPrivate,pnBtnPublic;
+	private JPanel pnOption,pnOptionContainer, pnKey, pnEncypt, pnAlgorithms, pnKeySize, pnMode,
+			pnPadding, pnOptionKey, pnContainerKey, pnFieldPublic,
+			pnPrivateKey, pnFieldPrivate, pnFilePublic, pnFilePrivte,
+			pnFileKey, pnFieldPublicContainer, pnSum, pnCenter, pnBtnPrivate,
+			pnBtnPublic;
 	private JLabel lblAlgorithms, lblKeySize, lblMode, lblPadding,
 			lblPrivatekey;
-	private JComboBox choiceAlgorithms, choiceKeySize, choiceMode, choicePadding;
+	private JComboBox choiceAlgorithms, choiceKeySize, choiceMode,
+			choicePadding;
 	private JButton btnCreateKey, btnImportPublicKey, btnImportPrivatekey,
-			btnCopyPrivateKey, btnCopyPublicKey,btnSavePrivate,btnSavePublic;
+			btnCopyPrivateKey, btnCopyPublicKey, btnSavePrivate, btnSavePublic;
 	private JRadioButton rdString, rdFile;
 	private JTextField txtPublicKey, txtPrivateKey;
 	private Dimension dmTxtKey, dmBtnCopy, dmBtnCreate, dmChoose;
 	private OptionEncryptUI optionEncryptUI;
-	File publicFile,privateFile;
+	File publicFile, privateFile, fileSave;
 	JFileChooser jFileChoose;
+	OptionGeneralUI generalUI;
+	private static Base64.Encoder encoder = Base64.getEncoder();
+	private static Base64.Decoder decoder = Base64.getDecoder();
 
 	public TabAsymmetric() {
 		setLayout(new BorderLayout());
 		createComponent();
 		addComponent();
-		
+
 		addHandle();
 	}
 
@@ -72,11 +82,16 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		dmChoose = new Dimension(140, 40);
 		btnSavePrivate = new JButton();
 		btnSavePublic = new JButton();
+		pnOptionContainer = new JPanel();
+		pnOptionContainer.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(255, 255, 255), new Color(255, 255, 255)), new EmptyBorder(10, 10, 10, 10)));
 		btnSavePublic.setToolTipText("Save");
 		btnSavePrivate.setToolTipText("Save");
 		pnFieldPublicContainer = new JPanel(new BorderLayout());
 		pnSum = new JPanel(new BorderLayout());
-		pnSum.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 10, 10)));
+		pnSum.setBorder(new CompoundBorder(
+				new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200,
+						200, 200), new Color(200, 200, 200)), new EmptyBorder(
+						10, 10, 10, 10)));
 		pnOption = new JPanel();
 		pnAlgorithms = new JPanel();
 		pnKeySize = new JPanel();
@@ -124,16 +139,17 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnFilePublic = new JPanel();
 		pnFilePrivte = new JPanel();
 		pnFileKey = new JPanel(new BorderLayout());
-		
+
 		btnImportPublicKey = new JButton("Choose public key");
 		btnImportPrivatekey = new JButton("Choose private key");
 		optionEncryptUI = new OptionEncryptUI();
 		optionEncryptUI.setBorder(null);
-	
+
 		jFileChoose = new JFileChooser();
-		jFileChoose.setCurrentDirectory(jFileChoose.getFileSystemView().getParentDirectory(new File("D:\\")));
+		jFileChoose.setCurrentDirectory(jFileChoose.getFileSystemView()
+				.getParentDirectory(new File("D:\\")));
 		pnPrivateKey = new JPanel(new BorderLayout());
-		lblPrivatekey = new JLabel("Private key:",SwingConstants.CENTER);
+		lblPrivatekey = new JLabel("Private key:", SwingConstants.CENTER);
 	}
 
 	public void addComponent() {
@@ -158,49 +174,37 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnOptionKey.add(rdString);
 		pnOptionKey.add(rdFile);
 		pnSum.add(pnContainerKey);
-//		pnSum.add(pnFileKey);
-		pnFieldPublic.add(btnCreateKey,BorderLayout.WEST);
+		// pnSum.add(pnFileKey);
+		pnFieldPublic.add(btnCreateKey, BorderLayout.WEST);
 		pnFieldPublic.add(txtPublicKey);
 		pnBtnPublic.add(btnSavePublic, BorderLayout.WEST);
-pnBtnPublic.add(btnCopyPublicKey);
+		pnBtnPublic.add(btnCopyPublicKey);
 		pnFieldPublicContainer.add(pnFieldPublic);
-		pnFieldPublicContainer.add(pnBtnPublic,BorderLayout.EAST);
+		pnFieldPublicContainer.add(pnBtnPublic, BorderLayout.EAST);
 		pnBtnPrivate.add(btnSavePrivate, BorderLayout.WEST);
 		pnBtnPrivate.add(btnCopyPrivateKey);
-		pnFieldPrivate.add(pnBtnPrivate,BorderLayout.EAST);
+		pnFieldPrivate.add(pnBtnPrivate, BorderLayout.EAST);
 		pnFieldPrivate.add(pnPrivateKey);
-		pnPrivateKey.add(lblPrivatekey,BorderLayout.WEST);
+		pnPrivateKey.add(lblPrivatekey, BorderLayout.WEST);
 		pnPrivateKey.add(txtPrivateKey);
-
 		pnContainerKey.add(pnFieldPublicContainer, BorderLayout.NORTH);
 		pnContainerKey.add(pnFieldPrivate, BorderLayout.SOUTH);
 		pnFilePrivte.setLayout(new BorderLayout(0, 0));
-
-	
 		pnFilePrivte.add(btnImportPrivatekey);
 		pnFilePublic.setLayout(new BorderLayout(0, 0));
 
-	
 		pnFilePublic.add(btnImportPublicKey);
-
 		pnFileKey.add(pnFilePublic, BorderLayout.NORTH);
 		pnFileKey.add(pnFilePrivte, BorderLayout.SOUTH);
-		add(pnOption, BorderLayout.NORTH);
+		pnOptionContainer.setLayout(new BorderLayout(0, 0));
+		pnOptionContainer.add(pnOption);
+		add(pnOptionContainer, BorderLayout.NORTH);
 		pnCenter.add(pnKey, BorderLayout.NORTH);
 		pnCenter.add(optionEncryptUI);
 		add(pnCenter);
-		
+
 		optionEncryptUI.getTxtPlain().setSize(7, 50);
-//		optionEncryptUI.setPreferredSize(new Dimension(750, 265));
-//		Border optionLine = BorderFactory.createTitledBorder("Option");
-//		pnOption.setBorder(optionLine);
 		setBorder(new EmptyBorder(0, 0, 10, 0));
-//		((TitledBorder) pnOption.getBorder()).setTitleFont(new Font("Dialog",
-//				Font.PLAIN, 13));
-//		Border keyLine = BorderFactory.createTitledBorder("Key");
-//		pnKey.setBorder(keyLine);
-//		((TitledBorder) pnKey.getBorder()).setTitleFont(new Font("Dialog",
-//				Font.PLAIN, 13));
 		lblAlgorithms.setFont(new Font("Dialog", Font.PLAIN, 13));
 		lblKeySize.setFont(new Font("Dialog", Font.PLAIN, 13));
 		lblMode.setFont(new Font("Dialog", Font.PLAIN, 13));
@@ -209,13 +213,15 @@ pnBtnPublic.add(btnCopyPublicKey);
 		btnCopyPublicKey.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnImportPrivatekey.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnImportPublicKey.setFont(new Font("Dialog", Font.PLAIN, 12));
-		
+
 		btnCreateKey.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblPrivatekey.setFont(new Font("Dialog", Font.PLAIN, 14));
 		txtPrivateKey.setFont(new Font("Dialog", Font.PLAIN, 14));
 		txtPublicKey.setFont(new Font("Dialog", Font.PLAIN, 14));
 		txtPrivateKey.setToolTipText("Private key");
 		txtPublicKey.setToolTipText("Public key");
+		btnSavePrivate.setToolTipText("Save");
+		btnSavePublic.setToolTipText("Save");
 		btnCreateKey.setToolTipText("Press to create key");
 		pnAlgorithms.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnKeySize.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -229,7 +235,7 @@ pnBtnPublic.add(btnCopyPublicKey);
 		btnSavePrivate.setPreferredSize(dmBtnCopy);
 		btnSavePublic.setPreferredSize(dmBtnCopy);
 		pnFieldPrivate.setBorder(new EmptyBorder(-5, 45, 0, 0));
-		lblPrivatekey.setPreferredSize(new Dimension(120,40));
+		lblPrivatekey.setPreferredSize(new Dimension(120, 40));
 		txtPublicKey.setPreferredSize(dmTxtKey);
 		txtPrivateKey.setPreferredSize(dmTxtKey);
 		btnCreateKey.setPreferredSize(dmBtnCreate);
@@ -237,12 +243,15 @@ pnBtnPublic.add(btnCopyPublicKey);
 		btnCopyPrivateKey.setPreferredSize(dmBtnCopy);
 		btnImportPublicKey.setPreferredSize(dmChoose);
 		btnImportPrivatekey.setPreferredSize(dmChoose);
-		choicePadding.setPreferredSize(new Dimension(190,26));
+		choicePadding.setPreferredSize(new Dimension(190, 26));
 		optionEncryptUI.getBtnChooseInput().setPreferredSize(dmChoose);
 		optionEncryptUI.getBtnChooseOutput().setPreferredSize(dmChoose);
-		pnOption.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(255, 255, 255), new Color(255, 255, 255)), new EmptyBorder(10, 10, 10, 10)));
 		pnFieldPrivate.setBorder(new EmptyBorder(0, 0, 0, 0));
-		optionEncryptUI.setPreferredSize( new Dimension(740, 280));
+		optionEncryptUI.setPreferredSize(new Dimension(740, 280));
+		
+		generalUI = new OptionGeneralUI();
+		generalUI.setBorder(null);
+		pnOptionContainer.add(generalUI, BorderLayout.SOUTH);
 	}
 
 	public void addHandle() {
@@ -254,24 +263,27 @@ pnBtnPublic.add(btnCopyPublicKey);
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					boolean isStop=false;
-					do{
+					boolean isStop = false;
+					do {
 						privateFile = openFile();
-						if(privateFile.exists()){
-							btnImportPrivatekey.setText(privateFile.getAbsolutePath());
-							isStop=true;
-						}else{
-							JOptionPane.showMessageDialog(MainGUI.frame, "File "+privateFile.getName()+" doesn't exist!",
-									"Error", JOptionPane.ERROR_MESSAGE);
+						if (privateFile.exists()) {
+							btnImportPrivatekey.setText(privateFile
+									.getAbsolutePath());
+							isStop = true;
+						} else {
+							JOptionPane.showMessageDialog(MainGUI.frame,
+									"File " + privateFile.getName()
+											+ " doesn't exist!", "Error",
+									JOptionPane.ERROR_MESSAGE);
 							System.out.println("File does not exist!");
 							btnImportPrivatekey.setText("Choose private key");
-							privateFile=null;
-							isStop=false;
-							
+							privateFile = null;
+							isStop = false;
+
 						}
-					}while(!isStop);
+					} while (!isStop);
 				} catch (Exception ex) {
-					privateFile=null;
+					privateFile = null;
 					System.out.println("Cancel choose file");
 				}
 
@@ -282,24 +294,27 @@ pnBtnPublic.add(btnCopyPublicKey);
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					boolean isStop=false;
-					do{
+					boolean isStop = false;
+					do {
 						publicFile = openFile();
-						if(publicFile.exists()){
-							btnImportPublicKey.setText(publicFile.getAbsolutePath());
-							isStop=true;
-						}else{
-							JOptionPane.showMessageDialog(MainGUI.frame, "File "+publicFile.getName()+" doesn't exist!",
-									"Error", JOptionPane.ERROR_MESSAGE);
+						if (publicFile.exists()) {
+							btnImportPublicKey.setText(publicFile
+									.getAbsolutePath());
+							isStop = true;
+						} else {
+							JOptionPane.showMessageDialog(MainGUI.frame,
+									"File " + publicFile.getName()
+											+ " doesn't exist!", "Error",
+									JOptionPane.ERROR_MESSAGE);
 							System.out.println("File does not exist!");
 							btnImportPublicKey.setText("Choose public key");
-							publicFile=null;
-							isStop=false;
-							
+							publicFile = null;
+							isStop = false;
+
 						}
-					}while(!isStop);
+					} while (!isStop);
 				} catch (Exception ex) {
-					publicFile=null;
+					publicFile = null;
 					System.out.println("Cancel choose file");
 				}
 
@@ -330,8 +345,9 @@ pnBtnPublic.add(btnCopyPublicKey);
 
 			@Override
 			public void focusGained(FocusEvent e) {
-				if(txtPrivateKey.getText().trim().equals("")){
-					DialogCustom.showDescription(txtPrivateKey, "Enter private key");				
+				if (txtPrivateKey.getText().trim().equals("")) {
+					DialogCustom.showDescription(txtPrivateKey,
+							"Enter private key");
 				}
 
 			}
@@ -345,8 +361,37 @@ pnBtnPublic.add(btnCopyPublicKey);
 
 			@Override
 			public void focusGained(FocusEvent e) {
-				if(txtPublicKey.getText().trim().equals("")){
-					DialogCustom.showDescription(txtPublicKey, "Enter public key");				
+				if (txtPublicKey.getText().trim().equals("")) {
+					DialogCustom.showDescription(txtPublicKey,
+							"Enter public key");
+				}
+
+			}
+		});
+		btnSavePrivate.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!txtPrivateKey.getText().equalsIgnoreCase("")) {
+					saveFile(txtPrivateKey.getText());
+				} else {
+					JOptionPane.showMessageDialog(MainGUI.frame,
+							"Empty private key!", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+
+			}
+		});
+		btnSavePublic.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!txtPublicKey.getText().equalsIgnoreCase("")) {
+					saveFile(txtPublicKey.getText());
+				} else {
+					JOptionPane.showMessageDialog(MainGUI.frame,
+							"Empty public key!", "Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
 
 			}
@@ -371,6 +416,46 @@ pnBtnPublic.add(btnCopyPublicKey);
 		}
 	}
 
+	public void saveFile(String txt) {
+		int select = jFileChoose.showSaveDialog(this);
+		if (select == JFileChooser.APPROVE_OPTION) {
+			System.out.println("Save into: "
+					+ jFileChoose.getSelectedFile().getName());
+			fileSave = jFileChoose.getSelectedFile();
+			if (fileSave.exists()) {
+
+				int dialogResult = JOptionPane.showConfirmDialog(this, "File "
+						+ fileSave.getName()
+						+ " already exists, do you want to replace this file?",
+						"Warning", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if (dialogResult == JOptionPane.YES_OPTION) {
+					writeFile(txt, fileSave);
+					System.out.println("replace!");
+				} else {
+					System.out.println("no replace!");
+				}
+			} else {
+				writeFile(txt, fileSave);
+				System.out.println("Saved!");
+			}
+
+		} else {
+			System.out.println("Cancel");
+		}
+
+	}
+	public void writeFile(String txt, File file) {
+		BufferedWriter writer;
+		try {
+			writer = new BufferedWriter(new FileWriter(file));
+			writer.write(txt);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("rdString")) {
@@ -389,7 +474,8 @@ pnBtnPublic.add(btnCopyPublicKey);
 		}
 
 	}
-	public OptionEncryptUI getOptionEncryptUI(){
+
+	public OptionEncryptUI getOptionEncryptUI() {
 		return optionEncryptUI;
 	}
 
@@ -569,10 +655,6 @@ pnBtnPublic.add(btnCopyPublicKey);
 		this.lblPadding = lblPadding;
 	}
 
-
-
-	
-
 	public JPanel getPnPrivateKey() {
 		return pnPrivateKey;
 	}
@@ -725,8 +807,6 @@ pnBtnPublic.add(btnCopyPublicKey);
 		this.dmChoose = dmChoose;
 	}
 
-
-
 	public JFileChooser getjFileChoose() {
 		return jFileChoose;
 	}
@@ -770,5 +850,21 @@ pnBtnPublic.add(btnCopyPublicKey);
 	public void setPrivateFile(File privateFile) {
 		this.privateFile = privateFile;
 	}
-	
+
+	public OptionGeneralUI getGeneralUI() {
+		return generalUI;
+	}
+
+	public void setGeneralUI(OptionGeneralUI generalUI) {
+		this.generalUI = generalUI;
+	}
+
+	public JPanel getPnOptionContainer() {
+		return pnOptionContainer;
+	}
+
+	public void setPnOptionContainer(JPanel pnOptionContainer) {
+		this.pnOptionContainer = pnOptionContainer;
+	}
+
 }

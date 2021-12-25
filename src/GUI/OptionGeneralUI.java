@@ -14,7 +14,7 @@ public class OptionGeneralUI extends JPanel {
 
 	private String[] listAlgorithms = {"AES", "DES", "DESede","RC2","Serpent","IDEA","Twofish","Blowfish","Camellia" };
 	private String[] listKeySize = { "128", "192", "256" };
-	private String[] listMode = { "GCFB","OpenPGPCFB","CBC", "ECB","CFB","OFB","CTR"};
+	private String[] listMode = {"OpenPGPCFB","GCFB","CBC", "ECB","CFB","OFB","CTR"};
 	private String[] listPadding = { "PKCS5Padding","NoPadding","ISO7816-4Padding","PKCS7Padding","ISO10126Padding","X9.23Padding" };
 	private String[] listKeySizeAES = { "128", "192", "256" };
 	private String[] listKeySizeDES = { "56" };
@@ -87,7 +87,7 @@ public class OptionGeneralUI extends JPanel {
 //		setBorder(blackline);
 //		((TitledBorder) getBorder()).setTitleFont(new Font("Dialog",
 //				Font.PLAIN, 13));
-
+		
 	}
 
 
