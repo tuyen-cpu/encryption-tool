@@ -249,15 +249,4 @@ public class Symmetric {
 
 		}
 	}
-
-	public static void main(String[] args) throws Exception {
-		/*
-		 * AES (128,192,256) DES (56) DESede (168) GCM
-		 */
-
-		Symmetric s = new Symmetric("AES", "ECB", "PKCS5Padding", 128);
-	s.setKey((SecretKey) s.readKey("F:\\AA\\key.txt"));;
-		s.decrypt("F:\\AA\\t.txt", "F:\\AA\\ttt.txt");
-
-	}
 }

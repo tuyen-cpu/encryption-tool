@@ -17,17 +17,20 @@ import javax.swing.border.EmptyBorder;
 public class DialogCustom {
 	static Timer t;
 	static Popup p;
+
 	public static void showShortDialog(Component parent, String text) {
 		JLabel lb = new JLabel(text);
 		lb.setFont(new Font("Dialog", Font.PLAIN, 12));
-		lb.setOpaque(true);lb.setBorder(new EmptyBorder(3,3,3,3));
+		lb.setOpaque(true);
+		lb.setBorder(new EmptyBorder(3, 3, 3, 3));
 		lb.setForeground(Color.BLACK);
 		lb.setBackground(Color.WHITE);
-		 p = PopupFactory.getSharedInstance().getPopup(parent,
-				lb, (int) MouseInfo.getPointerInfo().getLocation().getX(), (int) MouseInfo.getPointerInfo().getLocation().getY()-50);
-	
+		p = PopupFactory.getSharedInstance().getPopup(parent, lb,
+				(int) MouseInfo.getPointerInfo().getLocation().getX(),
+				(int) MouseInfo.getPointerInfo().getLocation().getY() - 50);
+
 		p.show();
-		 t = new Timer(600, new ActionListener() {
+		t = new Timer(600, new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -37,18 +40,19 @@ public class DialogCustom {
 		t.setRepeats(false);
 		t.start();
 	}
+
 	public static void showDescription(Component parent, String text) {
 		JLabel lb = new JLabel(text);
 		lb.setFont(new Font("Dialog", Font.PLAIN, 12));
-		lb.setOpaque(true);lb.setBorder(new EmptyBorder(5,5,5,5));
+		lb.setOpaque(true);
+		lb.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lb.setForeground(Color.BLACK);
 		lb.setBackground(Color.WHITE);
 		Point point = parent.getLocationOnScreen();
-		 p = PopupFactory.getSharedInstance().getPopup(parent,
-				lb, (int)point.x, (int)point.y-32);
-	
+		p = PopupFactory.getSharedInstance().getPopup(parent, lb,
+				(int) point.x, (int) point.y - 32);
+
 		p.show();
-		// create a timer to hide the popup later
 		t = new Timer(2000, new ActionListener() {
 
 			@Override
@@ -59,7 +63,8 @@ public class DialogCustom {
 		t.setRepeats(false);
 		t.start();
 	}
-	public static void stopDialog(){
+
+	public static void stopDialog() {
 		p.hide();
 		t.stop();
 	}

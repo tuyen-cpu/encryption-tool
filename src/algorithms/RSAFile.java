@@ -45,13 +45,15 @@ public class RSAFile {
 	static SecureRandom srandom = new SecureRandom();
 	private PrivateKey privateKey;
 	private PublicKey publicKey;
-	private String algorithms,algorithms2, mode,mode2, padding,padding2;
-	private int keySize,keySize2;
-	Cipher ci,ci2;
+	private String algorithms, algorithms2, mode, mode2, padding, padding2;
+	private int keySize, keySize2;
+	Cipher ci, ci2;
 	int ivSize;
 
-	public RSAFile(String algorithms, int keySize, String mode, String padding,String algorithms2, int keySize2, String mode2, String padding2)
-			throws NoSuchAlgorithmException, NoSuchPaddingException, FileNotFoundException, IOException, NoSuchProviderException {
+	public RSAFile(String algorithms, int keySize, String mode, String padding,
+			String algorithms2, int keySize2, String mode2, String padding2)
+			throws NoSuchAlgorithmException, NoSuchPaddingException,
+			FileNotFoundException, IOException, NoSuchProviderException {
 		Security.addProvider(new BouncyCastleProvider());
 		this.algorithms = algorithms;
 		this.keySize = keySize;
@@ -65,19 +67,18 @@ public class RSAFile {
 				+ this.padding);
 		try {
 			ci2 = Cipher.getInstance(this.algorithms2 + "/" + this.mode2 + "/"
-					+ this.padding2,"BC");
+					+ this.padding2, "BC");
 		} catch (NoSuchProviderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
-			if (algorithms2.equalsIgnoreCase("AES")) {
-				ivSize = 16;
-			} else {
-				ivSize = 8;
-			}
-		
-		
+
+		if (algorithms2.equalsIgnoreCase("AES")) {
+			ivSize = 16;
+		} else {
+			ivSize = 8;
+		}
+
 		try {
 			doGenkey();
 		} catch (NoSuchProviderException e) {
@@ -162,13 +163,13 @@ public class RSAFile {
 
 	}
 
-	public void doEncryptRSAWithAES( String inputFile,
-			String outputFile) throws NoSuchAlgorithmException,
-			FileNotFoundException, IOException, InvalidKeyException,
-			NoSuchPaddingException, IllegalBlockSizeException,
-			BadPaddingException, InvalidAlgorithmParameterException, NoSuchProviderException {
-		System.out.println("thuat toan"+algorithms2);
-		KeyGenerator kgen = KeyGenerator.getInstance(algorithms2,"BC");
+	public void doEncryptRSAWithAES(String inputFile, String outputFile)
+			throws NoSuchAlgorithmException, FileNotFoundException,
+			IOException, InvalidKeyException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException,
+			InvalidAlgorithmParameterException, NoSuchProviderException {
+		System.out.println("thuat toan" + algorithms2);
+		KeyGenerator kgen = KeyGenerator.getInstance(algorithms2, "BC");
 		kgen.init(keySize2);
 		SecretKey skey = kgen.generateKey();
 		byte[] iv = new byte[ivSize];
@@ -176,7 +177,7 @@ public class RSAFile {
 		IvParameterSpec ivspec = new IvParameterSpec(iv);
 		try (FileOutputStream out = new FileOutputStream(outputFile)) {
 			{
-				
+
 				ci.init(Cipher.ENCRYPT_MODE, privateKey);
 				byte[] b = ci.doFinal(skey.getEncoded());
 				out.write(b);
@@ -185,27 +186,27 @@ public class RSAFile {
 
 			out.write(iv);
 			System.out.println("IV Length:" + iv.length);
-if(mode2.equalsIgnoreCase("ECB")){
-	ci2.init(Cipher.ENCRYPT_MODE, skey);
-}else{
-	ci2.init(Cipher.ENCRYPT_MODE, skey, ivspec);
-}
-		
+			if (mode2.equalsIgnoreCase("ECB")) {
+				ci2.init(Cipher.ENCRYPT_MODE, skey);
+			} else {
+				ci2.init(Cipher.ENCRYPT_MODE, skey, ivspec);
+			}
+
 			try (FileInputStream in = new FileInputStream(inputFile)) {
 				processFile(ci2, in, out);
 			}
 		}
 	}
 
-	public void doDeCryptRSAWithAES( String inputFile,
-			String outputFile) throws FileNotFoundException, IOException,
+	public void doDeCryptRSAWithAES(String inputFile, String outputFile)
+			throws FileNotFoundException, IOException,
 			NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidKeyException, IllegalBlockSizeException,
 			BadPaddingException, InvalidAlgorithmParameterException {
 		try (FileInputStream in = new FileInputStream(inputFile)) {
 			SecretKeySpec skey = null;
 			{
-				
+
 				ci.init(Cipher.DECRYPT_MODE, publicKey);
 				byte[] b = new byte[256];
 				in.read(b);
@@ -216,15 +217,16 @@ if(mode2.equalsIgnoreCase("ECB")){
 			byte[] iv = new byte[ivSize];
 			in.read(iv);
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
-			
-			if(mode2.equalsIgnoreCase("ECB")){
+
+			if (mode2.equalsIgnoreCase("ECB")) {
 				ci2.init(Cipher.DECRYPT_MODE, skey);
-			}else{
+			} else {
 				ci2.init(Cipher.DECRYPT_MODE, skey, ivspec);
 			}
 			try (FileOutputStream out = new FileOutputStream(outputFile)) {
 				processFile(ci2, in, out);
 			}
+			in.close();
 		}
 	}
 
@@ -278,6 +280,7 @@ if(mode2.equalsIgnoreCase("ECB")){
 		String encodedKey = encoder.encodeToString(arrKey);
 		return encodedKey;
 	}
+
 	public String getPublicKeyWithString() {
 		return convertKeytoString(publicKey);
 	}

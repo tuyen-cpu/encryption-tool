@@ -71,7 +71,6 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		setLayout(new BorderLayout());
 		createComponent();
 		addComponent();
-
 		addHandle();
 	}
 
@@ -139,15 +138,13 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		pnFilePublic = new JPanel();
 		pnFilePrivte = new JPanel();
 		pnFileKey = new JPanel(new BorderLayout());
-
 		btnImportPublicKey = new JButton("Choose public key");
 		btnImportPrivatekey = new JButton("Choose private key");
 		optionEncryptUI = new OptionEncryptUI();
 		optionEncryptUI.setBorder(null);
-
 		jFileChoose = new JFileChooser();
 		jFileChoose.setCurrentDirectory(jFileChoose.getFileSystemView()
-				.getParentDirectory(new File("D:\\")));
+				.getParentDirectory(new File("C:\\")));
 		pnPrivateKey = new JPanel(new BorderLayout());
 		lblPrivatekey = new JLabel("Private key:", SwingConstants.CENTER);
 	}
@@ -231,7 +228,6 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		choiceKeySize.setFocusable(false);
 		choiceMode.setFocusable(false);
 		choicePadding.setFocusable(false);
-
 		btnSavePrivate.setPreferredSize(dmBtnCopy);
 		btnSavePublic.setPreferredSize(dmBtnCopy);
 		pnFieldPrivate.setBorder(new EmptyBorder(-5, 45, 0, 0));
@@ -248,7 +244,6 @@ public class TabAsymmetric extends JPanel implements ActionListener {
 		optionEncryptUI.getBtnChooseOutput().setPreferredSize(dmChoose);
 		pnFieldPrivate.setBorder(new EmptyBorder(0, 0, 0, 0));
 		optionEncryptUI.setPreferredSize(new Dimension(740, 280));
-		
 		generalUI = new OptionGeneralUI();
 		generalUI.setBorder(null);
 		pnOptionContainer.add(generalUI, BorderLayout.SOUTH);

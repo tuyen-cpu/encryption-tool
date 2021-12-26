@@ -96,7 +96,7 @@ public class OptionEncryptUI extends JPanel implements ActionListener {
 		pnKeyFile = new JPanel();
 		fileKey = new JFileChooser();
 		fileKey.setCurrentDirectory(fileKey.getFileSystemView()
-				.getParentDirectory(new File("D:\\")));
+				.getParentDirectory(new File("C:\\")));
 		txtPlain = new JTextArea(4, 60);
 		txtPlain.setToolTipText("Enter input to proceed with encryption or decryption");
 		txtCipher = new JTextArea(4, 50);

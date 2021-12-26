@@ -89,7 +89,7 @@ public class OptionKeyUI extends JPanel implements ActionListener {
 		pnKeyFile = new JPanel();
 		fileKey = new JFileChooser();
 		fileKey.setCurrentDirectory(fileKey.getFileSystemView()
-				.getParentDirectory(new File("D:\\")));
+				.getParentDirectory(new File("C:\\")));
 		// remove focus painted button
 		btnCreateKey.setFocusPainted(false);
 		btnChooseFile.setFocusPainted(false);

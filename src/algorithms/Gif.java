@@ -33,15 +33,6 @@ public class Gif extends Thread{
 		dialog.pack();
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
-//		 frame = new JFrame();
-//		icon = new ImageIcon(Gif.class.getResource("/img/loading.gif"));
-//		JLabel label = new JLabel(icon);
-//		frame.setUndecorated(true);
-//		frame.add(label);
-//		frame.pack();
-//		frame.setLocationRelativeTo(null);
-//		frame.setVisible(true);
-//		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 	
 }

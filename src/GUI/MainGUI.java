@@ -243,7 +243,7 @@ public class MainGUI {
 	public void createAndShowGUI() {
 		System.out.println("GUI");
 		// Create and set up the window.
-		frame = new JFrame("Main Frame");
+		frame = new JFrame("Encrypt tool");
 
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
 				getClass().getResource("/img/logo.png")));
@@ -396,22 +396,27 @@ public class MainGUI {
 				switch (tabbedPaneCurrent) {
 				case "Symmetric":
 					System.out.println("Handle tab Symmetric");
+					addControllOptionSymmetricTab();
 					handleTabSymmetric();
 					break;
 				case "Asymmetric":
 					System.out.println("Handle tab Asymmetric");
+					addControllOptionAsymmetricTab();
 					handleTabAsymmetric();
 					break;
 				case "Combine":
 					System.out.println("Handle tab Combine");
+					addControllOptionCombineTab();
 					handleTabCombine();
 					break;
 				case "Hash":
 					System.out.println("Handle tab Hash");
+					addControllOptionHashTab();
 					handleTabHash();
 					break;
 				default:
 					System.out.println("Handle tab Symmetric");
+					addControllOptionSymmetricTab();
 					handleTabSymmetric();
 					break;
 				}
@@ -429,8 +434,7 @@ public class MainGUI {
 						"Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			algorithm = (String) tabHash.getChoiceAlgorithms()
-					.getSelectedItem();
+			addControllOptionHashTab();
 			try {
 				Hash hash = new Hash(algorithm);
 				outText = hash.hash(textInput);
@@ -447,13 +451,44 @@ public class MainGUI {
 			}
 			textInput = tabHash.getFileInput().getAbsolutePath();
 			
-			algorithm = (String) tabHash.getChoiceAlgorithms()
-					.getSelectedItem();
+			addControllOptionHashTab();
 			try {
 				Hash hash = new Hash(algorithm);
-				outText = hash.hashFile(textInput);
-				System.out.println("Hash success!");
-			} catch (NoSuchAlgorithmException | IOException e) {
+				SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
+					@Override
+					protected String doInBackground()
+							throws InterruptedException {
+						try {
+							outText = hash.hashFile(textInput);
+							System.out.println("Hash success!");
+							return "success";
+						} catch (Exception e) {
+							e.printStackTrace();
+							System.out.println("loi ngay day");
+							return "error";
+						}
+					}
+					@Override
+					protected void done() {
+						jLoading.dispose();
+					}
+				};
+				worker.execute(); // here the process thread initiates
+				jLoading.setVisible(true);
+				try {
+					if (worker.get().equalsIgnoreCase("success")) {
+						JOptionPane.showMessageDialog(frame,
+								"Successfully hash!", "Success",
+								JOptionPane.INFORMATION_MESSAGE, icon);
+					} else {
+						JOptionPane.showMessageDialog(frame, "Hash failed!",
+								"Error", JOptionPane.ERROR_MESSAGE);
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -753,13 +788,30 @@ public class MainGUI {
 				System.out.println("Vao de set public");
 				asymmetric.setPublicKey(publickey);
 				System.out.println("Set public key");
-				outText = asymmetric.encrypt(textInput);
+				try{
+					outText = asymmetric.encrypt(textInput);
+				}catch(Exception e){
+					JOptionPane.showMessageDialog(MainGUI.frame,
+							"Encryption failed", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace();
+					return;
+				}
 				System.out.println("Encrypt with string");
 			} else {
 				System.out.println("Vao de set private");
 				asymmetric.setPrivateKey(privatekey);
 				System.out.println("Set private key");
-				outText = asymmetric.decrypt(textInput);
+				try{
+					outText = asymmetric.decrypt(textInput);
+					
+				}catch(Exception e){
+					JOptionPane.showMessageDialog(MainGUI.frame,
+							"Decryption failed", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace();
+					return;
+				}
 				System.out.println("Decrypt with string");
 			}
 
@@ -1019,5 +1071,8 @@ public class MainGUI {
 		padding2 = (String) tabCombine.getGeneralUI().getChoicePadding()
 				.getSelectedItem();
 		
+	}
+	public void addControllOptionHashTab(){
+		algorithm =(String) tabHash.getChoiceAlgorithms().getSelectedItem();
 	}
 }

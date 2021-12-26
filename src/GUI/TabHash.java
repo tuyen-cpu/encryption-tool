@@ -63,7 +63,6 @@ public class TabHash extends JPanel implements ActionListener {
 		txtResult = new JTextField();
 		rdString = new JRadioButton("Text");
 		rdFile = new JRadioButton("Import file");
-		
 		btnFileInput = new JButton("Choose file");
 		btnCopy = new JButton();
 		btnCopy.setIcon(new ImageIcon(this.getClass().getResource(
@@ -76,12 +75,12 @@ public class TabHash extends JPanel implements ActionListener {
 		pnFileInput = new JPanel(new GridBagLayout());
 		rdString.setSelected(true);
 		scrollTxtInput = new JScrollPane(txtString);
-		
 		pnContainer = new JPanel(new BorderLayout());
 		pnCompare = new JPanel(new BorderLayout());
 		lblResult = new JLabel("Hash code:");
 		jFileChoose = new JFileChooser();
-		jFileChoose.setCurrentDirectory(jFileChoose.getFileSystemView().getParentDirectory(new File("D:\\")));
+		jFileChoose.setCurrentDirectory(jFileChoose.getFileSystemView()
+				.getParentDirectory(new File("C:\\")));
 		pnAlgorithms = new JPanel();
 		choiceAlgorithms = new JComboBox(listAlgorithms);
 		rdFile.setFocusPainted(false);
@@ -99,9 +98,11 @@ public class TabHash extends JPanel implements ActionListener {
 		pnRd.add(rdString);
 		pnRd.add(rdFile);
 		pnInput = new JPanel(new BorderLayout());
-		pnInput.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED, null, null, new Color(200, 200, 200), new Color(200, 200, 200)), new EmptyBorder(10, 10, 5, 10)));
+		pnInput.setBorder(new CompoundBorder(new BevelBorder(
+				BevelBorder.LOWERED, null, null, new Color(200, 200, 200),
+				new Color(200, 200, 200)), new EmptyBorder(10, 10, 5, 10)));
 		pnOutput = new JPanel(new BorderLayout());
-	
+
 		pnFileInput.add(btnFileInput);
 		btnFileInput.setPreferredSize(new Dimension(200, 50));
 		// txtString.setPreferredSize(new Dimension(600,400));
@@ -119,19 +120,19 @@ public class TabHash extends JPanel implements ActionListener {
 		pnCompare.add(lblCompare, BorderLayout.WEST);
 		pnCompare.add(txtCompare);
 		pnCompare.add(btnCheckCompare, BorderLayout.EAST);
-		
+
 		pnCompareContainer.add(pnCompare, BorderLayout.NORTH);
 		pnAlgorithms.add(choiceAlgorithms);
-	choiceAlgorithms.setFocusable(false);
-		
-		choiceAlgorithms.setPreferredSize(new Dimension(150,40));
-		
+		choiceAlgorithms.setFocusable(false);
+
+		choiceAlgorithms.setPreferredSize(new Dimension(150, 40));
+
 		pnCompareContainer.setPreferredSize(new Dimension(650, 190));
 		btnCopy.setPreferredSize(new Dimension(60, 40));
 		btnCheckCompare.setPreferredSize(new Dimension(80, 40));
 		lblResult.setPreferredSize(new Dimension(85, 40));
 		lblCompare.setPreferredSize(new Dimension(85, 40));
-		
+
 		choiceAlgorithms.setFont(new Font("Dialog", Font.PLAIN, 15));
 		txtString.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		txtResult.setFont(new Font("Monospaced", Font.PLAIN, 16));
@@ -140,9 +141,6 @@ public class TabHash extends JPanel implements ActionListener {
 		btnCheckCompare.setFont(new Font("Dialog", Font.PLAIN, 14));
 		lblResult.setFont(new Font("Dialog", Font.PLAIN, 13));
 		lblCompare.setFont(new Font("Dialog", Font.PLAIN, 13));
-	
-
-		
 		setBorder(new EmptyBorder(20, 20, 10, 20));
 		pnOutput.setBorder(new EmptyBorder(15, 5, 0, 0));
 		pnCompare.setBorder(new EmptyBorder(0, 5, 0, 0));
@@ -198,18 +196,19 @@ public class TabHash extends JPanel implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					fileInput = openFile();
-					if(fileInput.exists()){
+					if (fileInput.exists()) {
 						btnFileInput.setText(fileInput.getAbsolutePath());
-					}else{
+					} else {
 						btnFileInput.setText("Choose file");
-						JOptionPane.showMessageDialog(MainGUI.frame, "File "+fileInput.getName()+" doesn't exist!",
+						JOptionPane.showMessageDialog(MainGUI.frame, "File "
+								+ fileInput.getName() + " doesn't exist!",
 								"Error", JOptionPane.ERROR_MESSAGE);
-						fileInput=null;
+						fileInput = null;
 						System.out.println("File does not exist!");
 						return;
 					}
 				} catch (Exception ex) {
-					fileInput=null;
+					fileInput = null;
 					btnFileInput.setText("Choose file");
 					System.out.println("Cancel choose file!");
 				}
@@ -217,44 +216,42 @@ public class TabHash extends JPanel implements ActionListener {
 			}
 		});
 		btnCheckCompare.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(txtCompare.getText().equalsIgnoreCase("")){
+				if (txtCompare.getText().equalsIgnoreCase("")) {
 					JOptionPane.showMessageDialog(MainGUI.frame, "Empty text",
 							"Dialog", JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
-			if(txtResult.getText().equalsIgnoreCase(txtCompare.getText())){
-				ImageIcon icon = new ImageIcon(this.getClass().getResource("/img/success.png"));
-               
-				JOptionPane.showMessageDialog(
-                        MainGUI.frame,
-                        "Matched",
-                        "Success", JOptionPane.INFORMATION_MESSAGE,
-                        icon);
-				
-			}else{
-				JOptionPane.showMessageDialog(MainGUI.frame, "Mismatched",
-						"Dialog", JOptionPane.ERROR_MESSAGE);
-			}
-				
+				if (txtResult.getText().equalsIgnoreCase(txtCompare.getText())) {
+					ImageIcon icon = new ImageIcon(this.getClass().getResource(
+							"/img/success.png"));
+
+					JOptionPane.showMessageDialog(MainGUI.frame, "Matched",
+							"Success", JOptionPane.INFORMATION_MESSAGE, icon);
+
+				} else {
+					JOptionPane.showMessageDialog(MainGUI.frame, "Mismatched",
+							"Dialog", JOptionPane.ERROR_MESSAGE);
+				}
+
 			}
 		});
 		txtString.addFocusListener(new FocusListener() {
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				DialogCustom.stopDialog();
-				
+
 			}
-			
+
 			@Override
 			public void focusGained(FocusEvent e) {
-				if(txtString.getText().trim().equals("")){
+				if (txtString.getText().trim().equals("")) {
 					DialogCustom.showDescription(txtString, "Enter input");
 				}
-				
+
 			}
 		});
 	}
@@ -395,8 +392,6 @@ public class TabHash extends JPanel implements ActionListener {
 		this.pnAlgorithms = pnAlgorithms;
 	}
 
-
-
 	public JLabel getLblCompare() {
 		return lblCompare;
 	}
@@ -461,8 +456,6 @@ public class TabHash extends JPanel implements ActionListener {
 		this.fileInput = fileInput;
 	}
 
-
-
 	public JComboBox getChoiceAlgorithms() {
 		return choiceAlgorithms;
 	}
@@ -478,5 +471,5 @@ public class TabHash extends JPanel implements ActionListener {
 	public void setListAlgorithms(String[] listAlgorithms) {
 		this.listAlgorithms = listAlgorithms;
 	}
-	
+
 }
